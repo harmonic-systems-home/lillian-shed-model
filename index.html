@@ -1,0 +1,1665 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { color-scheme: light dark; }
+  body { margin: 0; font: 14px system-ui, -apple-system, "Segoe UI", sans-serif; background: #fafaf9; }
+  img { max-width: 100%; }
+  [hidden] { display: none !important; }
+</style>
+<meta name="robots" content="noindex, nofollow">
+</head>
+<body>
+<title>Lillian Drive Shed</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+
+<style>
+  :root {
+    --linen:      #EDE6D8;
+    --linen-deep: #E1D7C4;
+    --paper:      #F7F2E8;
+    --ink:        #2B211A;
+    --ink-soft:   #5C4C3E;
+    --ink-faint:  #8A7663;
+    --rule:       #CFC2AB;
+    --verdigris:  #3F7D6B;
+    --espresso:   #3A2C23;
+    --warn:       #9A5B2C;
+
+    --ground:  var(--linen);
+    --surface: var(--paper);
+    --raised:  #FFFDF7;
+    --fg:      var(--ink);
+    --fg-soft: var(--ink-soft);
+    --fg-faint:var(--ink-faint);
+    --line:    var(--rule);
+    --accent:  var(--verdigris);
+    --accent-fg: #FFFFFF;
+    --scene-top: #DCD2BE;
+    --scene-bot: #C3B7A0;
+    --shadow: 0 1px 2px rgba(43,33,26,.07), 0 8px 24px -12px rgba(43,33,26,.18);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:  #17120E;
+      --surface: #1F1913;
+      --raised:  #29211A;
+      --fg:      #EFE7D8;
+      --fg-soft: #C0B09A;
+      --fg-faint:#8E7C67;
+      --line:    #3A2F26;
+      --accent:  #6FBBA2;
+      --accent-fg: #10201B;
+      --scene-top: #221C16;
+      --scene-bot: #12100D;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 30px -14px rgba(0,0,0,.7);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:  #17120E;
+    --surface: #1F1913;
+    --raised:  #29211A;
+    --fg:      #EFE7D8;
+    --fg-soft: #C0B09A;
+    --fg-faint:#8E7C67;
+    --line:    #3A2F26;
+    --accent:  #6FBBA2;
+    --accent-fg: #10201B;
+    --scene-top: #221C16;
+    --scene-bot: #12100D;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 30px -14px rgba(0,0,0,.7);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--fg);
+    font-family: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  .wrap {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding-inline: 16px;
+    padding-block: 20px 32px;
+  }
+
+  /* ---------- header ---------- */
+
+  header { margin-bottom: 16px; }
+
+  .eyebrow {
+    font-family: "Archivo Narrow", "Arial Narrow", sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--fg-faint);
+    margin: 0 0 2px;
+  }
+
+  h1 {
+    font-family: "Archivo Narrow", "Arial Narrow", sans-serif;
+    font-weight: 700;
+    font-size: clamp(28px, 6vw, 42px);
+    line-height: 1.02;
+    letter-spacing: -0.01em;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  .lede {
+    margin: 8px 0 0;
+    max-width: 62ch;
+    color: var(--fg-soft);
+  }
+
+  .caveat {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-top: 12px;
+    padding: 6px 11px 7px;
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--warn);
+    background: var(--surface);
+    color: var(--fg-soft);
+    font-size: 13px;
+    line-height: 1.4;
+  }
+  .caveat b {
+    font-family: "Archivo Narrow", "Arial Narrow", sans-serif;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    font-size: 11px;
+    color: var(--warn);
+    white-space: nowrap;
+  }
+
+  /* ---------- layout ---------- */
+
+  .stage {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin-top: 18px;
+  }
+
+  @media (min-width: 900px) {
+    .stage { grid-template-columns: minmax(0,1fr) 268px; align-items: start; }
+  }
+
+  /* ---------- viewport ---------- */
+
+  .viewport {
+    position: relative;
+    border: 1px solid var(--line);
+    background: var(--scene-bot);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+
+  #view {
+    display: block;
+    width: 100%;
+    height: 58vh;
+    min-height: 320px;
+    touch-action: none;
+    cursor: grab;
+  }
+  #view:active { cursor: grabbing; }
+
+  @media (min-width: 900px) {
+    #view { height: 66vh; max-height: 720px; }
+  }
+
+  .hint {
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: .02em;
+    color: var(--fg-faint);
+    background: color-mix(in srgb, var(--surface) 82%, transparent);
+    border: 1px solid var(--line);
+    padding: 3px 8px;
+    pointer-events: none;
+    transition: opacity .4s ease;
+  }
+  .hint[hidden] { display: none !important; }
+
+  .views {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 4px;
+    max-width: calc(100% - 20px);
+  }
+
+  .views button {
+    font-family: "Archivo Narrow", "Arial Narrow", sans-serif;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--fg-soft);
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    border: 1px solid var(--line);
+    padding: 6px 9px;
+    cursor: pointer;
+    min-height: 30px;
+  }
+  .views button:hover { color: var(--fg); border-color: var(--accent); }
+  .views button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* ---------- panel ---------- */
+
+  .panel {
+    border: 1px solid var(--line);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+  }
+
+  .panel section { padding: 14px; }
+  .panel section + section { border-top: 1px solid var(--line); }
+
+  .panel h2 {
+    font-family: "Archivo Narrow", "Arial Narrow", sans-serif;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--fg-faint);
+    margin: 0 0 10px;
+  }
+
+  .layers { display: flex; flex-direction: column; gap: 1px; }
+
+  .layer {
+    display: grid;
+    grid-template-columns: 18px 12px 1fr auto;
+    align-items: center;
+    gap: 9px;
+    padding: 7px 4px;
+    cursor: pointer;
+    min-height: 38px;
+    border-radius: 2px;
+  }
+  .layer:hover { background: var(--raised); }
+  .layer input { margin: 0; width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; }
+  .layer input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .swatch {
+    width: 12px; height: 12px;
+    border: 1px solid color-mix(in srgb, var(--fg) 22%, transparent);
+  }
+
+  .layer .name { font-size: 13.5px; line-height: 1.25; }
+  .layer .spec {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 10.5px;
+    color: var(--fg-faint);
+    text-align: right;
+    white-space: nowrap;
+  }
+  .layer.off .name, .layer.off .spec { color: var(--fg-faint); }
+  .layer.off .swatch { opacity: .35; }
+
+  .planned .name::after {
+    content: "planned";
+    font-family: "Archivo Narrow", "Arial Narrow", sans-serif;
+    font-size: 9.5px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+    padding: 0 4px;
+    margin-left: 6px;
+    vertical-align: 1.5px;
+  }
+
+  .rowbtns { display: flex; gap: 6px; margin-top: 10px; }
+  .rowbtns button {
+    flex: 1;
+    font-family: "Archivo Narrow", "Arial Narrow", sans-serif;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--fg-soft);
+    background: transparent;
+    border: 1px solid var(--line);
+    padding: 8px 6px;
+    cursor: pointer;
+    min-height: 36px;
+  }
+  .rowbtns button:hover { color: var(--fg); border-color: var(--accent); }
+  .rowbtns button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .slider-row { display: flex; align-items: center; gap: 10px; }
+  .slider-row input[type=range] {
+    flex: 1;
+    accent-color: var(--accent);
+    height: 28px;
+    cursor: pointer;
+  }
+  .slider-row input:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .slider-row output {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px;
+    color: var(--fg-faint);
+    min-width: 34px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ---------- key ---------- */
+
+  ul.key { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; }
+  ul.key li { display: flex; align-items: center; gap: 9px; font-size: 12.5px; color: var(--fg-soft); }
+  .kc { width: 13px; height: 13px; flex: none; border: 1px solid color-mix(in srgb, var(--fg) 25%, transparent); }
+  .kc-hi { background: #C4453A; }
+  .kc-md { background: #D68A2E; }
+  .kc-pr { background: color-mix(in srgb, #35A88B 45%, transparent); border-color: #8FE8CE; }
+  .kc-sp { background: #E0B23C; }
+  .kc-pin { background: #3F7D6B; border-radius: 50%; }
+
+  /* ---------- lightbox ---------- */
+
+  .lightbox {
+    position: absolute;
+    inset: 0;
+    background: color-mix(in srgb, var(--ground) 88%, transparent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px;
+    z-index: 5;
+  }
+  .lightbox[hidden] { display: none !important; }
+
+  .lb-inner {
+    position: relative;
+    max-width: 100%;
+    max-height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow);
+  }
+  .lb-inner img {
+    display: block;
+    max-width: 100%;
+    max-height: 58vh;
+    object-fit: contain;
+    background: #000;
+  }
+  .lb-meta { padding: 10px 12px 12px; }
+  .lb-meta h3 {
+    font-family: "Archivo Narrow", "Arial Narrow", sans-serif;
+    font-size: 15px; letter-spacing: .04em; text-transform: uppercase;
+    margin: 0 0 4px;
+  }
+  .lb-meta p { margin: 0; font-size: 13px; color: var(--fg-soft); max-width: 54ch; }
+  #lbClose {
+    position: absolute; top: 8px; right: 8px;
+    font-family: "Archivo Narrow", "Arial Narrow", sans-serif;
+    font-weight: 600; font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--fg); background: color-mix(in srgb, var(--surface) 92%, transparent);
+    border: 1px solid var(--line); padding: 7px 11px; cursor: pointer; min-height: 34px;
+  }
+  #lbClose:hover { border-color: var(--accent); }
+  #lbClose:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* ---------- layer groups ---------- */
+
+  .grp {
+    font-family: "Archivo Narrow", "Arial Narrow", sans-serif;
+    font-weight: 600; font-size: 10px; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--fg-faint);
+    margin: 12px 0 3px; padding-top: 9px;
+    border-top: 1px solid var(--line);
+  }
+  .grp:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
+
+  /* ---------- dimensions ---------- */
+
+  dl.dims { margin: 0; display: grid; grid-template-columns: 1fr auto; gap: 5px 12px; }
+  dl.dims dt { color: var(--fg-soft); font-size: 13px; }
+  dl.dims dd {
+    margin: 0;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12.5px;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+  dd .est { color: var(--fg-faint); font-size: 10.5px; letter-spacing: .04em; }
+  dd .meas { color: var(--accent); font-size: 10.5px; letter-spacing: .04em; }
+
+  /* ---------- notes ---------- */
+
+  .notes {
+    margin-top: 22px;
+    border-top: 1px solid var(--line);
+    padding-top: 18px;
+  }
+  .notes h2 {
+    font-family: "Archivo Narrow", "Arial Narrow", sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    margin: 0 0 10px;
+  }
+  .notegrid {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 700px) { .notegrid { grid-template-columns: 1fr 1fr; } }
+
+  .notegrid p { margin: 0 0 9px; color: var(--fg-soft); font-size: 14px; max-width: 62ch; }
+  .notegrid p:last-child { margin-bottom: 0; }
+  .notegrid strong { color: var(--fg); font-weight: 600; }
+  .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: .92em; }
+
+  footer {
+    margin-top: 24px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+    color: var(--fg-faint);
+    font-size: 12.5px;
+  }
+
+  .fallback {
+    padding: 28px 18px;
+    text-align: center;
+    color: var(--fg-soft);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+  }
+</style>
+
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">As-built model &middot; backyard storage shed</p>
+    <h1>Lillian Drive Shed</h1>
+    <p class="lede">
+      Drag to rotate, pinch or scroll to zoom. Switch layers off to peel the shed apart —
+      shingles, sheathing, rafters, studs, wiring, deck, joists, piers. Red and amber mark
+      the damage; anything drawn through in teal is proposed, not built. Switch on
+      &ldquo;Photo markers&rdquo; to drop pins where each photograph was taken, and tap one
+      to see it.
+    </p>
+    <p class="caveat">
+      <b>Estimates</b>
+      <span>The footprint, wall height and roof pitch have not been measured. Framing sizes
+      and the door are from direct inspection. Everything here updates as real numbers arrive.</span>
+    </p>
+  </header>
+
+  <div class="stage">
+
+    <div class="viewport">
+      <canvas id="view" aria-label="Interactive three-dimensional model of the shed"></canvas>
+      <div class="views">
+        <button type="button" data-view="iso">Iso</button>
+        <button type="button" data-view="front">Front</button>
+        <button type="button" data-view="gable">Gable</button>
+        <button type="button" data-view="plan">Plan</button>
+        <button type="button" data-view="under">Under</button>
+      </div>
+      <div class="hint" id="hint">drag to rotate &middot; pinch to zoom</div>
+
+      <div class="lightbox" id="lightbox" hidden>
+        <div class="lb-inner">
+          <img id="lbImg" alt="">
+          <div class="lb-meta">
+            <h3 id="lbTitle"></h3>
+            <p id="lbCap"></p>
+          </div>
+          <button type="button" id="lbClose" aria-label="Close photo">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+
+      <section>
+        <h2>Layers</h2>
+        <div class="layers" id="layers"></div>
+        <div class="rowbtns">
+          <button type="button" id="allOn">All on</button>
+          <button type="button" id="frameOnly">Framing only</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>Separate layers</h2>
+        <div class="slider-row">
+          <input type="range" id="explode" min="0" max="100" value="0"
+                 aria-label="Separate layers vertically">
+          <output id="explodeOut" for="explode">0&prime;</output>
+        </div>
+      </section>
+
+      <section>
+        <h2>Key</h2>
+        <ul class="key">
+          <li><span class="kc kc-hi"></span>Damage &mdash; high</li>
+          <li><span class="kc kc-md"></span>Damage &mdash; medium</li>
+          <li><span class="kc kc-pr"></span>Proposed, not built</li>
+          <li><span class="kc kc-sp"></span>Suspected movement</li>
+          <li><span class="kc kc-pin"></span>Photo marker</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Dimensions</h2>
+        <dl class="dims">
+          <dt>Footprint</dt>      <dd>8&prime;&times;10&prime; <span class="est">est</span></dd>
+          <dt>Wall height</dt>    <dd>7&prime;-0&Prime; <span class="est">est</span></dd>
+          <dt>Roof pitch</dt>     <dd>4:12 <span class="est">est</span></dd>
+          <dt>Door</dt>           <dd>32&Prime;&times;6&prime;-7&Prime; <span class="meas">meas</span></dd>
+          <dt>Siding sheet</dt>   <dd>48&Prime; <span class="meas">meas</span></dd>
+          <dt>Floor joists</dt>   <dd>4&times;4 <span class="meas">meas</span></dd>
+          <dt>Girders</dt>        <dd>two 4&times; <span class="meas">meas</span></dd>
+          <dt>Subfloor</dt>       <dd>&frac34;&Prime; ply <span class="meas">meas</span></dd>
+          <dt>Studs</dt>          <dd>2&times;4 <span class="meas">meas</span></dd>
+          <dt>Roof deck</dt>      <dd>plywood <span class="meas">meas</span></dd>
+          <dt>Interior</dt>       <dd>plywood <span class="meas">meas</span></dd>
+          <dt>Base damage</dt>    <dd>2&ndash;3&Prime; up <span class="meas">meas</span></dd>
+        </dl>
+      </section>
+
+    </div>
+  </div>
+
+  <div class="notes">
+    <h2>Reading the model</h2>
+    <div class="notegrid">
+      <div>
+        <p><strong>The floor is the unusual part.</strong> Two 4&times; girders run the long
+        direction on concrete block piers, with <strong>4&times;4 joists laid across them</strong> and
+        a &frac34;&Prime; plywood deck on top. Four-by-four joists are heavy for a shed — most
+        are framed with 2&times;4s or 2&times;6s on edge. Switch off the subfloor to see them.</p>
+
+        <p><strong>The 2&times;4s at the joist ends</strong> are siding nailers, not structure. The
+        wall plates bear on the deck, which the joists carry to the girders; the nailers hang
+        off the joist ends and hold the bottom edge of the siding. They are also where the
+        water damage is.</p>
+      </div>
+      <div>
+        <p><strong>Plank roof sheathing</strong>, not plywood — individual boards with gaps
+        between them, which is what dates the construction. Turn the shingles off to see it.</p>
+
+        <p><strong>Roof spread is drawn as a mechanism, not as a shape.</strong> Switch on
+        &ldquo;Roof spread&rdquo; and you get arrows for the suspected thrust and the rafter
+        ties that would resist it &mdash; but the roof itself stays straight. The sag has not
+        been measured, and a model bent by a guess would look authoritative about a number
+        nobody has.</p>
+
+        <p><strong>Count the siding joints.</strong> The panels are full 48&Prime; sheets, so the
+        joints are a 4-foot ruler. That is how the footprint gets measured without a tape — and
+        why the model&rsquo;s 8&prime;&times;10&prime; is still marked an estimate.</p>
+
+        <p><strong>Two layers are off by default</strong> because they do not exist yet: the
+        1&times; cellular PVC base band, and the pair of 48&Prime; LED shop lights replacing the
+        single hanging fluorescent.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    Geometry generated from the recorded dimensions — no CAD file, nothing hand-modelled.
+    Correct a number in the source and the shed changes shape.
+  </footer>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  var canvas = document.getElementById('view');
+  if (!window.THREE) {
+    canvas.parentNode.innerHTML =
+      '<div class="fallback">The 3D library could not load, so the model can&rsquo;t be shown. ' +
+      'Reload the page, or check the network connection.</div>';
+    return;
+  }
+
+  // ---------------------------------------------------------------- units
+
+  var IN = 1 / 12;                 // scene unit is one foot
+  var L  = 10;                     // length, ridge direction (X)   [estimate]
+  var W  = 8;                      // width, gable direction (Z)    [estimate]
+  var WALL = 7;                    // wall height                   [estimate]
+  var PITCH = 4 / 12;              // roof pitch                    [estimate]
+
+  var T2 = 1.5 * IN, D2 = 3.5 * IN;        // 2x4 actual
+  var D4 = 3.5 * IN;                       // 4x4 actual
+  var GW = 3.5 * IN, GD = 5.5 * IN;        // 4x6 girder (depth TBD)
+  var PLY = 0.75 * IN;
+  var SID = 0.625 * IN;                    // siding panel
+  var TRIM_T = 0.75 * IN, TRIM_W = 5.5 * IN;
+
+  var PIER_H = 8 * IN, PIER_W = 8 * IN, PIER_L = 16 * IN;
+
+  var girderZ   = W / 2 - 1.0;                       // girders inset from the long walls
+  var girderTop = PIER_H + GD;
+  var joistTop  = girderTop + D4;
+  var deckTop   = joistTop + PLY;
+  var wallTop   = deckTop + WALL;
+  var rise      = (W / 2) * PITCH;
+  var ridgeY    = wallTop + rise;
+  var slopeLen  = Math.sqrt((W / 2) * (W / 2) + rise * rise);
+  var slopeA    = Math.atan2(rise, W / 2);
+
+  var DOOR_W = 32 * IN, DOOR_H = 79 * IN, DOOR_X = 2.6;
+  var EAVE_OH = 4 * IN, RAKE_OH = 4 * IN;
+
+  // ---------------------------------------------------------------- palette
+
+  var C = {
+    pier:    0x9C948A,
+    girder:  0x8C5E38,
+    joist:   0xA06E42,
+    nailer:  0x7E5A3C,
+    deck:    0xC09257,
+    stud:    0xB98A56,
+    plate:   0xA87A49,
+    siding:  0xDCD2BE,
+    trim:    0xB6A88C,
+    rafter:  0xAD7A4A,
+    sheath:  0xC2A071,
+    inner:   0xB8905E,
+    cable:   0xE8E2D4,
+    conduit: 0x8A8578,
+    led:     0xDCE8F0,
+    propose: 0x35A88B,
+    shingle: 0x6E6055,
+    door:    0x7E6A55,
+    glass:   0x9FB3AE,
+    metal:   0x4A423A,
+    pvc:     0x3A2C23,
+    ground:  0x9A9377
+  };
+
+  function mat(hex, rough) {
+    return new THREE.MeshStandardMaterial({
+      color: hex,
+      roughness: rough === undefined ? 0.86 : rough,
+      metalness: 0.0
+    });
+  }
+
+  var M = {};
+  Object.keys(C).forEach(function (k) { M[k] = mat(C[k]); });
+  M.glass = new THREE.MeshStandardMaterial({ color: C.glass, roughness: 0.22, metalness: 0.1 });
+  M.metal = mat(C.metal, 0.5);
+
+  // Drafting convention: existing work is drawn solid, proposed work is drawn
+  // through — so anything not built yet reads as a drawing, not a photograph.
+  M.propose = new THREE.MeshStandardMaterial({
+    color: C.propose, roughness: 0.55, transparent: true, opacity: 0.42,
+    emissive: 0x0d3a2f, depthWrite: false, side: THREE.DoubleSide
+  });
+  var PROPOSE_EDGE = new THREE.LineBasicMaterial({ color: 0x8FE8CE, transparent: true, opacity: 0.85 });
+
+  function damageMat(sev) {
+    return new THREE.MeshStandardMaterial({
+      color: sev === 'high' ? 0xC4453A : 0xD68A2E,
+      roughness: 0.7, transparent: true, opacity: 0.5,
+      emissive: sev === 'high' ? 0x3a0e0b : 0x33200a,
+      depthWrite: false
+    });
+  }
+
+  // ---------------------------------------------------------------- scene
+
+  var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+  var scene = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera(40, 1, 0.1, 400);
+
+  var hemi = new THREE.HemisphereLight(0xffffff, 0x6a5c4a, 0.62);
+  scene.add(hemi);
+
+  var sun = new THREE.DirectionalLight(0xfff2dd, 1.05);
+  sun.position.set(13, 19, 10);
+  sun.castShadow = true;
+  sun.shadow.mapSize.width = 1024;
+  sun.shadow.mapSize.height = 1024;
+  sun.shadow.camera.near = 1;
+  sun.shadow.camera.far = 60;
+  sun.shadow.camera.left = -14;
+  sun.shadow.camera.right = 14;
+  sun.shadow.camera.top = 14;
+  sun.shadow.camera.bottom = -14;
+  sun.shadow.bias = -0.0012;
+  scene.add(sun);
+
+  var fill = new THREE.DirectionalLight(0xcfe0ff, 0.3);
+  fill.position.set(-9, 7, -11);
+  scene.add(fill);
+
+  // Bounce from below — the underside is the most informative view of this shed
+  // (girders, 4x4 joists, piers), and it is unlit by the sun.
+  var bounce = new THREE.DirectionalLight(0xd8cdb4, 0.55);
+  bounce.position.set(-5, -14, 7);
+  scene.add(bounce);
+
+  // ---------------------------------------------------------------- layers
+
+  var LAYERS = [
+    { g:'Structure', id:'site',    name:'Ground & piers',   spec:'CMU',       color:C.pier,    ex:0.0, on:true },
+    { g:'Structure', id:'floor',   name:'Floor framing',    spec:'4x girder', color:C.joist,   ex:1.0, on:true },
+    { g:'Structure', id:'deck',    name:'Subfloor',         spec:'3/4" ply',  color:C.deck,    ex:2.0, on:true },
+    { g:'Structure', id:'walls',   name:'Wall framing',     spec:'2x4',       color:C.stud,    ex:3.0, on:true },
+    { g:'Structure', id:'inner',   name:'Interior plywood', spec:'inside',    color:C.inner,   ex:3.2, on:true },
+    { g:'Structure', id:'siding',  name:'Siding',           spec:'48" panel', color:C.siding,  ex:3.6, on:true },
+    { g:'Structure', id:'trim',    name:'Trim',             spec:'1x6',       color:C.trim,    ex:3.7, on:true },
+    { g:'Structure', id:'door',    name:'Door',             spec:'32x6-7',    color:C.door,    ex:3.8, on:true },
+    { g:'Structure', id:'fixtures',name:'Exterior sconce',  spec:'',          color:C.metal,   ex:3.9, on:true },
+    { g:'Structure', id:'rafters', name:'Roof framing',     spec:'rafters',   color:C.rafter,  ex:5.0, on:true },
+    { g:'Structure', id:'sheath',  name:'Roof sheathing',   spec:'plywood',   color:C.sheath,  ex:6.0, on:true },
+    { g:'Structure', id:'shingle', name:'Shingles',         spec:'asphalt',   color:C.shingle, ex:7.0, on:true },
+
+    { g:'Services',  id:'elec',    name:'Electrical',       spec:'as-is',     color:C.cable,   ex:4.1, on:true },
+
+    { g:'Condition', id:'damage',  name:'Damage',           spec:'see key',   color:0xC4453A,  ex:3.65,on:true },
+    { g:'Condition', id:'spread',  name:'Roof spread',      spec:'suspected', color:0xE0B23C,  ex:4.6, on:false },
+
+    { g:'Proposed',  id:'pvc',     name:'PVC base band',    spec:'1x',        color:C.propose, ex:1.5, on:true,  planned:true },
+    { g:'Proposed',  id:'newbay',  name:'Bay panel',        spec:'+ switch',  color:C.propose, ex:3.3, on:true,  planned:true },
+    { g:'Proposed',  id:'leds',    name:'LED shop lights',  spec:'2 x 30W',   color:C.propose, ex:4.2, on:true,  planned:true },
+
+    { g:'Photos',    id:'pins',    name:'Photo markers',    spec:'tap a pin', color:0x3F7D6B,  ex:0.0, on:false }
+  ];
+
+  var G = {};
+  var shed = new THREE.Group();
+  scene.add(shed);
+  LAYERS.forEach(function (l) {
+    var g = new THREE.Group();
+    g.visible = l.on;
+    G[l.id] = g;
+    shed.add(g);
+  });
+
+  // ---------------------------------------------------------------- helpers
+
+  function propose(g, w, h, d, x, y, z, rx) {
+    var geo = new THREE.BoxGeometry(w, h, d);
+    var mesh = new THREE.Mesh(geo, M.propose);
+    mesh.position.set(x, y, z);
+    if (rx) mesh.rotation.x = rx;
+    g.add(mesh);
+    var edges = new THREE.LineSegments(new THREE.EdgesGeometry(geo), PROPOSE_EDGE);
+    edges.position.copy(mesh.position);
+    edges.rotation.copy(mesh.rotation);
+    g.add(edges);
+    return mesh;
+  }
+
+  function box(g, w, h, d, m, x, y, z, rx) {
+    var mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m);
+    mesh.position.set(x, y, z);
+    if (rx) mesh.rotation.x = rx;
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+    g.add(mesh);
+    return mesh;
+  }
+
+  // ---------------------------------------------------------------- ground & piers
+
+  (function () {
+    // FrontSide so the ground is culled when the camera drops below it —
+    // that is what makes the 'Under' view of the floor framing possible.
+    var groundMat = new THREE.MeshStandardMaterial({
+      color: C.ground, roughness: 1, side: THREE.FrontSide
+    });
+    var plane = new THREE.Mesh(new THREE.CircleGeometry(75, 64), groundMat);
+    plane.rotation.x = -Math.PI / 2;
+    plane.position.y = -0.01;
+    plane.receiveShadow = true;
+    G.site.add(plane);
+
+    var xs = [-L / 2 + 0.8, 0, L / 2 - 0.8];
+    [-1, 1].forEach(function (s) {
+      xs.forEach(function (x) {
+        box(G.site, PIER_L, PIER_H, PIER_W, M.pier, x, PIER_H / 2, s * girderZ);
+      });
+    });
+  })();
+
+  // ---------------------------------------------------------------- floor framing
+
+  (function () {
+    // two girders, long direction, on the piers
+    [-1, 1].forEach(function (s) {
+      box(G.floor, L, GD, GW, M.girder, 0, PIER_H + GD / 2, s * girderZ);
+    });
+
+    // 4x4 joists laid across, 24" o.c.
+    for (var x = -L / 2; x <= L / 2 + 0.001; x += 2) {
+      box(G.floor, D4, D4, W, M.joist, x, girderTop + D4 / 2, 0);
+    }
+
+    // 2x4 nailers on the joist ends — siding backing, and where the rot is
+    [-1, 1].forEach(function (s) {
+      box(G.floor, L, D4, T2, M.nailer, 0, girderTop + D4 / 2, s * (W / 2 + T2 / 2));
+    });
+  })();
+
+  // ---------------------------------------------------------------- subfloor
+
+  box(G.deck, L, PLY, W, M.deck, 0, joistTop + PLY / 2, 0);
+
+  // ---------------------------------------------------------------- walls
+
+  function buildWall(len, opening) {
+    var g = new THREE.Group();
+    var studH = WALL - T2 * 3;                     // bottom plate + two top plates
+    var studY = T2 + studH / 2;
+
+    box(g, len, T2, D2, M.plate, 0, T2 / 2, 0);                        // bottom plate
+    box(g, len, T2, D2, M.plate, 0, WALL - T2 * 1.5, 0);               // top plate
+    box(g, len, T2, D2, M.plate, 0, WALL - T2 * 0.5, 0);               // cap plate
+
+    var half = len / 2;
+    var oL = opening ? opening.c - opening.w / 2 : null;
+    var oR = opening ? opening.c + opening.w / 2 : null;
+
+    for (var x = -half; x <= half + 0.001; x += 16 * IN) {
+      var px = Math.min(x, half - T2 / 2);
+      if (opening && px > oL - T2 && px < oR + T2) continue;
+      box(g, T2, studH, D2, M.stud, px, studY, 0);
+    }
+    // make sure both ends are framed
+    box(g, T2, studH, D2, M.stud, -half + T2 / 2, studY, 0);
+    box(g, T2, studH, D2, M.stud,  half - T2 / 2, studY, 0);
+
+    if (opening) {
+      var hY = T2 + opening.h;
+      [-1, 1].forEach(function (s) {
+        var edge = opening.c + s * (opening.w / 2 + T2 / 2);
+        box(g, T2, studH, D2, M.stud, edge + s * T2, studY, 0);          // king
+        box(g, T2, opening.h, D2, M.stud, edge, T2 + opening.h / 2, 0);  // trimmer
+      });
+      box(g, opening.w + T2 * 2, D2, D2, M.plate, opening.c, hY + D2 / 2, 0); // header
+    }
+    return g;
+  }
+
+  (function () {
+    var front = buildWall(L, { c: DOOR_X, w: DOOR_W, h: DOOR_H });
+    front.position.set(0, deckTop, W / 2 - D2 / 2);
+    G.walls.add(front);
+
+    var back = buildWall(L, null);
+    back.position.set(0, deckTop, -W / 2 + D2 / 2);
+    G.walls.add(back);
+
+    [-1, 1].forEach(function (s) {
+      var end = buildWall(W - D2 * 2, null);
+      end.rotation.y = Math.PI / 2;
+      end.position.set(s * (L / 2 - D2 / 2), deckTop, 0);
+      G.walls.add(end);
+    });
+  })();
+
+  // ---------------------------------------------------------------- interior plywood
+
+  (function () {
+    // Plywood on the INSIDE face of the studs, everywhere except one bay beside
+    // the door on the long wall — that one was never closed in.
+    var t = 0.5 * IN;
+    var bottom = deckTop, h = WALL - T2 * 3, y = bottom + T2 + h / 2;
+    var inset = W / 2 - D2 - t / 2;          // inside face of the front/back studs
+
+    // The open bay is the panel immediately LEFT of the door as you enter.
+    var bayR = DOOR_X - DOOR_W / 2 - 2 * IN;
+    var bayL = bayR - 4;
+
+    function run(len, widths, place) {
+      var c = -len / 2;
+      widths.forEach(function (w) { place(c + w / 2, w); c += w; });
+    }
+
+    // front wall — skip the open bay
+    run(L, [4, 4, 2], function (cx, w) {
+      if (cx + w / 2 > bayL && cx - w / 2 < bayR) return;
+      box(G.inner, w - 0.02, h, t, M.inner, cx, y, inset);
+    });
+
+    // back wall
+    run(L, [4, 4, 2], function (cx, w) {
+      box(G.inner, w - 0.02, h, t, M.inner, cx, y, -inset);
+    });
+
+    // gable end walls
+    [-1, 1].forEach(function (s) {
+      run(W - D2 * 2, [4, W - D2 * 2 - 4], function (cz, w) {
+        box(G.inner, t, h, w - 0.02, M.inner, s * (L / 2 - D2 - t / 2), y, cz);
+      });
+    });
+
+    // the panel that closes the bay — planned, with a switch cutout
+    var bw = bayR - bayL;
+    var swY = bottom + 46 * IN;
+    var swH = 5 * IN, swW = 3.2 * IN;
+    var cx = (bayL + bayR) / 2;
+    // four pieces around the opening, so the cutout is a real hole
+    propose(G.newbay, bw, swY - swH / 2 - (bottom + T2), t,
+        cx, (bottom + T2 + swY - swH / 2) / 2, inset);
+    propose(G.newbay, bw, (bottom + T2 + h) - (swY + swH / 2), t,
+        cx, (swY + swH / 2 + bottom + T2 + h) / 2, inset);
+    propose(G.newbay, (bw - swW) / 2, swH, t, cx - (bw + swW) / 4, swY, inset);
+    propose(G.newbay, (bw - swW) / 2, swH, t, cx + (bw + swW) / 4, swY, inset);
+
+    // switch-box position is reused by the electrical layer
+    window.__swX = bayR - 0.9; window.__swY = swY; window.__swZ = inset;
+  })();
+
+  // ---------------------------------------------------------------- roof framing
+
+  (function () {
+    var midY = (wallTop + ridgeY) / 2;
+    var rd = 5.5 * IN;                       // rafter depth
+    var nY = Math.cos(slopeA), nZ = Math.sin(slopeA);   // roof-plane normal
+    for (var x = -L / 2; x <= L / 2 + 0.001; x += 2) {
+      [-1, 1].forEach(function (s) {
+        // drop by half the depth along the normal so the top face IS the roof plane
+        box(G.rafters, T2, rd, slopeLen, M.rafter,
+            x, midY - nY * rd / 2, s * (W / 4) - s * nZ * rd / 2, s * slopeA);
+      });
+    }
+    // ridge board
+    box(G.rafters, L, 7.25 * IN, T2, M.rafter, 0, ridgeY - 3.6 * IN, 0);
+
+    // Collar ties: only TWO, on the centremost rafter pair. Positioned so the
+    // TOP edge sits on the roof plane where the tie meets the rafter — the ends
+    // are the lowest point of the roof along the tie, so that keeps the whole
+    // member below the sheathing.
+    var tieZ = (W / 2) * 0.45;
+    var tieTop = wallTop + rise * (1 - tieZ / (W / 2));
+    [-1, 1].forEach(function (tx) {
+      box(G.rafters, T2, D2, tieZ * 2, M.rafter, tx, tieTop - D2 / 2, 0);
+    });
+  })();
+
+  // ---------------------------------------------------------------- roof sheathing
+
+  (function () {
+    // Plywood over the rafters (owner-confirmed). Drawn as sheets with visible
+    // seams rather than one slab, so the sheet layout reads.
+    var t = 0.5 * IN;
+    var runX = L + RAKE_OH * 2;
+    var widths = [4, 4, runX - 8];
+    var nY = Math.cos(slopeA), nZ = Math.sin(slopeA);
+
+    [-1, 1].forEach(function (s) {
+      var cursor = -runX / 2;
+      widths.forEach(function (w) {
+        if (w <= 0.02) return;
+        var cx = cursor + w / 2;
+        cursor += w;
+        var z = s * (W / 2) * 0.5 + s * nZ * t / 2;
+        var y = wallTop + rise * 0.5 + nY * t / 2;
+        // Butt the sheets. An earlier version left a seam gap, which let the
+        // rafters, the damage marks and the LED hangers show through the roof.
+        box(G.sheath, w + 0.02, t, slopeLen + EAVE_OH, M.sheath, cx, y, z, s * slopeA);
+      });
+    });
+  })();
+
+  // ---------------------------------------------------------------- shingles
+
+  (function () {
+    var t = 1.0 * IN, off = 0.5 * IN;
+    [-1, 1].forEach(function (s) {
+      var f = 0.5;
+      var z = s * (W / 2) * (1 - f) + s * Math.sin(slopeA) * (off + t / 2);
+      var y = wallTop + rise * f + Math.cos(slopeA) * (off + t / 2);
+      box(G.shingle, L + RAKE_OH * 2, t, slopeLen + EAVE_OH, M.shingle, 0, y, z, s * slopeA);
+    });
+    box(G.shingle, L + RAKE_OH * 2, 1.8 * IN, 8 * IN, M.shingle, 0, ridgeY + 2.1 * IN, 0);
+  })();
+
+  // ---------------------------------------------------------------- siding
+
+  (function () {
+    var bottom = girderTop;                    // laps down over the nailers
+    var top = wallTop;
+    var h = top - bottom;
+
+    function panelRun(len, widths, place) {
+      var cursor = -len / 2;
+      widths.forEach(function (w) {
+        if (w <= 0.01) return;
+        place(cursor + w / 2, w);
+        cursor += w;
+      });
+    }
+
+    // long walls: 4' + 4' + 2'
+    [-1, 1].forEach(function (s) {
+      panelRun(L, [4, 4, 2], function (cx, w) {
+        box(G.siding, w - 0.02, h, SID, M.siding,
+            cx, bottom + h / 2, s * (W / 2 + SID / 2));
+      });
+    });
+
+    // gable walls: 4' + 4'
+    [-1, 1].forEach(function (s) {
+      panelRun(W, [4, 4], function (cz, w) {
+        box(G.siding, SID, h, w - 0.02, M.siding,
+            s * (L / 2 + SID / 2), bottom + h / 2, cz);
+      });
+    });
+
+    // gable triangles
+    [-1, 1].forEach(function (s) {
+      var shape = new THREE.Shape();
+      shape.moveTo(-W / 2, 0);
+      shape.lineTo(W / 2, 0);
+      shape.lineTo(0, rise);
+      shape.lineTo(-W / 2, 0);
+      var geo = new THREE.ExtrudeGeometry(shape, { depth: SID, bevelEnabled: false });
+      var m = new THREE.Mesh(geo, M.siding);
+      m.rotation.y = Math.PI / 2;
+      m.position.set(s * (L / 2 + SID / 2 + (s > 0 ? 0 : SID)), wallTop, 0);
+      m.castShadow = true; m.receiveShadow = true;
+      G.siding.add(m);
+    });
+  })();
+
+  // ---------------------------------------------------------------- trim
+
+  (function () {
+    var bottom = girderTop, top = wallTop, h = top - bottom;
+
+    // corner boards
+    [-1, 1].forEach(function (sx) {
+      [-1, 1].forEach(function (sz) {
+        box(G.trim, TRIM_W, h, TRIM_T, M.trim,
+            sx * (L / 2 - TRIM_W / 2 + SID), bottom + h / 2, sz * (W / 2 + SID + TRIM_T / 2));
+        box(G.trim, TRIM_T, h, TRIM_W, M.trim,
+            sx * (L / 2 + SID + TRIM_T / 2), bottom + h / 2, sz * (W / 2 - TRIM_W / 2 + SID));
+      });
+    });
+
+    // eave fascia — top edge tucked under the roof, board hanging down
+    [-1, 1].forEach(function (s) {
+      box(G.trim, L + RAKE_OH * 2, TRIM_W, TRIM_T, M.trim,
+          0, wallTop - TRIM_W / 2, s * (W / 2 + EAVE_OH));
+    });
+
+    // rake boards — offset down the roof normal so their top edge IS the roof
+    // plane and the sheathing laps over them
+    var rnY = Math.cos(slopeA), rnZ = Math.sin(slopeA);
+    [-1, 1].forEach(function (sx) {
+      [-1, 1].forEach(function (sz) {
+        box(G.trim, TRIM_T, TRIM_W, slopeLen, M.trim,
+            sx * (L / 2 + RAKE_OH - TRIM_T),
+            wallTop + rise / 2 - rnY * TRIM_W / 2,
+            sz * (W / 4) - sz * rnZ * TRIM_W / 2, sz * slopeA);
+      });
+    });
+
+    // door casing
+    var zf = W / 2 + SID + TRIM_T / 2;
+    [-1, 1].forEach(function (s) {
+      box(G.trim, 4 * IN, DOOR_H + 4 * IN, TRIM_T, M.trim,
+          DOOR_X + s * (DOOR_W / 2 + 2 * IN), deckTop + (DOOR_H + 4 * IN) / 2, zf);
+    });
+    box(G.trim, DOOR_W + 8 * IN, 4 * IN, TRIM_T, M.trim,
+        DOOR_X, deckTop + DOOR_H + 2 * IN, zf);
+  })();
+
+  // ---------------------------------------------------------------- door
+
+  (function () {
+    var zf = W / 2 + SID + 0.6 * IN;
+    var t = 1.5 * IN;
+    box(G.door, DOOR_W, DOOR_H, t, M.door, DOOR_X, deckTop + DOOR_H / 2, zf);
+
+    // glass light in the upper third
+    box(G.door, DOOR_W - 8 * IN, DOOR_H / 3 - 6 * IN, 0.5 * IN, M.glass,
+        DOOR_X, deckTop + DOOR_H * 0.78, zf + t / 2);
+
+    // knob
+    var knob = new THREE.Mesh(new THREE.SphereGeometry(1.1 * IN, 16, 12), M.metal);
+    knob.position.set(DOOR_X - DOOR_W / 2 + 3.5 * IN, deckTop + 36 * IN, zf + t / 2 + 0.8 * IN);
+    knob.castShadow = true;
+    G.door.add(knob);
+  })();
+
+  // ---------------------------------------------------------------- fixtures
+
+  (function () {
+    var zf = W / 2 + SID + TRIM_T;
+    // sconce beside the door
+    var body = box(G.fixtures, 5 * IN, 9 * IN, 4 * IN, M.metal,
+                   DOOR_X - DOOR_W / 2 - 9 * IN, deckTop + 68 * IN, zf + 2 * IN);
+    var lamp = new THREE.Mesh(new THREE.BoxGeometry(3.6 * IN, 6 * IN, 2.8 * IN),
+      new THREE.MeshStandardMaterial({ color: 0xE8C98A, emissive: 0x6b4f1d, roughness: 0.5 }));
+    lamp.position.copy(body.position);
+    G.fixtures.add(lamp);
+
+    // No vents anywhere on this shed — no gable, ridge or soffit venting, and
+    // no windows. Confirmed by owner; an earlier reading of the photos was wrong.
+  })();
+
+  // ---------------------------------------------------------------- PVC base band (planned)
+
+  (function () {
+    var h = 7.25 * IN, t = 0.75 * IN;
+    var y = girderTop + h / 2;
+    [-1, 1].forEach(function (s) {
+      propose(G.pvc, L + SID * 2 + t * 2, h, t, 0, y, s * (W / 2 + SID + t / 2));
+      propose(G.pvc, t, h, W + SID * 2, s * (L / 2 + SID + t / 2), y, 0);
+    });
+  })();
+
+  // ---------------------------------------------------------------- electrical
+
+  (function () {
+    var inset = W / 2 - D2 - 0.5 * IN;
+    var swX = window.__swX, swY = window.__swY;
+    var ceilY = ridgeY - 8 * IN;              // j-box hangs under the ridge
+
+    // ---- outside: conduit rising from underground, LEFT of the door ----
+    // Measured: rises about 12" out of the ground and runs about 8" up the
+    // siding before it penetrates. It does NOT climb to switch height outside —
+    // the run continues up the stud bay inside.
+    var riserX = DOOR_X - DOOR_W / 2 - 14 * IN;
+    var zOut = W / 2 + SID + TRIM_T;
+    // The penetration is 8" above the BOTTOM EDGE OF THE SIDING, which puts it
+    // above the deck and into the stud bay — not under the floor. The riser runs
+    // up the outside of the siding to reach it.
+    var entryY = girderTop + 8 * IN;
+    box(G.elec, 1.3 * IN, entryY, 1.3 * IN, M.conduit,
+        riserX, entryY / 2, zOut + 1.6 * IN);
+    box(G.elec, 1.3 * IN, 1.3 * IN, 2.4 * IN, M.conduit,
+        riserX, entryY, zOut + 0.6 * IN);
+
+    // ---- the 2-gang box in the open bay: stacked switch + duplex receptacle ----
+    // Left device is two toggles (ceiling light, exterior light); right is outlets.
+    box(G.elec, 4.6 * IN, 4.8 * IN, 2.2 * IN, M.metal, swX, swY, inset - 1.1 * IN);
+
+    // flexible metal conduit up the stud from the box — the run to the exterior light
+    box(G.elec, 1 * IN, (deckTop + WALL - T2 * 2) - swY, 1 * IN, M.conduit,
+        swX - 2.6 * IN, (swY + deckTop + WALL - T2 * 2) / 2, inset - 0.6 * IN);
+
+    // yellow NM cable up to the ceiling outlets
+    box(G.elec, 0.5 * IN, (deckTop + WALL - T2 * 2) - swY, 0.28 * IN, M.cable,
+        swX + 1.4 * IN, (swY + deckTop + WALL - T2 * 2) / 2, inset - 0.5 * IN);
+
+    // Feed continues inside from the wall penetration (~8" above grade) up the
+    // stud bay to the switch box. It enters below deck level, so the run passes
+    // the floor edge on its way up — that is why nothing is visible outside
+    // above knee height.
+    box(G.elec, 1 * IN, swY - entryY, 1 * IN, M.conduit,
+        swX - 2.6 * IN, (entryY + swY) / 2, inset - 0.6 * IN);
+    // short jog through the wall connecting the outside riser to that run
+    box(G.elec, Math.abs(riserX - (swX - 2.6 * IN)) + 1.4 * IN, 1.2 * IN, D2 + SID * 2 + 1 * IN, M.conduit,
+        (riserX + swX - 2.6 * IN) / 2, entryY, W / 2 - D2 / 2);
+
+    // ---- unswitched receptacle box: inside, RIGHT of the door, on the short wall ----
+    box(G.elec, 2.2 * IN, 4.5 * IN, 4.5 * IN, M.metal,
+        L / 2 - D2 - 1.1 * IN, swY, -W / 4);
+
+    // ---- second underground run: enclosure against the rear/gable corner ----
+    // Measured: about 12" tall, standing about 3" off the siding. Earlier this
+    // was modelled as a post out in the yard on the far side — wrong on both counts.
+    // Near the front (door-side) edge of the gable wall — looking at that wall
+    // from outside, that is its left-hand end.
+    var encX = L / 2 + SID + 3 * IN, encZ = W / 2 - 1.1;
+    var encH = 12 * IN;
+    box(G.elec, 4 * IN, encH, 7 * IN, M.metal, encX + 2 * IN, girderTop + encH / 2 - 3 * IN, encZ);
+    [-1, 1].forEach(function (s) {
+      box(G.elec, 1.1 * IN, girderTop + 0.1, 1.1 * IN, M.conduit,
+          encX + 2 * IN, (girderTop - 0.2) / 2, encZ + s * 2 * IN);
+    });
+
+    // ---- irrigation riser and valve at the corner ----
+    var irX = L / 2 + SID + 4 * IN, irZ = W / 2 - 1.9;
+    box(G.elec, 1.1 * IN, 1.5, 1.1 * IN, M.cable, irX, 0.75, irZ);
+    box(G.elec, 1.6, 1.1 * IN, 1.1 * IN, M.cable, irX - 0.75, 1.45, irZ);
+    var valve = new THREE.Mesh(new THREE.SphereGeometry(2.2 * IN, 12, 10),
+      new THREE.MeshStandardMaterial({ color: 0xB4362C, roughness: 0.5 }));
+    valve.position.set(irX - 1.5, 1.45, irZ);
+    G.elec.add(valve);
+
+    // ---- planned: two 48" LED shop lights, spread for even coverage ----
+    [-1, 1].forEach(function (s) {
+      var z = s * (W / 4 - 0.15);
+      var y = wallTop + rise * 0.22;
+      propose(G.leds, 4, 1.5 * IN, 3.4 * IN, 0.2, y, z);
+      [-1, 1].forEach(function (e) {
+        propose(G.leds, 0.16 * IN, 3 * IN, 0.16 * IN, 0.2 + e * 1.7, y + 2 * IN, z);
+      });
+    });
+  })();
+
+  // ---------------------------------------------------------------- damage
+
+  (function () {
+    // Measured 2026-09-12: the water damage rises only 2-3" from the base.
+    // Drawn at that height, not as a general wall problem — the extent is the
+    // whole point, because it sizes the repair.
+    var hi = damageMat('high'), md = damageMat('medium');
+    var DMG = 3 * IN;
+
+    function mark(w, h, d, m, x, y, z, rx) {
+      var mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m);
+      mesh.position.set(x, y, z);
+      if (rx) mesh.rotation.x = rx;
+      G.damage.add(mesh);
+    }
+
+    // 1 — narrow band of water damage at the base, all four sides (MEDIUM)
+    var bandY = girderTop + DMG / 2;
+    [-1, 1].forEach(function (s) {
+      mark(L + SID * 2 + 0.04, DMG, T2 + 0.08, md, 0, bandY, s * (W / 2 + T2 / 2));
+      mark(L + SID * 2 + 0.04, DMG, 0.06, md, 0, bandY, s * (W / 2 + SID + 0.02));
+      mark(0.06, DMG, W + SID * 2 + 0.04, md, s * (L / 2 + SID + 0.02), bandY, 0);
+    });
+
+    // 5 — rot at the corner trim bases, same band (MEDIUM)
+    [-1, 1].forEach(function (sx) {
+      [-1, 1].forEach(function (sz) {
+        mark(TRIM_W + 0.06, DMG * 1.4, TRIM_T + 0.06, md,
+             sx * (L / 2 - TRIM_W / 2 + SID), girderTop + DMG * 0.7,
+             sz * (W / 2 + SID + TRIM_T / 2));
+        mark(TRIM_T + 0.06, DMG * 1.4, TRIM_W + 0.06, md,
+             sx * (L / 2 + SID + TRIM_T / 2), girderTop + DMG * 0.7,
+             sz * (W / 2 - TRIM_W / 2 + SID));
+      });
+    });
+
+    // 2 — water staining on the underside of the roof sheathing (HIGH)
+    var nY = Math.cos(slopeA), nZ = Math.sin(slopeA);
+    [{ x: -0.6, f: 0.30, s: 1, w: 2.2 }, { x: 2.4, f: 0.55, s: 1, w: 1.6 }].forEach(function (d) {
+      var z = d.s * (W / 2) * (1 - d.f) - d.s * nZ * 0.11;
+      var y = wallTop + rise * d.f - nY * 0.11;
+      mark(d.w, 0.05, 1.3, hi, d.x, y, z, d.s * slopeA);
+    });
+  })();
+
+  // ---------------------------------------------------------------- roof spread (diagnostic)
+
+  (function () {
+    // The MECHANISM, not the deflected shape. The model keeps nominal geometry —
+    // baking a guessed sag into it would destroy the reference you measure against.
+    var m = new THREE.MeshStandardMaterial({
+      color: 0xE0B23C, emissive: 0x4a3407, roughness: 0.45,
+      transparent: true, opacity: 0.9, depthWrite: false });
+
+    function arrow(len, x, y, z, rot) {
+      var g = new THREE.Group();
+      var shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.055, len, 10), m);
+      shaft.position.y = len / 2;
+      var head = new THREE.Mesh(new THREE.ConeGeometry(0.16, 0.42, 12), m);
+      head.position.y = len + 0.21;
+      g.add(shaft); g.add(head);
+      g.position.set(x, y, z);
+      if (rot) g.rotation.set(rot[0], rot[1], rot[2]);
+      G.spread.add(g);
+    }
+
+    var plateY = deckTop + WALL - T2;
+
+    // outward thrust at the top plates, mid-span where nothing restrains it
+    [-1, 1].forEach(function (s) {
+      arrow(1.5, 0, plateY, s * (W / 2 + 0.25), [0, 0, s > 0 ? Math.PI / 2 : -Math.PI / 2]);
+      arrow(1.5, -2.5, plateY, s * (W / 2 + 0.25), [0, 0, s > 0 ? Math.PI / 2 : -Math.PI / 2]);
+    });
+    // ridge dropping in response
+    arrow(1.3, 0, ridgeY + 1.9, 0, [Math.PI, 0, 0]);
+    arrow(1.3, -2.5, ridgeY + 1.9, 0, [Math.PI, 0, 0]);
+
+    // where the rafter ties would go, if the measurements confirm it
+    for (var x = -L / 2 + 1; x <= L / 2 - 1 + 0.001; x += 2) {
+      propose(G.spread, T2, D2, W - D2 * 2, x, plateY + D2 / 2, 0);
+    }
+  })();
+
+  // ---------------------------------------------------------------- photo pins
+
+  var PINS = [
+    { f:'front-wall.jpg',  t:'Front wall, straight on',
+      c:'The long eave wall with the door opening. The panel joints are 48-inch sheets.',
+      p:[-1.1, 5.3, W/2 + 3.4] },
+    { f:'gable-front.jpg', t:'Gable end and front',
+      c:'Three-quarter view. Note how little overhang the roof has.',
+      p:[-L/2 - 2.6, 4.4, W/2 + 2.4] },
+    { f:'gable-rear.jpg',  t:'Opposite gable end',
+      c:'The worst of the paint failure, and the irrigation valve at grade.',
+      p:[L/2 + 2.4, 4.8, -W/2 - 1.2] },
+    { f:'yard.jpg',        t:'Yard context',
+      c:'The shed in the back corner, seen from the house.',
+      p:[-L/2 - 5.2, 6.6, W/2 + 6.2] },
+    { f:'threshold.jpg',   t:'Threshold and conduit riser',
+      c:'The doorway gives the scale: about 30 inches. The conduit riser left of the door runs up the outside of the siding and passes through it about 8 inches above the bottom edge of the siding.',
+      p:[DOOR_X - 1.6, 1.0, W/2 + 2.6] },
+    { f:'base-detail.jpg', t:'Base detail: riser, box and rot',
+      c:'The electrical riser and enclosure, the irrigation valve, and the band of rot at the base. The damage measures only 2 to 3 inches up.',
+      p:[L/2 - 0.8, 1.6, -W/2 - 1.7] },
+    { f:'underframe.jpg',  t:'Underframe at grade',
+      c:'Soil and debris built up against the frame between the piers.',
+      p:[-2.9, 0.8, W/2 + 1.3] },
+    { f:'receptacles.jpg', t:'The open bay, left of the door',
+      c:'The bay that was never sheathed: bare studs, and the 2-gang box holding the switches.',
+      p:[DOOR_X - DOOR_W/2 - 1.4, deckTop + 4.4, W/2 - 0.9] },
+    { f:'switch-box.jpg',  t:'Switch box detail',
+      c:'Stacked toggles on the left for the ceiling and exterior lights, duplex receptacle on the right. Flex conduit and yellow 12 AWG NM enter the top.',
+      p:[DOOR_X - DOOR_W/2 - 2.6, deckTop + 3.2, W/2 - 0.9] },
+    { f:'roof-inside.jpg', t:'Roof framing from inside',
+      c:'Rafters, collar tie, ceiling box, and the water staining on the sheathing.',
+      p:[-0.9, ridgeY - 1.5, 0] },
+    { f:'door-off.jpg',    t:'Door removed',
+      c:'The original door on sawhorses: finish failed, bare weathered wood.',
+      p:[DOOR_X, deckTop + 1.4, W/2 + 3.9] },
+    { f:'hardware.jpg',    t:'Original door hardware',
+      c:'Bit-key mortise lock, two escutcheons, knobs, ball-tip butt hinges.',
+      p:[DOOR_X + 2.4, deckTop + 3.2, W/2 + 1.9] }
+  ];
+
+  (function () {
+    var pinMat = new THREE.MeshStandardMaterial({
+      color: 0x3F7D6B, emissive: 0x123c31, roughness: 0.35 });
+    var ringMat = new THREE.MeshStandardMaterial({
+      color: 0xF3EADA, emissive: 0x4a4437, roughness: 0.5 });
+
+    PINS.forEach(function (pin, i) {
+      var g = new THREE.Group();
+      var head = new THREE.Mesh(new THREE.SphereGeometry(0.21, 16, 12), pinMat);
+      head.userData.pin = i;
+      g.add(head);
+      var ring = new THREE.Mesh(new THREE.TorusGeometry(0.31, 0.045, 8, 24), ringMat);
+      ring.userData.pin = i;
+      g.add(ring);
+      g.position.set(pin.p[0], pin.p[1], pin.p[2]);
+      G.pins.add(g);
+    });
+  })();
+
+  // ---------------------------------------------------------------- camera rig
+
+  var target = new THREE.Vector3(0, 4.2, 0);
+  var cam = { theta: Math.PI * 0.28, phi: 1.12, radius: 26 };
+
+  function applyCamera() {
+    cam.phi = Math.max(0.12, Math.min(Math.PI - 0.12, cam.phi));
+    cam.radius = Math.max(9, Math.min(60, cam.radius));
+    var sp = Math.sin(cam.phi), cp = Math.cos(cam.phi);
+    camera.position.set(
+      target.x + cam.radius * sp * Math.sin(cam.theta),
+      target.y + cam.radius * cp,
+      target.z + cam.radius * sp * Math.cos(cam.theta)
+    );
+    camera.lookAt(target);
+  }
+
+  var PRESETS = {
+    iso:   { theta: Math.PI * 0.28, phi: 1.12, radius: 26 },
+    front: { theta: 0,              phi: 1.44, radius: 24 },
+    gable: { theta: Math.PI / 2,    phi: 1.44, radius: 24 },
+    plan:  { theta: 0.0001,         phi: 0.14, radius: 27 },
+    under: { theta: Math.PI * 0.30, phi: 2.38, radius: 24 }
+  };
+
+  var anim = null;
+  function goTo(p) {
+    idle = false;
+    anim = { from: { theta: cam.theta, phi: cam.phi, radius: cam.radius }, to: p, t: 0 };
+  }
+
+  // ---------------------------------------------------------------- interaction
+
+  var idle = true;
+  var hint = document.getElementById('hint');
+  var hintTimer = setTimeout(hideHint, 5200);
+
+  function hideHint() {
+    if (!hint.hidden) { hint.style.opacity = '0'; setTimeout(function(){ hint.hidden = true; }, 420); }
+  }
+  function stopIdle() {
+    idle = false; anim = null;
+    clearTimeout(hintTimer); hideHint();
+  }
+
+  var dragging = false, lastX = 0, lastY = 0, downX = 0, downY = 0;
+  var ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
+
+  function pickPin(cx, cy) {
+    var r = canvas.getBoundingClientRect();
+    ndc.x = ((cx - r.left) / r.width) * 2 - 1;
+    ndc.y = -((cy - r.top) / r.height) * 2 + 1;
+    ray.setFromCamera(ndc, camera);
+    var hits = ray.intersectObjects(G.pins.children, true);
+    for (var i = 0; i < hits.length; i++) {
+      if (hits[i].object.userData.pin !== undefined) return hits[i].object.userData.pin;
+    }
+    return -1;
+  }
+
+  canvas.addEventListener('mousedown', function (e) {
+    dragging = true; lastX = downX = e.clientX; lastY = downY = e.clientY; stopIdle();
+  });
+  window.addEventListener('mousemove', function (e) {
+    if (!dragging) return;
+    cam.theta -= (e.clientX - lastX) * 0.0075;
+    cam.phi   -= (e.clientY - lastY) * 0.0065;
+    lastX = e.clientX; lastY = e.clientY;
+    applyCamera();
+  });
+  window.addEventListener('mouseup', function (e) {
+    if (dragging && Math.abs(e.clientX - downX) < 5 && Math.abs(e.clientY - downY) < 5) {
+      var i = pickPin(e.clientX, e.clientY);
+      if (i >= 0) openPhoto(i);
+    }
+    dragging = false;
+  });
+
+  canvas.addEventListener('wheel', function (e) {
+    e.preventDefault(); stopIdle();
+    cam.radius *= (1 + Math.max(-0.35, Math.min(0.35, e.deltaY * 0.0016)));
+    applyCamera();
+  }, { passive: false });
+
+  var pinch = 0;
+  var moved = false;
+  canvas.addEventListener('touchstart', function (e) {
+    stopIdle(); moved = false;
+    if (e.touches.length === 1) {
+      lastX = e.touches[0].clientX; lastY = e.touches[0].clientY;
+    } else if (e.touches.length === 2) {
+      pinch = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY);
+    }
+  }, { passive: true });
+
+  canvas.addEventListener('touchmove', function (e) {
+    e.preventDefault();
+    moved = true;
+    if (e.touches.length === 1) {
+      cam.theta -= (e.touches[0].clientX - lastX) * 0.0085;
+      cam.phi   -= (e.touches[0].clientY - lastY) * 0.0072;
+      lastX = e.touches[0].clientX; lastY = e.touches[0].clientY;
+    } else if (e.touches.length === 2) {
+      var d = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY);
+      if (pinch > 0) cam.radius *= pinch / Math.max(d, 1);
+      pinch = d;
+    }
+    applyCamera();
+  }, { passive: false });
+
+  canvas.addEventListener('touchend', function (e) {
+    if (e.touches.length < 2) pinch = 0;
+    if (e.touches.length === 1) { lastX = e.touches[0].clientX; lastY = e.touches[0].clientY; }
+    else if (e.changedTouches.length === 1 && !moved) {
+      var ct = e.changedTouches[0];
+      var i = pickPin(ct.clientX, ct.clientY);
+      if (i >= 0) openPhoto(i);
+    }
+  }, { passive: true });
+
+  // ---------------------------------------------------------------- layer UI
+
+  var layersEl = document.getElementById('layers');
+
+  var lastGroup = null;
+  LAYERS.forEach(function (l) {
+    if (l.g !== lastGroup) {
+      var h = document.createElement('div');
+      h.className = 'grp';
+      h.textContent = l.g;
+      layersEl.appendChild(h);
+      lastGroup = l.g;
+    }
+    var row = document.createElement('label');
+    row.className = 'layer' + (l.on ? '' : ' off') + (l.planned ? ' planned' : '');
+    row.setAttribute('for', 'layer-' + l.id);
+
+    var cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.id = 'layer-' + l.id;
+    cb.checked = l.on;
+
+    var sw = document.createElement('span');
+    sw.className = 'swatch';
+    sw.style.background = '#' + l.color.toString(16).padStart(6, '0');
+
+    var nm = document.createElement('span');
+    nm.className = 'name';
+    nm.textContent = l.name;
+
+    var sp = document.createElement('span');
+    sp.className = 'spec';
+    sp.textContent = l.spec;
+
+    cb.addEventListener('change', function () {
+      G[l.id].visible = cb.checked;
+      row.classList.toggle('off', !cb.checked);
+    });
+
+    row.appendChild(cb); row.appendChild(sw); row.appendChild(nm); row.appendChild(sp);
+    layersEl.appendChild(row);
+    l._cb = cb; l._row = row;
+  });
+
+  function setLayers(fn) {
+    LAYERS.forEach(function (l) {
+      var v = fn(l);
+      l._cb.checked = v;
+      G[l.id].visible = v;
+      l._row.classList.toggle('off', !v);
+    });
+  }
+
+  document.getElementById('allOn').addEventListener('click', function () {
+    setLayers(function () { return true; });
+  });
+
+  document.getElementById('frameOnly').addEventListener('click', function () {
+    setLayers(function (l) {
+      return ['site', 'floor', 'deck', 'walls', 'rafters', 'elec'].indexOf(l.id) !== -1;
+    });
+  });
+
+  // ---------------------------------------------------------------- photo lightbox
+
+  var lb = document.getElementById('lightbox');
+  var lbImg = document.getElementById('lbImg');
+  var lbTitle = document.getElementById('lbTitle');
+  var lbCap = document.getElementById('lbCap');
+
+  function openPhoto(i) {
+    var pin = PINS[i];
+    lbImg.src = 'assets/' + pin.f;
+    lbImg.alt = pin.t;
+    lbTitle.textContent = pin.t;
+    lbCap.textContent = pin.c;
+    lb.hidden = false;
+    document.getElementById('lbClose').focus();
+  }
+  function closePhoto() { lb.hidden = true; lbImg.removeAttribute('src'); }
+
+  document.getElementById('lbClose').addEventListener('click', closePhoto);
+  lb.addEventListener('click', function (e) { if (e.target === lb) closePhoto(); });
+  window.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !lb.hidden) closePhoto();
+  });
+
+  // ---------------------------------------------------------------- explode
+
+  var slider = document.getElementById('explode');
+  var out = document.getElementById('explodeOut');
+
+  slider.addEventListener('input', function () {
+    var v = (+slider.value / 100) * 1.4;
+    LAYERS.forEach(function (l) { G[l.id].position.y = l.ex * v; });
+    out.textContent = v === 0 ? '0′' : (Math.round(v * 10) / 10).toFixed(1) + '′';
+  });
+
+  // ---------------------------------------------------------------- presets
+
+  Array.prototype.forEach.call(document.querySelectorAll('.views button'), function (b) {
+    b.addEventListener('click', function () { goTo(PRESETS[b.dataset.view]); });
+  });
+
+  // ---------------------------------------------------------------- theme
+
+  function readTheme() {
+    var cs = getComputedStyle(document.documentElement);
+    var top = cs.getPropertyValue('--scene-top').trim() || '#DCD2BE';
+    var bot = cs.getPropertyValue('--scene-bot').trim() || '#C3B7A0';
+    scene.background = new THREE.Color(bot);
+    hemi.groundColor = new THREE.Color(top).multiplyScalar(0.55);
+  }
+  readTheme();
+  if (window.matchMedia) {
+    var mq = window.matchMedia('(prefers-color-scheme: dark)');
+    if (mq.addEventListener) mq.addEventListener('change', readTheme);
+    else if (mq.addListener) mq.addListener(readTheme);
+  }
+
+  // ---------------------------------------------------------------- resize & loop
+
+  function resize() {
+    var w = canvas.clientWidth, h = canvas.clientHeight;
+    if (!w || !h) return;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+  window.addEventListener('resize', resize);
+
+  var reduce = window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce) idle = false;
+
+  var last = performance.now();
+  function frame(now) {
+    var dt = Math.min((now - last) / 1000, 0.05);
+    last = now;
+
+    if (idle) cam.theta += dt * 0.085;
+
+    if (anim) {
+      anim.t = Math.min(1, anim.t + dt * (reduce ? 6 : 2.4));
+      var e = 1 - Math.pow(1 - anim.t, 3);
+      cam.theta  = anim.from.theta  + (anim.to.theta  - anim.from.theta)  * e;
+      cam.phi    = anim.from.phi    + (anim.to.phi    - anim.from.phi)    * e;
+      cam.radius = anim.from.radius + (anim.to.radius - anim.from.radius) * e;
+      if (anim.t >= 1) anim = null;
+    }
+
+    resize();
+    applyCamera();
+    if (G.pins.visible) {
+      G.pins.children.forEach(function (g) { g.quaternion.copy(camera.quaternion); });
+    }
+    renderer.render(scene, camera);
+    requestAnimationFrame(frame);
+  }
+
+  applyCamera();
+  requestAnimationFrame(frame);
+})();
+</script>
+
+</body>
+</html>

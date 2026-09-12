@@ -1,0 +1,30 @@
+name: Verify photos carry no location metadata
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # This repository is public and the photos show a private residence.
+      # No image here may carry GPS metadata.
+      - name: Check for GPS metadata
+        run: |
+          sudo apt-get update && sudo apt-get install -y libimage-exiftool-perl
+          found=$(find . -type f \
+            \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' \
+               -o -iname '*.heic' -o -iname '*.webp' \) -not -path './.git/*')
+          if [ -n "$found" ]; then
+            if echo "$found" | xargs exiftool -gps:all -a -s | grep -qi gps; then
+              echo "::error::An image contains GPS metadata — refusing to publish."
+              exit 1
+            fi
+            echo "all images clean (no GPS)."
+          else
+            echo "no images found."
+          fi

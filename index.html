@@ -1193,10 +1193,17 @@
       });
     });
 
-    // eave fascia — top edge tucked under the roof, board hanging down
+    // Upper trim band — a frieze lying ON the siding at the top of the wall, not
+    // a fascia out at the eave. It was floating 3 3/8" clear of the wall before,
+    // parked on the overhang line.
+    var friezeY = wallTop - TRIM_UPPER / 2;
     [-1, 1].forEach(function (s) {
-      box(G.trim, L + RAKE_OH * 2, TRIM_UPPER, TRIM_T, M.trim,
-          0, wallTop - TRIM_UPPER / 2, s * (W / 2 + EAVE_OH));
+      // long walls, between the corner boards
+      box(G.trim, L + SID * 2 - TRIM_CNR_L * 2, TRIM_UPPER, TRIM_T, M.trim,
+          0, friezeY, s * (W / 2 + SID + TRIM_T / 2));
+      // gable ends — the band the 3 1/4" was measured on, under the lap siding
+      box(G.trim, TRIM_T, TRIM_UPPER, W + SID * 2 - TRIM_CNR_S * 2, M.trim,
+          s * (L / 2 + SID + TRIM_T / 2), friezeY, 0);
     });
 
     // rake boards — offset down the roof normal so their top edge IS the roof

@@ -888,19 +888,19 @@
     // version also ran a 4x4 joist at each end, which doubled the member and
     // overhung the framing edge by 1 3/4".
     for (var x = -(L / 2 - 2); x <= L / 2 - 2 + 0.001; x += 2) {
-      box(G.floor, D4, D4, W, M.joist, x, girderTop + D4 / 2, 0);
+      box(G.floor, D4, D4, W - T2 * 2, M.joist, x, girderTop + D4 / 2, 0);
     }
 
     // 2x4 nailers on the JOIST ends — long walls, 3.5" to 7"
     [-1, 1].forEach(function (s) {
-      box(G.floor, L, D4, T2, M.nailer, 0, girderTop + D4 / 2, s * (W / 2 + T2 / 2));
+      box(G.floor, L, D4, T2, M.nailer, 0, girderTop + D4 / 2, s * (W / 2 - T2 / 2));
     });
 
     // End members: 2x4 on edge at each gable end, sitting on the crosswise 4x4
     // and carrying the subfloor edge. These ARE the end joists — there is no 4x4
     // joist at the ends. Outer face flush with the framing and subfloor.
     [-1, 1].forEach(function (s) {
-      box(G.floor, T2, D4, W, M.nailer, s * (L / 2 - T2 / 2), girderTop + D4 / 2, 0);
+      box(G.floor, T2, D4, W - T2 * 2, M.nailer, s * (L / 2 - T2 / 2), girderTop + D4 / 2, 0);
     });
   })();
 
@@ -914,7 +914,7 @@
     // Only its top 3 1/2" has anything behind it: the joist ends stop there and
     // below that is open air between the piers. The lower half is a free edge.
     var n8 = 7.25 * IN;
-    propose(G.nailer8, L, n8, T2, 0, deckTop - n8 / 2, W / 2 + T2 / 2);
+    propose(G.nailer8, L, n8, T2, 0, deckTop - n8 / 2, W / 2 - T2 / 2);
   })();
 
   // ---------------------------------------------------------------- subfloor
@@ -1330,7 +1330,7 @@
     // 1 — narrow band of water damage at the base, all four sides (MEDIUM)
     var bandY = SIDE_BOT_LONG + DMG / 2;
     [-1, 1].forEach(function (s) {
-      mark(L + SID * 2 + 0.04, DMG, T2 + 0.08, md, 0, bandY, s * (W / 2 + T2 / 2));
+      mark(L + SID * 2 + 0.04, DMG, T2 + 0.08, md, 0, bandY, s * (W / 2 - T2 / 2));
       mark(L + SID * 2 + 0.04, DMG, 0.06, md, 0, bandY, s * (W / 2 + SID + 0.02));
       mark(0.06, DMG, W + SID * 2 + 0.04, md, s * (L / 2 + SID + 0.02), bandY, 0);
     });

@@ -619,15 +619,29 @@
 
   var T2 = 1.5 * IN, D2 = 3.5 * IN;        // 2x4 actual
   var D4 = 3.5 * IN;                       // 4x4 actual
-  var GW = 3.5 * IN, GD = 5.5 * IN;        // 4x6 girder (depth TBD)
+  var GW = 3.5 * IN, GD = 3.5 * IN;        // 4x4 girder — measured
   var PLY = 0.75 * IN;
   var SID = 0.625 * IN;                    // siding panel
   var TRIM_T = 0.75 * IN, TRIM_W = 5.5 * IN;
 
-  var PIER_H = 8 * IN, PIER_W = 8 * IN, PIER_L = 16 * IN;
+  // Precast tapered pier block, per spec: 10 3/4" square at the base, 8 3/4" tall,
+  // tapering to a smaller top with the wood cap set into a recess.
+  var PIER_H = 8.75 * IN, PIER_BASE = 10.75 * IN, PIER_TOP = 7.5 * IN;
+  // Precast pier block with a wood cap set into the top. Cap is 5.5" square
+  // (measured). Its outer edge is flush with the framing edge, which is what
+  // locates the piers. At an end pier the crosswise 4x4 takes 3.5" of the cap,
+  // leaving just 2" of bearing for the butt end of the longitudinal girder.
+  var CAP_T = 1.5 * IN, CAP_W = 5.5 * IN, CAP_L = 5.5 * IN;
 
-  var girderZ   = W / 2 - 1.0;                       // girders inset from the long walls
-  var girderTop = PIER_H + GD;
+  // Measured: block centres sit 12" in from the framing edge on the long walls.
+  // The flush-with-framing rule applies only at the gable ends; here the cap is
+  // well inboard and the girder is centred on it.
+  var girderZ   = W / 2 - 12 * IN;
+  // Measured: the tops of the piers are flush with grade, so the blocks sit
+  // entirely below ground and the girders start at y = 0.
+  var girderTop = GD;
+  var SIDE_BOT_LONG  = 4 * IN;   // siding bottom edge, long faces
+  var SIDE_BOT_GABLE = 1 * IN;   // siding bottom edge, gable ends
   var joistTop  = girderTop + D4;
   var deckTop   = joistTop + PLY;
   var wallTop   = deckTop + WALL;
@@ -643,6 +657,7 @@
 
   var C = {
     pier:    0x9C948A,
+    cap:     0x8A7250,
     girder:  0x8C5E38,
     joist:   0xA06E42,
     nailer:  0x7E5A3C,
@@ -736,7 +751,7 @@
   // ---------------------------------------------------------------- layers
 
   var LAYERS = [
-    { g:'Structure', id:'site',    name:'Ground & piers',   spec:'CMU',       color:C.pier,    ex:0.0, on:true },
+    { g:'Structure', id:'site',    name:'Piers & caps',     spec:'buried',       color:C.pier,    ex:0.0, on:true },
     { g:'Structure', id:'floor',   name:'Floor framing',    spec:'4x girder', color:C.joist,   ex:1.0, on:true },
     { g:'Structure', id:'deck',    name:'Subfloor',         spec:'3/4" ply',  color:C.deck,    ex:2.0, on:true },
     { g:'Structure', id:'walls',   name:'Wall framing',     spec:'2x4',       color:C.stud,    ex:3.0, on:true },
@@ -754,6 +769,7 @@
     { g:'Condition', id:'damage',  name:'Damage',           spec:'see key',   color:0xC4453A,  ex:3.65,on:true },
     { g:'Condition', id:'spread',  name:'Roof spread',      spec:'suspected', color:0xE0B23C,  ex:4.6, on:false },
 
+    { g:'Proposed',  id:'nailer8', name:'2x8 front nailer', spec:'grd contact',color:C.propose, ex:1.3, on:true,  planned:true },
     { g:'Proposed',  id:'pvc',     name:'PVC base band',    spec:'1x',        color:C.propose, ex:1.5, on:true,  planned:true },
     { g:'Proposed',  id:'newbay',  name:'Bay panel',        spec:'+ switch',  color:C.propose, ex:3.3, on:true,  planned:true },
     { g:'Proposed',  id:'leds',    name:'LED shop lights',  spec:'2 x 30W',   color:C.propose, ex:4.2, on:true,  planned:true },
@@ -810,10 +826,22 @@
     plane.receiveShadow = true;
     G.site.add(plane);
 
-    var xs = [-L / 2 + 0.8, 0, L / 2 - 0.8];
+    // End piers are placed so the CAP's outer edge lands on the framing edge;
+    // the middle pair sit at mid-span. Cap top is taken as grade, so the whole
+    // assembly is below ground and shows only in the Under view.
+    var xs = [-(L / 2 - CAP_L / 2), 0, L / 2 - CAP_L / 2];
     [-1, 1].forEach(function (s) {
       xs.forEach(function (x) {
-        box(G.site, PIER_L, PIER_H, PIER_W, M.pier, x, PIER_H / 2, s * girderZ);
+        box(G.site, CAP_L, CAP_T, CAP_W, M.cap, x, -CAP_T / 2, s * girderZ);
+        // Tapered block. A 4-segment cylinder gives a square frustum; radius is to
+        // the corners, so side/sqrt(2), and a 45 degree spin squares it to the axes.
+        var blk = new THREE.Mesh(
+          new THREE.CylinderGeometry(PIER_TOP / Math.SQRT2, PIER_BASE / Math.SQRT2,
+                                     PIER_H, 4), M.pier);
+        blk.rotation.y = Math.PI / 4;
+        blk.position.set(x, -0.75 * IN - PIER_H / 2, s * girderZ);
+        blk.castShadow = true; blk.receiveShadow = true;
+        G.site.add(blk);
       });
     });
   })();
@@ -821,9 +849,14 @@
   // ---------------------------------------------------------------- floor framing
 
   (function () {
-    // two girders, long direction, on the piers
+    // The four 4x4s form a closed rectangle at 0 to 3.5": two girders running the
+    // long direction, and one crosswise member at each gable end sitting fully on
+    // the pier cap, with its outer face flush with the framing edge. The girders
+    // butt into them, covering only part of each cap.
+    var xEnd = L / 2 - D4 / 2;                  // crosswise member centreline
     [-1, 1].forEach(function (s) {
-      box(G.floor, L, GD, GW, M.girder, 0, PIER_H + GD / 2, s * girderZ);
+      box(G.floor, L - D4 * 2, GD, GW, M.girder, 0, GD / 2, s * girderZ);
+      box(G.floor, D4, D4, girderZ * 2 + GW, M.girder, s * xEnd, D4 / 2, 0);
     });
 
     // 4x4 joists laid across, 24" o.c.
@@ -831,10 +864,29 @@
       box(G.floor, D4, D4, W, M.joist, x, girderTop + D4 / 2, 0);
     }
 
-    // 2x4 nailers on the joist ends — siding backing, and where the rot is
+    // 2x4 nailers on the JOIST ends — long walls, 3.5" to 7"
     [-1, 1].forEach(function (s) {
       box(G.floor, L, D4, T2, M.nailer, 0, girderTop + D4 / 2, s * (W / 2 + T2 / 2));
     });
+
+    // 2x4 on edge along each gable end, sitting on top of the crosswise 4x4 and
+    // carrying the subfloor edge. Outer face flush with the framing and subfloor.
+    [-1, 1].forEach(function (s) {
+      box(G.floor, T2, D4, W, M.nailer, s * (L / 2 - T2 / 2), girderTop + D4 / 2, 0);
+    });
+  })();
+
+  // ---------------------------------------------------------------- planned 2x8 front nailer
+
+  (function () {
+    // Replaces the damaged 2x4 on the front with a 2x8 (7 1/4" actual), hung off
+    // the DECK TOP so its bottom lands 1/2" above grade — level with the gable-end
+    // nailers, and clear of the soil rather than buried in it.
+    //
+    // Only its top 3 1/2" has anything behind it: the joist ends stop there and
+    // below that is open air between the piers. The lower half is a free edge.
+    var n8 = 7.25 * IN;
+    propose(G.nailer8, L, n8, T2, 0, deckTop - n8 / 2, W / 2 + T2 / 2);
   })();
 
   // ---------------------------------------------------------------- subfloor
@@ -1015,9 +1067,11 @@
   // ---------------------------------------------------------------- siding
 
   (function () {
-    var bottom = girderTop;                    // laps down over the nailers
+    // Measured: the long faces stop 4" above grade (lapping the joist-end
+    // nailers); the gable ends hang 3" lower, over the girder-end nailers.
     var top = wallTop;
-    var h = top - bottom;
+    var hLong  = top - SIDE_BOT_LONG;
+    var hGable = top - SIDE_BOT_GABLE;
 
     function panelRun(len, widths, place) {
       var cursor = -len / 2;
@@ -1031,16 +1085,16 @@
     // long walls: 4' + 4' + 2'
     [-1, 1].forEach(function (s) {
       panelRun(L, [4, 4, 2], function (cx, w) {
-        box(G.siding, w - 0.02, h, SID, M.siding,
-            cx, bottom + h / 2, s * (W / 2 + SID / 2));
+        box(G.siding, w - 0.02, hLong, SID, M.siding,
+            cx, SIDE_BOT_LONG + hLong / 2, s * (W / 2 + SID / 2));
       });
     });
 
     // gable walls: 4' + 4'
     [-1, 1].forEach(function (s) {
       panelRun(W, [4, 4], function (cz, w) {
-        box(G.siding, SID, h, w - 0.02, M.siding,
-            s * (L / 2 + SID / 2), bottom + h / 2, cz);
+        box(G.siding, SID, hGable, w - 0.02, M.siding,
+            s * (L / 2 + SID / 2), SIDE_BOT_GABLE + hGable / 2, cz);
       });
     });
 
@@ -1063,7 +1117,7 @@
   // ---------------------------------------------------------------- trim
 
   (function () {
-    var bottom = girderTop, top = wallTop, h = top - bottom;
+    var bottom = SIDE_BOT_GABLE, top = wallTop, h = top - bottom;
 
     // corner boards
     [-1, 1].forEach(function (sx) {
@@ -1141,7 +1195,7 @@
 
   (function () {
     var h = 7.25 * IN, t = 0.75 * IN;
-    var y = girderTop + h / 2;
+    var y = SIDE_BOT_LONG + h / 2;
     [-1, 1].forEach(function (s) {
       propose(G.pvc, L + SID * 2 + t * 2, h, t, 0, y, s * (W / 2 + SID + t / 2));
       propose(G.pvc, t, h, W + SID * 2, s * (L / 2 + SID + t / 2), y, 0);
@@ -1164,7 +1218,7 @@
     // The penetration is 8" above the BOTTOM EDGE OF THE SIDING, which puts it
     // above the deck and into the stud bay — not under the floor. The riser runs
     // up the outside of the siding to reach it.
-    var entryY = girderTop + 8 * IN;
+    var entryY = SIDE_BOT_LONG + 8 * IN;   // = 12" above grade, as measured
     box(G.elec, 1.3 * IN, entryY, 1.3 * IN, M.conduit,
         riserX, entryY / 2, zOut + 1.6 * IN);
     box(G.elec, 1.3 * IN, 1.3 * IN, 2.4 * IN, M.conduit,
@@ -1246,7 +1300,7 @@
     }
 
     // 1 — narrow band of water damage at the base, all four sides (MEDIUM)
-    var bandY = girderTop + DMG / 2;
+    var bandY = SIDE_BOT_LONG + DMG / 2;
     [-1, 1].forEach(function (s) {
       mark(L + SID * 2 + 0.04, DMG, T2 + 0.08, md, 0, bandY, s * (W / 2 + T2 / 2));
       mark(L + SID * 2 + 0.04, DMG, 0.06, md, 0, bandY, s * (W / 2 + SID + 0.02));
@@ -1257,10 +1311,10 @@
     [-1, 1].forEach(function (sx) {
       [-1, 1].forEach(function (sz) {
         mark(TRIM_W + 0.06, DMG * 1.4, TRIM_T + 0.06, md,
-             sx * (L / 2 - TRIM_W / 2 + SID), girderTop + DMG * 0.7,
+             sx * (L / 2 - TRIM_W / 2 + SID), SIDE_BOT_GABLE + DMG * 0.7,
              sz * (W / 2 + SID + TRIM_T / 2));
         mark(TRIM_T + 0.06, DMG * 1.4, TRIM_W + 0.06, md,
-             sx * (L / 2 + SID + TRIM_T / 2), girderTop + DMG * 0.7,
+             sx * (L / 2 + SID + TRIM_T / 2), SIDE_BOT_GABLE + DMG * 0.7,
              sz * (W / 2 - TRIM_W / 2 + SID));
       });
     });
@@ -1333,6 +1387,9 @@
     { f:'base-detail.jpg', t:'Base detail: riser, box and rot',
       c:'The electrical riser and enclosure, the irrigation valve, and the band of rot at the base. The damage measures only 2 to 3 inches up.',
       p:[L/2 - 0.8, 1.6, -W/2 - 1.7] },
+    { f:'pier-cap.jpg',    t:'Pier cap and end framing',
+      c:'Wood cap on the concrete pier, the crosswise 4x4 sitting fully on it, the 2x4 above, and the subfloor over that.',
+      p:[L/2 - 1.2, 0.5, -W/2 + 1.0] },
     { f:'underframe.jpg',  t:'Underframe at grade',
       c:'Soil and debris built up against the frame between the piers.',
       p:[-2.9, 0.8, W/2 + 1.3] },

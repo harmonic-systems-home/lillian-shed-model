@@ -296,6 +296,7 @@
   .rowbtns { display: flex; gap: 6px; margin-top: 10px; }
   .rowbtns button {
     flex: 1;
+    min-width: 0;
     font-family: "Archivo Narrow", "Arial Narrow", sans-serif;
     font-weight: 600;
     font-size: 11px;
@@ -304,9 +305,10 @@
     color: var(--fg-soft);
     background: transparent;
     border: 1px solid var(--line);
-    padding: 8px 6px;
+    padding: 8px 4px;
     cursor: pointer;
     min-height: 36px;
+    white-space: nowrap;
   }
   .rowbtns button:hover { color: var(--fg); border-color: var(--accent); }
   .rowbtns button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
@@ -509,8 +511,9 @@
         <h2>Layers</h2>
         <div class="layers" id="layers"></div>
         <div class="rowbtns">
-          <button type="button" id="allOn">All on</button>
-          <button type="button" id="frameOnly">Framing only</button>
+          <button type="button" id="allOn">All</button>
+          <button type="button" id="frameOnly">Framing</button>
+          <button type="button" id="baseOnly">Base</button>
         </div>
       </section>
 
@@ -1673,10 +1676,16 @@
     setLayers(function () { return true; });
   });
 
+  // Piers, subfloor and the framing — no services, no cladding, no annotation.
+  var FRAMING = ['site', 'floor', 'deck', 'walls', 'rafters'];
   document.getElementById('frameOnly').addEventListener('click', function () {
-    setLayers(function (l) {
-      return ['site', 'floor', 'deck', 'walls', 'rafters', 'elec'].indexOf(l.id) !== -1;
-    });
+    setLayers(function (l) { return FRAMING.indexOf(l.id) !== -1; });
+  });
+
+  // Just the base assembly — piers and caps, the 4x4 rectangle and joists, deck.
+  var BASE = ['site', 'floor', 'deck'];
+  document.getElementById('baseOnly').addEventListener('click', function () {
+    setLayers(function (l) { return BASE.indexOf(l.id) !== -1; });
   });
 
   // ---------------------------------------------------------------- photo lightbox

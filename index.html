@@ -293,7 +293,7 @@
     vertical-align: 1.5px;
   }
 
-  .rowbtns { display: flex; gap: 6px; margin-top: 10px; }
+  .rowbtns { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
   .rowbtns button {
     flex: 1;
     min-width: 0;
@@ -511,9 +511,9 @@
         <h2>Layers</h2>
         <div class="layers" id="layers"></div>
         <div class="rowbtns">
-          <button type="button" id="allOn">All</button>
-          <button type="button" id="frameOnly">Framing</button>
-          <button type="button" id="baseOnly">Base</button>
+          <button type="button" id="allOn" title="Every layer on, including proposed work">All</button>
+          <button type="button" id="frameOnly" title="Piers, floor framing, subfloor and wall framing only">Frame</button>
+          <button type="button" id="baseOnly" title="Piers, floor framing and subfloor only">Base</button>
         </div>
       </section>
 
@@ -1676,8 +1676,9 @@
     setLayers(function () { return true; });
   });
 
-  // Piers, subfloor and the framing — no services, no cladding, no annotation.
-  var FRAMING = ['site', 'floor', 'deck', 'walls', 'rafters'];
+  // Piers, floor framing, subfloor and wall framing. Everything else off:
+  // no interior plywood, cladding, door, fixtures, roof, services or annotation.
+  var FRAMING = ['site', 'floor', 'deck', 'walls'];
   document.getElementById('frameOnly').addEventListener('click', function () {
     setLayers(function (l) { return FRAMING.indexOf(l.id) !== -1; });
   });

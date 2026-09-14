@@ -658,6 +658,7 @@
   var C = {
     pier:    0x9C948A,
     cap:     0x8A7250,
+    endbeam: 0xB08A5C,
     girder:  0x8C5E38,
     joist:   0xA06E42,
     nailer:  0x7E5A3C,
@@ -802,6 +803,24 @@
     return mesh;
   }
 
+  var EDGE_MAT = new THREE.LineBasicMaterial({
+    color: 0x2E2016, transparent: true, opacity: 0.55 });
+
+  // Outlined box. Used where members meet and the joint has to be legible —
+  // without edges, two 4x4s butting at a corner read as one bent beam.
+  function edged(g, w, h, d, m, x, y, z) {
+    var geo = new THREE.BoxGeometry(w, h, d);
+    var mesh = new THREE.Mesh(geo, m);
+    mesh.position.set(x, y, z);
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+    g.add(mesh);
+    var e = new THREE.LineSegments(new THREE.EdgesGeometry(geo), EDGE_MAT);
+    e.position.copy(mesh.position);
+    g.add(e);
+    return mesh;
+  }
+
   function box(g, w, h, d, m, x, y, z, rx) {
     var mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m);
     mesh.position.set(x, y, z);
@@ -832,7 +851,7 @@
     var xs = [-(L / 2 - CAP_L / 2), 0, L / 2 - CAP_L / 2];
     [-1, 1].forEach(function (s) {
       xs.forEach(function (x) {
-        box(G.site, CAP_L, CAP_T, CAP_W, M.cap, x, -CAP_T / 2, s * girderZ);
+        edged(G.site, CAP_L, CAP_T, CAP_W, M.cap, x, -CAP_T / 2, s * girderZ);
         // Tapered block. A 4-segment cylinder gives a square frustum; radius is to
         // the corners, so side/sqrt(2), and a 45 degree spin squares it to the axes.
         var blk = new THREE.Mesh(
@@ -854,9 +873,10 @@
     // the pier cap, with its outer face flush with the framing edge. The girders
     // butt into them, covering only part of each cap.
     var xEnd = L / 2 - D4 / 2;                  // crosswise member centreline
+    var JOINT = 0.15 * IN;                     // visible gap at the butt joint
     [-1, 1].forEach(function (s) {
-      box(G.floor, L - D4 * 2, GD, GW, M.girder, 0, GD / 2, s * girderZ);
-      box(G.floor, D4, D4, girderZ * 2 + GW, M.girder, s * xEnd, D4 / 2, 0);
+      edged(G.floor, L - D4 * 2 - JOINT * 2, GD, GW, M.girder, 0, GD / 2, s * girderZ);
+      edged(G.floor, D4, D4, girderZ * 2 + GW, M.endbeam, s * xEnd, D4 / 2, 0);
     });
 
     // 4x4 joists laid across, 24" o.c.

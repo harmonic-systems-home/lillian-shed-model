@@ -936,14 +936,19 @@
     var oL = opening ? opening.c - opening.w / 2 : null;
     var oR = opening ? opening.c + opening.w / 2 : null;
 
-    for (var x = -half; x <= half + 0.001; x += 16 * IN) {
-      var px = Math.min(x, half - T2 / 2);
-      if (opening && px > oL - T2 && px < oR + T2) continue;
-      box(g, T2, studH, D2, M.stud, px, studY, 0);
+    // End studs first, set INSIDE the wall line so their outer faces are flush.
+    // The old loop started on the wall end, which straddled the corner by 3/4"
+    // and duplicated the end stud sitting next to it.
+    var first = -half + T2 / 2, last = half - T2 / 2;
+    box(g, T2, studH, D2, M.stud, first, studY, 0);
+    box(g, T2, studH, D2, M.stud, last,  studY, 0);
+
+    // Interior studs at 16" o.c. measured from the wall end, stopping clear of
+    // the far end stud.
+    for (var x = -half + 16 * IN; x < last - T2; x += 16 * IN) {
+      if (opening && x > oL - T2 && x < oR + T2) continue;
+      box(g, T2, studH, D2, M.stud, x, studY, 0);
     }
-    // make sure both ends are framed
-    box(g, T2, studH, D2, M.stud, -half + T2 / 2, studY, 0);
-    box(g, T2, studH, D2, M.stud,  half - T2 / 2, studY, 0);
 
     if (opening) {
       var hY = T2 + opening.h;

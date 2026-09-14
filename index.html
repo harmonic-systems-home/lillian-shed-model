@@ -880,8 +880,11 @@
       edged(G.floor, D4, D4, girderZ * 2 + GW, M.endbeam, s * xEnd, D4 / 2, 0);
     });
 
-    // 4x4 joists laid across, 24" o.c.
-    for (var x = -L / 2; x <= L / 2 + 0.001; x += 2) {
+    // 4x4 joists laid across, 24" o.c. — INTERMEDIATE ONLY. The members at the
+    // gable ends are the 2x4s below, sitting on the crosswise 4x4s; an earlier
+    // version also ran a 4x4 joist at each end, which doubled the member and
+    // overhung the framing edge by 1 3/4".
+    for (var x = -(L / 2 - 2); x <= L / 2 - 2 + 0.001; x += 2) {
       box(G.floor, D4, D4, W, M.joist, x, girderTop + D4 / 2, 0);
     }
 
@@ -890,8 +893,9 @@
       box(G.floor, L, D4, T2, M.nailer, 0, girderTop + D4 / 2, s * (W / 2 + T2 / 2));
     });
 
-    // 2x4 on edge along each gable end, sitting on top of the crosswise 4x4 and
-    // carrying the subfloor edge. Outer face flush with the framing and subfloor.
+    // End members: 2x4 on edge at each gable end, sitting on the crosswise 4x4
+    // and carrying the subfloor edge. These ARE the end joists — there is no 4x4
+    // joist at the ends. Outer face flush with the framing and subfloor.
     [-1, 1].forEach(function (s) {
       box(G.floor, T2, D4, W, M.nailer, s * (L / 2 - T2 / 2), girderTop + D4 / 2, 0);
     });

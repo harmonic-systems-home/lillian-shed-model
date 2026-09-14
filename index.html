@@ -464,7 +464,8 @@
     <p class="eyebrow">As-built model &middot; backyard storage shed</p>
     <h1>Lillian Drive Shed</h1>
     <p class="lede">
-      Drag to rotate, pinch or scroll to zoom. Switch layers off to peel the shed apart —
+      Drag to rotate; two fingers, right-drag or shift-drag to pan; pinch or scroll to zoom.
+      Any of the view buttons recentres. Switch layers off to peel the shed apart —
       shingles, sheathing, rafters, studs, wiring, deck, joists, piers. Red and amber mark
       the damage; anything drawn through in teal is proposed, not built. Switch on
       &ldquo;Photo markers&rdquo; to drop pins where each photograph was taken, and tap one
@@ -488,7 +489,7 @@
         <button type="button" data-view="plan">Plan</button>
         <button type="button" data-view="under">Under</button>
       </div>
-      <div class="hint" id="hint">drag to rotate &middot; pinch to zoom</div>
+      <div class="hint" id="hint">drag to rotate &middot; two fingers or right-drag to pan &middot; pinch to zoom</div>
 
       <div class="lightbox" id="lightbox" hidden>
         <div class="lb-inner">
@@ -1451,8 +1452,25 @@
 
   // ---------------------------------------------------------------- camera rig
 
-  var target = new THREE.Vector3(0, 4.2, 0);
+  var HOME = new THREE.Vector3(0, 4.2, 0);
+  var target = HOME.clone();
   var cam = { theta: Math.PI * 0.28, phi: 1.12, radius: 26 };
+
+  // Screen-space pan: shift the look-at point along the camera's own right and
+  // up axes, scaled by distance so the drag feels the same at any zoom.
+  var _fwd = new THREE.Vector3(), _right = new THREE.Vector3(), _up = new THREE.Vector3();
+  function panBy(dx, dy) {
+    var scale = cam.radius * 0.0018;
+    _fwd.subVectors(target, camera.position).normalize();
+    _right.crossVectors(_fwd, camera.up).normalize();
+    _up.crossVectors(_right, _fwd).normalize();
+    target.addScaledVector(_right, -dx * scale);
+    target.addScaledVector(_up, dy * scale);
+    // keep the shed within reach
+    target.x = Math.max(HOME.x - 14, Math.min(HOME.x + 14, target.x));
+    target.y = Math.max(-2, Math.min(16, target.y));
+    target.z = Math.max(HOME.z - 14, Math.min(HOME.z + 14, target.z));
+  }
 
   function applyCamera() {
     cam.phi = Math.max(0.12, Math.min(Math.PI - 0.12, cam.phi));
@@ -1477,7 +1495,11 @@
   var anim = null;
   function goTo(p) {
     idle = false;
-    anim = { from: { theta: cam.theta, phi: cam.phi, radius: cam.radius }, to: p, t: 0 };
+    anim = {
+      from: { theta: cam.theta, phi: cam.phi, radius: cam.radius },
+      to: p, t: 0,
+      fromTarget: target.clone()      // presets also recentre, so they undo a pan
+    };
   }
 
   // ---------------------------------------------------------------- interaction
@@ -1509,13 +1531,24 @@
     return -1;
   }
 
+  var panning = false;
+
+  canvas.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+
   canvas.addEventListener('mousedown', function (e) {
-    dragging = true; lastX = downX = e.clientX; lastY = downY = e.clientY; stopIdle();
+    dragging = true;
+    panning = (e.button !== 0) || e.shiftKey;
+    lastX = downX = e.clientX; lastY = downY = e.clientY;
+    stopIdle();
   });
   window.addEventListener('mousemove', function (e) {
     if (!dragging) return;
-    cam.theta -= (e.clientX - lastX) * 0.0075;
-    cam.phi   -= (e.clientY - lastY) * 0.0065;
+    if (panning) {
+      panBy(e.clientX - lastX, e.clientY - lastY);
+    } else {
+      cam.theta -= (e.clientX - lastX) * 0.0075;
+      cam.phi   -= (e.clientY - lastY) * 0.0065;
+    }
     lastX = e.clientX; lastY = e.clientY;
     applyCamera();
   });
@@ -1525,6 +1558,7 @@
       if (i >= 0) openPhoto(i);
     }
     dragging = false;
+    panning = false;
   });
 
   canvas.addEventListener('wheel', function (e) {
@@ -1533,7 +1567,7 @@
     applyCamera();
   }, { passive: false });
 
-  var pinch = 0;
+  var pinch = 0, panCx = null, panCy = null;
   var moved = false;
   canvas.addEventListener('touchstart', function (e) {
     stopIdle(); moved = false;
@@ -1543,6 +1577,8 @@
       pinch = Math.hypot(
         e.touches[0].clientX - e.touches[1].clientX,
         e.touches[0].clientY - e.touches[1].clientY);
+      panCx = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+      panCy = (e.touches[0].clientY + e.touches[1].clientY) / 2;
     }
   }, { passive: true });
 
@@ -1557,14 +1593,17 @@
       var d = Math.hypot(
         e.touches[0].clientX - e.touches[1].clientX,
         e.touches[0].clientY - e.touches[1].clientY);
+      var cx = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+      var cy = (e.touches[0].clientY + e.touches[1].clientY) / 2;
       if (pinch > 0) cam.radius *= pinch / Math.max(d, 1);
-      pinch = d;
+      if (panCx !== null) panBy(cx - panCx, cy - panCy);
+      pinch = d; panCx = cx; panCy = cy;
     }
     applyCamera();
   }, { passive: false });
 
   canvas.addEventListener('touchend', function (e) {
-    if (e.touches.length < 2) pinch = 0;
+    if (e.touches.length < 2) { pinch = 0; panCx = panCy = null; }
     if (e.touches.length === 1) { lastX = e.touches[0].clientX; lastY = e.touches[0].clientY; }
     else if (e.changedTouches.length === 1 && !moved) {
       var ct = e.changedTouches[0];
@@ -1721,6 +1760,7 @@
       cam.theta  = anim.from.theta  + (anim.to.theta  - anim.from.theta)  * e;
       cam.phi    = anim.from.phi    + (anim.to.phi    - anim.from.phi)    * e;
       cam.radius = anim.from.radius + (anim.to.radius - anim.from.radius) * e;
+      target.lerpVectors(anim.fromTarget, HOME, e);
       if (anim.t >= 1) anim = null;
     }
 

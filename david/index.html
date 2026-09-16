@@ -484,7 +484,7 @@
       <b>Design, not as-built</b>
       <span>Back wall 12&prime;, left wall 4&prime; and the right angles at B and D are given.
       Those alone don&rsquo;t fix the shape, so the right wall is set to 6&prime; and can be
-      changed below. Stud spacing, door height, siding and floor are assumptions.</span>
+      changed below, as can the 3-in-12 pitch. Stud spacing, door height, siding and floor are assumptions.</span>
     </p>
   </header>
 
@@ -515,6 +515,16 @@
             <input type="range" id="right" min="24" max="192" step="1" value="72"
                    aria-label="Right wall length in inches">
             <button type="button" class="step" id="rightUp" aria-label="Right wall one inch longer">+</button>
+          </div>
+        </div>
+
+        <div class="ctl">
+          <div class="ctl-label"><span>Roof pitch</span><output id="pitchOut" for="pitch"></output></div>
+          <div class="slider-row">
+            <button type="button" class="step" id="pitchDn" aria-label="Half an inch less rise per foot">&minus;</button>
+            <input type="range" id="pitch" min="1" max="8" step="0.5" value="3"
+                   aria-label="Roof pitch, inches of rise per 12 of run">
+            <button type="button" class="step" id="pitchUp" aria-label="Half an inch more rise per foot">+</button>
           </div>
         </div>
 
@@ -609,7 +619,7 @@
         longer right wall swings corner B out past the end of the back wall.</p>
 
         <p><strong>Heights are floor to the top of the wall framing,</strong> taken at the
-        outside corner. That plane is where the rafters bear, so it rises 3 in 12. The
+        outside corner. That plane is where the rafters bear, so it rises at the roof pitch. The
         overhang is measured level, 12&Prime; out from the outside face of the framing.</p>
       </div>
       <div>
@@ -655,7 +665,7 @@
   var BACK = 12;                   // back wall C-D
   var LEFT = 4;                    // left wall B-C
   var BACK_H = 7;                  // back wall height
-  var PITCH = 3 / 12;              // rises from back to front
+  var PITCH;                       // rises from back to front; 3 in 12 given, set by state.pitch
   var OH = 12 * IN;                // overhang on every wall, measured level
   var DOOR_W = 60 * IN;            // double door, combined width, centred
 
@@ -670,16 +680,17 @@
   var FLOOR_T = 4 * IN;            // floor or slab, drawn only for context
 
   var T2 = 1.5 * IN, D2 = 3.5 * IN;        // 2x4 actual
-  var SLOPE = Math.sqrt(1 + PITCH * PITCH);  // sloped length per unit of run
-  var RAFTER_V = D2 * SLOPE;                  // plumb depth of a 2x4 rafter
+  var SLOPE;                       // sloped length per unit of run
+  var RAFTER_V;                    // plumb depth of a 2x4 rafter
 
-  var state = { right: 72, mode: 'back', oc: 24, swing: 0 };
+  var state = { right: 72, pitch: 3, mode: 'back', oc: 24, swing: 0 };
 
-  // Shareable: #right=72&rafters=back&oc=24
+  // Shareable: #right=72&pitch=3&rafters=back&oc=24
   try {
     location.hash.replace(/^#/, '').split('&').forEach(function (kv) {
       var p = kv.split('=');
       if (p[0] === 'right' && +p[1] >= 24 && +p[1] <= 192) state.right = Math.round(+p[1]);
+      if (p[0] === 'pitch' && +p[1] >= 1 && +p[1] <= 8) state.pitch = Math.round(+p[1] * 2) / 2;
       if (p[0] === 'rafters' && (p[1] === 'back' || p[1] === 'front')) state.mode = p[1];
       if (p[0] === 'oc' && (p[1] === '16' || p[1] === '24')) state.oc = +p[1];
     });
@@ -687,7 +698,7 @@
 
   function saveHash() {
     try {
-      history.replaceState(null, '', '#right=' + state.right + '&rafters=' + state.mode + '&oc=' + state.oc);
+      history.replaceState(null, '', '#right=' + state.right + '&pitch=' + state.pitch + '&rafters=' + state.mode + '&oc=' + state.oc);
     } catch (e) {}
   }
 
@@ -699,6 +710,7 @@
     var f = Math.floor(e / 96), r = e - f * 96;
     return (ft < 0 && e ? '−' : '') + f + '′-' + Math.floor(r / 8) + FR[r % 8] + '″';
   }
+  function pitchText(n) { return Math.floor(n) + (n % 1 ? '½' : '') + ' in 12'; }
   function deg(rad) { return (rad * 180 / Math.PI).toFixed(1) + '°'; }
 
   // ---------------------------------------------------------------- plan geometry
@@ -727,6 +739,10 @@
   var P, walls, plane, g;
 
   function setup() {
+    PITCH = state.pitch / 12;
+    SLOPE = Math.sqrt(1 + PITCH * PITCH);
+    RAFTER_V = D2 * SLOPE;
+
     var s = solvePlan(state.right * IN);
     // centre the plan on its bounding box
     var pts = [s.A, s.B, s.C, s.D];
@@ -1132,7 +1148,7 @@
       var w = add(add(mid, mul(g, 1.35)), mul(nv, s * 0.35));
       lineStrip(G.dims, [v3(w, hAt(w) + up), v3(t1, hAt(t1) + up)], DIM);
     });
-    label(G.dims, mid, hAt(mid) + up + 0.5, 'rises 3 in 12 &rarr; ' + (state.mode === 'back' ? 'square to back' : 'square to front'), 'slope');
+    label(G.dims, mid, hAt(mid) + up + 0.5, 'rises ' + pitchText(state.pitch) + ' &rarr; ' + (state.mode === 'back' ? 'square to back' : 'square to front'), 'slope');
 
     // ---- plan annotation: overhang line and door swing on the ground ----
     lineStrip(G.plan, outline.concat([outline[0]]).map(function (p) { return v3(p, 0.02); }), DASH, true);
@@ -1204,7 +1220,7 @@
     var oh = report.outline.map(function (p) { return hAt(p); });
     var eaves = report.outline.map(function (p, i) { return len(sub(report.outline[(i + 1) % 4], p)); });
     rows('roofDims', [
-      ['Pitch', '3 in 12 · ' + deg(Math.atan(PITCH)), 'given:given'],
+      ['Pitch', pitchText(state.pitch) + ' · ' + deg(Math.atan(PITCH)), state.pitch === 3 ? 'given:given' : 'asm:set'],
       ['Overhang', ftin(OH) + ' level', 'given:given'],
       ['Low / high wall top', ftin(Math.min(hAt(P.A), hAt(P.B), hAt(P.C), hAt(P.D))) + ' / ' +
                               ftin(Math.max(hAt(P.A), hAt(P.B), hAt(P.C), hAt(P.D))), 'calc:calc'],
@@ -1452,6 +1468,18 @@
   document.getElementById('rightDn').addEventListener('click', function () { setRight(state.right - 1); });
   document.getElementById('rightUp').addEventListener('click', function () { setRight(state.right + 1); });
 
+  var pitchEl = document.getElementById('pitch');
+  var pitchOut = document.getElementById('pitchOut');
+  function setPitch(v) {
+    state.pitch = Math.max(1, Math.min(8, Math.round(v * 2) / 2));
+    pitchEl.value = state.pitch;
+    pitchOut.textContent = pitchText(state.pitch);
+    build();
+  }
+  pitchEl.addEventListener('input', function () { setPitch(+pitchEl.value); });
+  document.getElementById('pitchDn').addEventListener('click', function () { setPitch(state.pitch - 0.5); });
+  document.getElementById('pitchUp').addEventListener('click', function () { setPitch(state.pitch + 0.5); });
+
   function syncSeg(id, attr, val) {
     Array.prototype.forEach.call(document.querySelectorAll('#' + id + ' button'), function (b) {
       b.setAttribute('aria-pressed', String(b.getAttribute(attr) === String(val)));
@@ -1589,6 +1617,8 @@
 
   rightEl.value = state.right;
   rightOut.textContent = ftin(state.right * IN);
+  pitchEl.value = state.pitch;
+  pitchOut.textContent = pitchText(state.pitch);
   syncSeg('modeSeg', 'data-mode', state.mode);
   syncSeg('ocSeg', 'data-oc', state.oc);
   LAYERS[4]._spec.textContent = '2x4 @' + state.oc + '"';

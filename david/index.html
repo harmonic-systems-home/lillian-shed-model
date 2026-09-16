@@ -1,0 +1,1602 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { color-scheme: light dark; }
+  body { margin: 0; font: 14px system-ui, -apple-system, "Segoe UI", sans-serif; background: #fafaf9; }
+  img { max-width: 100%; }
+  [hidden] { display: none !important; }
+</style>
+<meta name="robots" content="noindex, nofollow">
+</head>
+<body>
+<title>David's Shed</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+
+<style>
+  :root {
+    --linen:      #EDE6D8;
+    --paper:      #F7F2E8;
+    --ink:        #2B211A;
+    --ink-soft:   #5C4C3E;
+    --ink-faint:  #8A7663;
+    --rule:       #CFC2AB;
+    --verdigris:  #3F7D6B;
+    --warn:       #9A5B2C;
+
+    --ground:  var(--linen);
+    --surface: var(--paper);
+    --raised:  #FFFDF7;
+    --fg:      var(--ink);
+    --fg-soft: var(--ink-soft);
+    --fg-faint:var(--ink-faint);
+    --line:    var(--rule);
+    --accent:  var(--verdigris);
+    --accent-fg: #FFFFFF;
+    --scene-top: #DCD2BE;
+    --scene-bot: #C3B7A0;
+    --dimline: #2F6B5A;
+    --shadow: 0 1px 2px rgba(43,33,26,.07), 0 8px 24px -12px rgba(43,33,26,.18);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:  #17120E;
+      --surface: #1F1913;
+      --raised:  #29211A;
+      --fg:      #EFE7D8;
+      --fg-soft: #C0B09A;
+      --fg-faint:#8E7C67;
+      --line:    #3A2F26;
+      --accent:  #6FBBA2;
+      --accent-fg: #10201B;
+      --scene-top: #221C16;
+      --scene-bot: #12100D;
+      --dimline: #7FD3B8;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 30px -14px rgba(0,0,0,.7);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:  #17120E;
+    --surface: #1F1913;
+    --raised:  #29211A;
+    --fg:      #EFE7D8;
+    --fg-soft: #C0B09A;
+    --fg-faint:#8E7C67;
+    --line:    #3A2F26;
+    --accent:  #6FBBA2;
+    --accent-fg: #10201B;
+    --scene-top: #221C16;
+    --scene-bot: #12100D;
+    --dimline: #7FD3B8;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 30px -14px rgba(0,0,0,.7);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--fg);
+    font-family: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  .wrap {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding-inline: 16px;
+    padding-block: 20px 32px;
+  }
+
+  /* ---------- header ---------- */
+
+  header { margin-bottom: 16px; }
+
+  .eyebrow {
+    font-family: "Archivo Narrow", "Arial Narrow", sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--fg-faint);
+    margin: 0 0 2px;
+  }
+
+  h1 {
+    font-family: "Archivo Narrow", "Arial Narrow", sans-serif;
+    font-weight: 700;
+    font-size: clamp(28px, 6vw, 42px);
+    line-height: 1.02;
+    letter-spacing: -0.01em;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  .lede {
+    margin: 8px 0 0;
+    max-width: 66ch;
+    color: var(--fg-soft);
+  }
+
+  .caveat {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-top: 12px;
+    padding: 6px 11px 7px;
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--warn);
+    background: var(--surface);
+    color: var(--fg-soft);
+    font-size: 13px;
+    line-height: 1.4;
+    max-width: 100%;
+  }
+  .caveat b {
+    font-family: "Archivo Narrow", "Arial Narrow", sans-serif;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    font-size: 11px;
+    color: var(--warn);
+    white-space: nowrap;
+  }
+
+  /* ---------- layout ---------- */
+
+  .stage {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin-top: 18px;
+  }
+
+  @media (min-width: 900px) {
+    .stage { grid-template-columns: minmax(0,1fr) 292px; align-items: start; }
+  }
+
+  /* ---------- viewport ---------- */
+
+  .viewport {
+    position: relative;
+    border: 1px solid var(--line);
+    background: var(--scene-bot);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  @media (min-width: 900px) {
+    .viewport { position: sticky; top: 12px; }
+  }
+
+  #view {
+    display: block;
+    width: 100%;
+    height: 58vh;
+    min-height: 320px;
+    touch-action: none;
+    cursor: grab;
+  }
+  #view:active { cursor: grabbing; }
+
+  @media (min-width: 900px) {
+    #view { height: 74vh; max-height: 780px; }
+  }
+
+  .hint {
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: .02em;
+    color: var(--fg-faint);
+    background: color-mix(in srgb, var(--surface) 82%, transparent);
+    border: 1px solid var(--line);
+    padding: 3px 8px;
+    pointer-events: none;
+    transition: opacity .4s ease;
+  }
+  .hint[hidden] { display: none !important; }
+
+  .views {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 4px;
+    max-width: calc(100% - 20px);
+    z-index: 2;
+  }
+
+  .views button {
+    font-family: "Archivo Narrow", "Arial Narrow", sans-serif;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--fg-soft);
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    border: 1px solid var(--line);
+    padding: 6px 9px;
+    cursor: pointer;
+    min-height: 30px;
+  }
+  .views button:hover { color: var(--fg); border-color: var(--accent); }
+  .views button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* dimension labels, projected from the scene each frame */
+  .labels { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 1; }
+  .lbl {
+    position: absolute;
+    left: 0; top: 0;
+    transform: translate(-50%, -50%);
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px;
+    line-height: 1.2;
+    white-space: nowrap;
+    color: var(--fg);
+    background: color-mix(in srgb, var(--surface) 90%, transparent);
+    border: 1px solid var(--line);
+    padding: 2px 6px;
+    font-variant-numeric: tabular-nums;
+  }
+  .lbl b {
+    font-family: "Archivo Narrow", "Arial Narrow", sans-serif;
+    font-weight: 700;
+    letter-spacing: .06em;
+    color: var(--accent);
+    margin-right: 5px;
+  }
+  .lbl.corner { border-color: var(--accent); }
+  .lbl.slope { color: var(--fg-soft); }
+  .lbl.behind { opacity: .38; }
+
+  /* ---------- panel ---------- */
+
+  .panel {
+    border: 1px solid var(--line);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+  }
+
+  .panel section { padding: 14px; }
+  .panel section + section { border-top: 1px solid var(--line); }
+
+  .panel h2 {
+    font-family: "Archivo Narrow", "Arial Narrow", sans-serif;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--fg-faint);
+    margin: 0 0 10px;
+  }
+
+  .ctl { margin-bottom: 12px; }
+  .ctl:last-child { margin-bottom: 0; }
+  .ctl-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 13px;
+    color: var(--fg-soft);
+    margin-bottom: 2px;
+  }
+  .ctl-label output {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12.5px;
+    color: var(--fg);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .seg { display: flex; gap: 0; margin-top: 4px; }
+  .seg button {
+    flex: 1;
+    font-family: "Archivo Narrow", "Arial Narrow", sans-serif;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--fg-soft);
+    background: transparent;
+    border: 1px solid var(--line);
+    padding: 7px 4px;
+    min-height: 34px;
+    cursor: pointer;
+  }
+  .seg button + button { border-left: 0; }
+  .seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+  .seg button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .layers { display: flex; flex-direction: column; gap: 1px; }
+
+  .layer {
+    display: grid;
+    grid-template-columns: 18px 12px 1fr auto;
+    align-items: center;
+    gap: 9px;
+    padding: 7px 4px;
+    cursor: pointer;
+    min-height: 38px;
+    border-radius: 2px;
+  }
+  .layer:hover { background: var(--raised); }
+  .layer input { margin: 0; width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; }
+  .layer input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .swatch {
+    width: 12px; height: 12px;
+    border: 1px solid color-mix(in srgb, var(--fg) 22%, transparent);
+  }
+
+  .layer .name { font-size: 13.5px; line-height: 1.25; }
+  .layer .spec {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 10.5px;
+    color: var(--fg-faint);
+    text-align: right;
+    white-space: nowrap;
+  }
+  .layer.off .name, .layer.off .spec { color: var(--fg-faint); }
+  .layer.off .swatch { opacity: .35; }
+
+  .rowbtns { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .rowbtns button, .step {
+    flex: 1;
+    min-width: 0;
+    font-family: "Archivo Narrow", "Arial Narrow", sans-serif;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--fg-soft);
+    background: transparent;
+    border: 1px solid var(--line);
+    padding: 8px 4px;
+    cursor: pointer;
+    min-height: 36px;
+    white-space: nowrap;
+  }
+  .rowbtns button:hover, .step:hover { color: var(--fg); border-color: var(--accent); }
+  .rowbtns button:focus-visible, .step:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .step { flex: none; width: 36px; padding: 0; font-size: 15px; }
+
+  .slider-row { display: flex; align-items: center; gap: 8px; }
+  .slider-row input[type=range] {
+    flex: 1;
+    min-width: 0;
+    accent-color: var(--accent);
+    height: 28px;
+    cursor: pointer;
+  }
+  .slider-row input:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .slider-row output {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px;
+    color: var(--fg-faint);
+    min-width: 34px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .grp {
+    font-family: "Archivo Narrow", "Arial Narrow", sans-serif;
+    font-weight: 600; font-size: 10px; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--fg-faint);
+    margin: 12px 0 3px; padding-top: 9px;
+    border-top: 1px solid var(--line);
+  }
+  .grp:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
+
+  /* ---------- dimensions ---------- */
+
+  dl.dims { margin: 0; display: grid; grid-template-columns: 1fr auto; gap: 5px 12px; }
+  dl.dims dt { color: var(--fg-soft); font-size: 13px; }
+  dl.dims dt i { font-style: normal; color: var(--fg-faint); font-size: 11.5px; }
+  dl.dims dd {
+    margin: 0;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12.5px;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    white-space: nowrap;
+  }
+  dd .given { color: var(--accent); font-size: 10.5px; letter-spacing: .04em; }
+  dd .calc  { color: var(--fg-faint); font-size: 10.5px; letter-spacing: .04em; }
+  dd .asm   { color: var(--warn); font-size: 10.5px; letter-spacing: .04em; }
+  dd.bad    { color: var(--warn); }
+
+  .sub {
+    font-family: "Archivo Narrow", "Arial Narrow", sans-serif;
+    font-weight: 600; font-size: 10px; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--fg-faint);
+    margin: 12px 0 5px;
+  }
+  .small { font-size: 12px; color: var(--fg-faint); margin: 8px 0 0; line-height: 1.45; }
+
+  /* ---------- notes ---------- */
+
+  .notes {
+    margin-top: 22px;
+    border-top: 1px solid var(--line);
+    padding-top: 18px;
+  }
+  .notes h2 {
+    font-family: "Archivo Narrow", "Arial Narrow", sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    margin: 0 0 10px;
+  }
+  .notegrid {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 700px) { .notegrid { grid-template-columns: 1fr 1fr; } }
+
+  .notegrid p { margin: 0 0 9px; color: var(--fg-soft); font-size: 14px; max-width: 62ch; }
+  .notegrid p:last-child { margin-bottom: 0; }
+  .notegrid strong { color: var(--fg); font-weight: 600; }
+
+  footer {
+    margin-top: 24px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+    color: var(--fg-faint);
+    font-size: 12.5px;
+  }
+
+  .fallback {
+    padding: 28px 18px;
+    text-align: center;
+    color: var(--fg-soft);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+  }
+</style>
+
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">Planning model &middot; not yet built</p>
+    <h1>David&rsquo;s Shed</h1>
+    <p class="lede">
+      A shed roof over an irregular four-sided plan. Drag to rotate; two fingers, right-drag
+      or shift-drag to pan; pinch or scroll to zoom. Change the right wall length and the
+      rafter direction in the panel, and every wall length, corner height and rafter
+      updates. Corners are lettered clockwise from the front right: A&nbsp;front&nbsp;right,
+      B&nbsp;front&nbsp;left, C&nbsp;back&nbsp;left, D&nbsp;back&nbsp;right.
+    </p>
+    <p class="caveat">
+      <b>Design, not as-built</b>
+      <span>Back wall 12&prime;, left wall 4&prime; and the right angles at B and D are given.
+      Those alone don&rsquo;t fix the shape, so the right wall is set to 6&prime; and can be
+      changed below. Stud spacing, door height, siding and floor are assumptions.</span>
+    </p>
+  </header>
+
+  <div class="stage">
+
+    <div class="viewport">
+      <canvas id="view" aria-label="Interactive three-dimensional model of David's shed"></canvas>
+      <div class="labels" id="labels"></div>
+      <div class="views">
+        <button type="button" data-view="iso">Iso</button>
+        <button type="button" data-view="front">Front</button>
+        <button type="button" data-view="right">Right</button>
+        <button type="button" data-view="back">Back</button>
+        <button type="button" data-view="plan">Plan</button>
+      </div>
+      <div class="hint" id="hint">drag to rotate &middot; two fingers or right-drag to pan &middot; pinch to zoom</div>
+    </div>
+
+    <div class="panel">
+
+      <section>
+        <h2>Design</h2>
+
+        <div class="ctl">
+          <div class="ctl-label"><span>Right wall (D&ndash;A)</span><output id="rightOut" for="right"></output></div>
+          <div class="slider-row">
+            <button type="button" class="step" id="rightDn" aria-label="Right wall one inch shorter">&minus;</button>
+            <input type="range" id="right" min="24" max="192" step="1" value="72"
+                   aria-label="Right wall length in inches">
+            <button type="button" class="step" id="rightUp" aria-label="Right wall one inch longer">+</button>
+          </div>
+        </div>
+
+        <div class="ctl">
+          <div class="ctl-label"><span>Rafters square to</span></div>
+          <div class="seg" id="modeSeg">
+            <button type="button" data-mode="back">Back wall</button>
+            <button type="button" data-mode="front">Front wall</button>
+          </div>
+        </div>
+
+        <div class="ctl">
+          <div class="ctl-label"><span>Rafter spacing</span></div>
+          <div class="seg" id="ocSeg">
+            <button type="button" data-oc="16">16&Prime; o.c.</button>
+            <button type="button" data-oc="24">24&Prime; o.c.</button>
+          </div>
+        </div>
+
+        <div class="ctl">
+          <div class="ctl-label"><span>Door swing</span><output id="swingOut" for="swing">0&deg;</output></div>
+          <div class="slider-row">
+            <input type="range" id="swing" min="0" max="90" step="1" value="0"
+                   aria-label="Open the double doors">
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Walls <span style="text-transform:none;letter-spacing:0">&mdash; outside of framing</span></h2>
+        <dl class="dims" id="wallDims"></dl>
+        <p class="sub">Corner heights</p>
+        <dl class="dims" id="cornerDims"></dl>
+        <p class="small" id="heightNote"></p>
+      </section>
+
+      <section>
+        <h2>Layers</h2>
+        <div class="layers" id="layers"></div>
+        <div class="rowbtns">
+          <button type="button" id="allOn" title="Every layer on">All</button>
+          <button type="button" id="frameOnly" title="Floor, wall framing, rafters and fascia">Frame</button>
+          <button type="button" id="noRoof" title="Everything except the roof">No roof</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>Separate layers</h2>
+        <div class="slider-row">
+          <input type="range" id="explode" min="0" max="100" value="0"
+                 aria-label="Separate layers vertically">
+          <output id="explodeOut" for="explode">0&prime;</output>
+        </div>
+      </section>
+
+      <section>
+        <h2>Layout</h2>
+        <dl class="dims" id="layoutDims"></dl>
+        <p class="small">Diagonals are for squaring the layout on site. Because B and D are
+        both 90&deg;, all four corners lie on a circle with A&ndash;C as its diameter.</p>
+      </section>
+
+      <section>
+        <h2>Roof</h2>
+        <dl class="dims" id="roofDims"></dl>
+      </section>
+
+      <section>
+        <h2>Rafters</h2>
+        <dl class="dims" id="rafterDims"></dl>
+        <p class="small">Lengths are the long point along the slope, overhangs included,
+        between the fascia boards. Oblique ends are cut plumb and at an angle.</p>
+      </section>
+
+      <section>
+        <h2>Studs &amp; door</h2>
+        <dl class="dims" id="studDims"></dl>
+      </section>
+
+    </div>
+  </div>
+
+  <div class="notes">
+    <h2>Reading the model</h2>
+    <div class="notegrid">
+      <div>
+        <p><strong>The given numbers don&rsquo;t fix the shape.</strong> A 12&prime; back wall,
+        a 4&prime; left wall and right angles at B and D leave one thing free. The front wall
+        and the angles at A and C depend on the right wall length:
+        front&nbsp;=&nbsp;&radic;(right&sup2;&nbsp;+&nbsp;128), with lengths in feet. Set the
+        right wall to 4&prime; and the shed is a plain 12&prime;&times;4&prime; rectangle. A
+        longer right wall swings corner B out past the end of the back wall.</p>
+
+        <p><strong>Heights are floor to the top of the wall framing,</strong> taken at the
+        outside corner. That plane is where the rafters bear, so it rises 3 in 12. The
+        overhang is measured level, 12&Prime; out from the outside face of the framing.</p>
+      </div>
+      <div>
+        <p><strong>Which wall the rafters are square to decides which wall is level.</strong>
+        Square to the back wall, the back top plate is level at 7&prime;, and the front wall,
+        which isn&rsquo;t parallel to the back, rises along its length. Square to the front
+        wall, the front plate is level and the back one slopes instead. The back
+        wall&rsquo;s low corner stays at 7&prime;.</p>
+
+        <p><strong>Either way, two walls get raked top plates.</strong> The plates of every
+        wall that isn&rsquo;t square to the rafters slope, and so do their stud tops.
+        Toggle the rafter direction to see which walls those are, and read the stud
+        lengths in the panel.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    Geometry generated from the design dimensions — no CAD file, nothing hand-modelled.
+    Change a number and the shed changes shape.
+  </footer>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  var canvas = document.getElementById('view');
+  if (!window.THREE) {
+    canvas.parentNode.innerHTML =
+      '<div class="fallback">The 3D library could not load, so the model can&rsquo;t be shown. ' +
+      'Reload the page, or check the network connection.</div>';
+    return;
+  }
+
+  // ---------------------------------------------------------------- design
+
+  var IN = 1 / 12;                 // scene unit is one foot
+
+  // Given by David.
+  var BACK = 12;                   // back wall C-D
+  var LEFT = 4;                    // left wall B-C
+  var BACK_H = 7;                  // back wall height
+  var PITCH = 3 / 12;              // rises from back to front
+  var OH = 12 * IN;                // overhang on every wall, measured level
+  var DOOR_W = 60 * IN;            // double door, combined width, centred
+
+  // Assumed. Change these when they're decided.
+  var DOOR_H = 80 * IN;            // 6'-8" leaves
+  var RO_W = DOOR_W + 2 * IN;      // rough opening: jambs and shim space
+  var RO_H = DOOR_H + 2 * IN;
+  var HEADER = 5.5 * IN;           // doubled 2x6 on edge
+  var STUD_OC = 16 * IN;
+  var SID = 0.625 * IN;            // T1-11 or similar
+  var DECK = 0.5 * IN;             // roof sheathing
+  var FLOOR_T = 4 * IN;            // floor or slab, drawn only for context
+
+  var T2 = 1.5 * IN, D2 = 3.5 * IN;        // 2x4 actual
+  var SLOPE = Math.sqrt(1 + PITCH * PITCH);  // sloped length per unit of run
+  var RAFTER_V = D2 * SLOPE;                  // plumb depth of a 2x4 rafter
+
+  var state = { right: 72, mode: 'back', oc: 24, swing: 0 };
+
+  // Shareable: #right=72&rafters=back&oc=24
+  try {
+    location.hash.replace(/^#/, '').split('&').forEach(function (kv) {
+      var p = kv.split('=');
+      if (p[0] === 'right' && +p[1] >= 24 && +p[1] <= 192) state.right = Math.round(+p[1]);
+      if (p[0] === 'rafters' && (p[1] === 'back' || p[1] === 'front')) state.mode = p[1];
+      if (p[0] === 'oc' && (p[1] === '16' || p[1] === '24')) state.oc = +p[1];
+    });
+  } catch (e) {}
+
+  function saveHash() {
+    try {
+      history.replaceState(null, '', '#right=' + state.right + '&rafters=' + state.mode + '&oc=' + state.oc);
+    } catch (e) {}
+  }
+
+  // ---------------------------------------------------------------- formatting
+
+  var FR = ['', '⅛', '¼', '⅜', '½', '⅝', '¾', '⅞'];
+  function ftin(ft) {
+    var e = Math.round(Math.abs(ft) * 96);
+    var f = Math.floor(e / 96), r = e - f * 96;
+    return (ft < 0 && e ? '−' : '') + f + '′-' + Math.floor(r / 8) + FR[r % 8] + '″';
+  }
+  function deg(rad) { return (rad * 180 / Math.PI).toFixed(1) + '°'; }
+
+  // ---------------------------------------------------------------- plan geometry
+  //
+  // Plan points are [x, z]: x to the right, z toward the front. C is the origin and
+  // the back wall runs along +x. Right angles at D and B leave one free dimension,
+  // taken here as the right wall. With B = C + 4u, the front wall is square to u
+  // when (A - C) . u = 4, which fixes u.
+
+  function solvePlan(right) {
+    var C = [0, 0], D = [BACK, 0], A = [BACK, right];
+    var r = Math.hypot(BACK, right);
+    var psi = Math.atan2(right, BACK) + Math.acos(LEFT / r);   // interior angle at C
+    var B = [LEFT * Math.cos(psi), LEFT * Math.sin(psi)];
+    return { A: A, B: B, C: C, D: D, psi: psi };
+  }
+
+  function sub(a, b) { return [a[0] - b[0], a[1] - b[1]]; }
+  function add(a, b) { return [a[0] + b[0], a[1] + b[1]]; }
+  function mul(a, s) { return [a[0] * s, a[1] * s]; }
+  function dot(a, b) { return a[0] * b[0] + a[1] * b[1]; }
+  function len(a) { return Math.hypot(a[0], a[1]); }
+  function unit(a) { var l = len(a); return [a[0] / l, a[1] / l]; }
+
+  // Built fresh on every change.
+  var P, walls, plane, g;
+
+  function setup() {
+    var s = solvePlan(state.right * IN);
+    // centre the plan on its bounding box
+    var pts = [s.A, s.B, s.C, s.D];
+    var xs = pts.map(function (p) { return p[0]; }), zs = pts.map(function (p) { return p[1]; });
+    var off = [-(Math.min.apply(null, xs) + Math.max.apply(null, xs)) / 2,
+               -(Math.min.apply(null, zs) + Math.max.apply(null, zs)) / 2];
+    P = { A: add(s.A, off), B: add(s.B, off), C: add(s.C, off), D: add(s.D, off), psi: s.psi };
+    var cen = mul(add(add(P.A, P.B), add(P.C, P.D)), 0.25);
+
+    // Walls in corner order, each running from its first letter to its second.
+    walls = [
+      { key: 'AB', name: 'Front', p0: P.A, p1: P.B },
+      { key: 'BC', name: 'Left',  p0: P.B, p1: P.C },
+      { key: 'CD', name: 'Back',  p0: P.C, p1: P.D },
+      { key: 'DA', name: 'Right', p0: P.D, p1: P.A }
+    ];
+    walls.forEach(function (w) {
+      w.len = len(sub(w.p1, w.p0));
+      w.dir = unit(sub(w.p1, w.p0));
+      var n = [-w.dir[1], w.dir[0]];
+      w.n = dot(n, sub(cen, w.p0)) > 0 ? n : mul(n, -1);      // inward normal
+    });
+
+    // The wall-top plane: floor to top of framing, rising PITCH along g.
+    if (state.mode === 'back') {
+      g = walls[2].n;                                   // square to the back wall
+      plane = { c: 0, ax: PITCH * g[0], az: PITCH * g[1] };
+      plane.c = BACK_H - hAt(P.C);
+    } else {
+      g = mul(walls[0].n, -1);                          // square to the front wall
+      plane = { c: 0, ax: PITCH * g[0], az: PITCH * g[1] };
+      plane.c = BACK_H - Math.min(hAt(P.C), hAt(P.D));  // low back corner at 7'
+    }
+  }
+
+  function hAt(p) { return plane.c + plane.ax * p[0] + plane.az * p[1]; }
+  function flat(y) { return { c: y, ax: 0, az: 0 }; }
+  function lift(pl, dy) { return { c: pl.c + dy, ax: pl.ax, az: pl.az }; }
+  function ev(pl, p) { return pl.c + pl.ax * p[0] + pl.az * p[1]; }
+
+  // A line parallel to wall i, moved d inward (negative d is outside).
+  function offLine(i, d) {
+    var w = walls[i];
+    return { p: add(w.p0, mul(w.n, d)), d: w.dir };
+  }
+  function meet(l1, l2) {
+    var cross = l1.d[0] * l2.d[1] - l1.d[1] * l2.d[0];
+    var dx = l2.p[0] - l1.p[0], dz = l2.p[1] - l1.p[1];
+    var t = (dx * l2.d[1] - dz * l2.d[0]) / cross;
+    return [l1.p[0] + l1.d[0] * t, l1.p[1] + l1.d[1] * t];
+  }
+  // Point on wall i at distance s along it and d in from its outside face. 'S' and
+  // 'E' mean the mitred corner at the start or end, found against the neighbour.
+  function pt(i, s, d) {
+    if (s === 'S') return meet(offLine(i, d), offLine((i + 3) % 4, d));
+    if (s === 'E') return meet(offLine(i, d), offLine((i + 1) % 4, d));
+    var w = walls[i];
+    return add(add(w.p0, mul(w.dir, s)), mul(w.n, d));
+  }
+  function along(i, p) { return dot(sub(p, walls[i].p0), walls[i].dir); }
+
+  function strip(i, s0, s1, d0, d1) {
+    return [pt(i, s0, d0), pt(i, s1, d0), pt(i, s1, d1), pt(i, s0, d1)];
+  }
+
+  function interiorAngle(i) {           // at the start corner of wall i
+    var a = walls[i].dir, b = mul(walls[(i + 3) % 4].dir, -1);
+    return Math.acos(Math.max(-1, Math.min(1, dot(a, b))));
+  }
+
+  function area(poly) {
+    var s = 0;
+    for (var i = 0; i < poly.length; i++) {
+      var p = poly[i], q = poly[(i + 1) % poly.length];
+      s += p[0] * q[1] - q[0] * p[1];
+    }
+    return Math.abs(s) / 2;
+  }
+
+  // Keep the part of a convex polygon where n.p <= v.
+  function clipHalf(poly, n, v) {
+    var out = [];
+    for (var i = 0; i < poly.length; i++) {
+      var p = poly[i], q = poly[(i + 1) % poly.length];
+      var dp = dot(n, p) - v, dq = dot(n, q) - v;
+      if (dp <= 0) out.push(p);
+      if ((dp < 0 && dq > 0) || (dp > 0 && dq < 0)) out.push(add(p, mul(sub(q, p), dp / (dp - dq))));
+    }
+    return out;
+  }
+
+  // ---------------------------------------------------------------- palette
+
+  var C = {
+    floor:   0xA8A097,
+    plate:   0xA87A49,
+    stud:    0xB98A56,
+    header:  0x9A6C40,
+    siding:  0xE3D8C2,
+    door:    0x6F7F72,
+    rafter:  0xAD7A4A,
+    fascia:  0x8E6A48,
+    deck:    0xC2A071,
+    ground:  0x9A9377,
+    dims:    0x3F7D6B
+  };
+
+  var M = {};
+  Object.keys(C).forEach(function (k) {
+    M[k] = new THREE.MeshStandardMaterial({
+      color: C[k], roughness: 0.86, metalness: 0, side: THREE.DoubleSide });
+  });
+  var EDGE = new THREE.LineBasicMaterial({ color: 0x2E2016, transparent: true, opacity: 0.5 });
+  var DIM  = new THREE.LineBasicMaterial({ color: C.dims });
+  var DASH = new THREE.LineDashedMaterial({ color: C.dims, dashSize: 0.35, gapSize: 0.22 });
+
+  // ---------------------------------------------------------------- scene
+
+  var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+  var scene = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera(40, 1, 0.1, 400);
+
+  var hemi = new THREE.HemisphereLight(0xffffff, 0x6a5c4a, 0.62);
+  scene.add(hemi);
+
+  var sun = new THREE.DirectionalLight(0xfff2dd, 1.0);
+  sun.position.set(14, 22, 12);
+  sun.castShadow = true;
+  sun.shadow.mapSize.width = 1024;
+  sun.shadow.mapSize.height = 1024;
+  sun.shadow.camera.near = 1;
+  sun.shadow.camera.far = 70;
+  sun.shadow.camera.left = -16;
+  sun.shadow.camera.right = 16;
+  sun.shadow.camera.top = 16;
+  sun.shadow.camera.bottom = -16;
+  sun.shadow.bias = -0.0012;
+  sun.shadow.normalBias = 0.05;     // members are double-sided; without this they self-shadow in stripes
+  scene.add(sun);
+
+  var fill = new THREE.DirectionalLight(0xcfe0ff, 0.35);
+  fill.position.set(-10, 8, -12);
+  scene.add(fill);
+
+  (function () {
+    var groundMat = new THREE.MeshStandardMaterial({ color: C.ground, roughness: 1, side: THREE.FrontSide });
+    var plane = new THREE.Mesh(new THREE.CircleGeometry(80, 64), groundMat);
+    plane.rotation.x = -Math.PI / 2;
+    plane.position.y = -FLOOR_T - 0.01;
+    plane.receiveShadow = true;
+    scene.add(plane);
+  })();
+
+  // ---------------------------------------------------------------- layers
+
+  var LAYERS = [
+    { g:'Structure',  id:'floor',   name:'Floor',             spec:'TBD',        color:C.floor,  ex:0.0, on:true },
+    { g:'Structure',  id:'walls',   name:'Wall framing',      spec:'2x4 @16"',   color:C.stud,   ex:1.0, on:true },
+    { g:'Structure',  id:'siding',  name:'Siding',            spec:'5/8" panel', color:C.siding, ex:1.6, on:true },
+    { g:'Structure',  id:'doors',   name:'Double doors',      spec:'2 x 30"',    color:C.door,   ex:1.7, on:true },
+    { g:'Structure',  id:'rafters', name:'Rafters',           spec:'2x4',        color:C.rafter, ex:3.0, on:true },
+    { g:'Structure',  id:'fascia',  name:'Fascia',            spec:'2x4',        color:C.fascia, ex:3.0, on:true },
+    { g:'Structure',  id:'deck',    name:'Roof sheathing',    spec:'1/2" ply',   color:C.deck,   ex:4.0, on:true },
+
+    { g:'Annotation', id:'dims',    name:'Dimensions',        spec:'lengths, hts', color:C.dims, ex:0.0, on:true },
+    { g:'Annotation', id:'plan',    name:'Overhang & swing',  spec:'on ground',  color:C.dims,   ex:0.0, on:true }
+  ];
+
+  var G = {};
+  var shed = new THREE.Group();
+  scene.add(shed);
+  LAYERS.forEach(function (l) {
+    var grp = new THREE.Group();
+    grp.visible = l.on;
+    G[l.id] = grp;
+    shed.add(grp);
+  });
+
+  // ---------------------------------------------------------------- helpers
+
+  // A prism over a convex plan polygon, with planar bottom and top surfaces. Every
+  // member here is one: studs with raked tops, mitred plates, rafters with
+  // plumb-cut oblique ends, the roof deck.
+  function prism(grp, poly, bot, top, m, edges) {
+    if (poly.length < 3) return null;
+    var s = 0;
+    for (var i = 0; i < poly.length; i++) {
+      var p = poly[i], q = poly[(i + 1) % poly.length];
+      s += p[1] * q[0] - p[0] * q[1];
+    }
+    if (s < 0) poly = poly.slice().reverse();
+
+    var n = poly.length, pos = [];
+    function v(p, pl) { pos.push(p[0], ev(pl, p), p[1]); }
+    for (var k = 1; k < n - 1; k++) {
+      v(poly[0], top); v(poly[k], top); v(poly[k + 1], top);
+      v(poly[0], bot); v(poly[k + 1], bot); v(poly[k], bot);
+    }
+    for (var j = 0; j < n; j++) {
+      var a = poly[j], b = poly[(j + 1) % n];
+      v(a, bot); v(b, bot); v(b, top);
+      v(a, bot); v(b, top); v(a, top);
+    }
+    var geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    geo.computeVertexNormals();
+    var mesh = new THREE.Mesh(geo, m);
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+    grp.add(mesh);
+    if (edges) grp.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo, 20), EDGE));
+    return mesh;
+  }
+
+  function lineStrip(grp, pts, m, dashed) {
+    var geo = new THREE.BufferGeometry().setFromPoints(pts);
+    var l = new THREE.Line(geo, m);
+    if (dashed) l.computeLineDistances();
+    grp.add(l);
+    return l;
+  }
+  function v3(p, y) { return new THREE.Vector3(p[0], y, p[1]); }
+
+  var labels = [];
+  var labelsEl = document.getElementById('labels');
+  function label(grp, p, y, html, cls) {
+    var anchor = new THREE.Object3D();
+    anchor.position.set(p[0], y, p[1]);
+    grp.add(anchor);
+    var el = document.createElement('div');
+    el.className = 'lbl' + (cls ? ' ' + cls : '');
+    el.innerHTML = html;
+    labelsEl.appendChild(el);
+    labels.push({ anchor: anchor, el: el, grp: grp });
+  }
+
+  function clearAll() {
+    LAYERS.forEach(function (l) {
+      var grp = G[l.id];
+      while (grp.children.length) {
+        var c = grp.children.pop();
+        c.traverse(function (o) { if (o.geometry) o.geometry.dispose(); });
+      }
+    });
+    labels = [];
+    labelsEl.innerHTML = '';
+  }
+
+  // ---------------------------------------------------------------- build
+
+  var doorLeaves = [];
+  var report = {};
+
+  function build() {
+    clearAll();
+    setup();
+
+    var top = plane;                          // top of wall framing
+    var outline = [0, 1, 2, 3].map(function (i) { return pt(i, 'S', -OH); });
+
+    // ---- floor, context only ----
+    prism(G.floor, [P.A, P.B, P.C, P.D], flat(-FLOOR_T), flat(0), M.floor, true);
+
+    // ---- wall framing ----
+    var front = walls[0];
+    var doorC = front.len / 2;
+    var roL = doorC - RO_W / 2, roR = doorC + RO_W / 2;
+    var studReport = [];
+
+    walls.forEach(function (w, i) {
+      var isFront = i === 0;
+      var bottomPlates = isFront ? [['S', roL], [roR, 'E']] : [['S', 'E']];
+      bottomPlates.forEach(function (r) {
+        prism(G.walls, strip(i, r[0], r[1], 0, D2), flat(0), flat(T2), M.plate, true);
+      });
+      prism(G.walls, strip(i, 'S', 'E', 0, D2), lift(top, -T2 * 2), lift(top, -T2), M.plate, true);
+      prism(G.walls, strip(i, 'S', 'E', 0, D2), lift(top, -T2), top, M.plate, true);
+
+      // Full-depth studs have to stay inside the mitred plates at both ends.
+      var sa = Math.max(0, along(i, pt(i, 'S', D2)));
+      var sb = Math.min(w.len, along(i, pt(i, 'E', D2)));
+      var xs = [sa + T2 / 2, sb - T2 / 2];
+      for (var s = STUD_OC; s < sb - T2 * 1.5; s += STUD_OC) {
+        if (s < sa + T2 * 1.5) continue;
+        if (isFront && s > roL - T2 * 2.5 && s < roR + T2 * 2.5) continue;
+        xs.push(s);
+      }
+      if (isFront) xs.push(roL - T2 * 1.5, roR + T2 * 1.5);     // kings
+
+      var lengths = [];
+      xs.forEach(function (x) {
+        var poly = strip(i, x - T2 / 2, x + T2 / 2, 0, D2);
+        prism(G.walls, poly, flat(T2), lift(top, -T2 * 2), M.stud, true);
+        // long point on the outside face; plates are level across their depth
+        lengths.push(Math.max(ev(top, poly[0]), ev(top, poly[1])) - T2 * 3);
+      });
+      studReport.push({ w: w, n: xs.length, min: Math.min.apply(null, lengths), max: Math.max.apply(null, lengths) });
+    });
+
+    // ---- door framing: jacks, header, cripples ----
+    var roPoly = strip(0, roL - T2, roR + T2, 0, D2);
+    var plateUnder = Math.min.apply(null, roPoly.map(function (p) { return ev(top, p); })) - T2 * 2;
+    var headerTop = RO_H + HEADER;
+    var headerFits = headerTop <= plateUnder + 1e-6;
+    var hTop = Math.min(headerTop, plateUnder), hBot = hTop - HEADER;
+    [[roL - T2, roL], [roR, roR + T2]].forEach(function (r) {
+      prism(G.walls, strip(0, r[0], r[1], 0, D2), flat(T2), flat(hBot), M.stud, true);
+    });
+    prism(G.walls, roPoly, flat(hBot), flat(hTop), M.header, true);
+    var cripples = 0;
+    for (var cs = STUD_OC; cs < front.len; cs += STUD_OC) {
+      if (cs <= roL || cs >= roR) continue;
+      var cp = strip(0, cs - T2 / 2, cs + T2 / 2, 0, D2);
+      if (Math.min.apply(null, cp.map(function (p) { return ev(top, p); })) - T2 * 2 - hTop < 1 * IN) continue;
+      prism(G.walls, cp, flat(hTop), lift(top, -T2 * 2), M.stud, true);
+      cripples++;
+    }
+
+    // ---- siding, up to the underside of the roof deck ----
+    var sideTop = lift(top, RAFTER_V);
+    walls.forEach(function (w, i) {
+      var runs = i === 0 ? [['S', roL, 0], [roR, 'E', 0], [roL, roR, RO_H]] : [['S', 'E', 0]];
+      runs.forEach(function (r) {
+        prism(G.siding, strip(i, r[0], r[1], -SID, 0), flat(r[2] || -2 * IN), sideTop, M.siding, true);
+      });
+    });
+
+    // ---- double doors, hinged at the outer edges, swinging out ----
+    doorLeaves = [];
+    var leafW = DOOR_W / 2;
+    [[doorC - DOOR_W / 2, 1], [doorC + DOOR_W / 2, -1]].forEach(function (h) {
+      var pivot = new THREE.Group();
+      var hinge = pt(0, h[0], -SID - 0.9 * IN);
+      pivot.position.set(hinge[0], 0.5 * IN, hinge[1]);
+      var leaf = new THREE.Mesh(new THREE.BoxGeometry(leafW - 0.15 * IN, DOOR_H, 1.5 * IN), M.door);
+      leaf.position.set(leafW / 2, DOOR_H / 2, 0);
+      leaf.castShadow = true;
+      pivot.add(leaf);
+      var le = new THREE.LineSegments(new THREE.EdgesGeometry(leaf.geometry), EDGE);
+      le.position.copy(leaf.position);
+      pivot.add(le);
+      G.doors.add(pivot);
+      doorLeaves.push({ pivot: pivot, b: mul(front.dir, h[1]), o: mul(front.n, -1) });
+    });
+    setSwing();
+
+    // ---- rafters, square to the chosen wall, laid out from the wall parallel to them ----
+    var inner = [0, 1, 2, 3].map(function (i) { return pt(i, 'S', -OH + T2); });
+    var nv = [-g[1], g[0]];                                  // across the rafters
+    var parallel = walls[state.mode === 'back' ? 3 : 1];     // right wall, or left wall
+    var nw = dot(nv, parallel.p0);
+    var sgn = dot(nv, mul(add(add(P.A, P.B), add(P.C, P.D)), 0.25)) > nw ? 1 : -1;
+    var oc = state.oc * IN;
+    var rafters = [];
+    for (var j = 0; j < 40; j++) {
+      var c = nw + sgn * (T2 / 2 + j * oc);
+      var poly = clipHalf(clipHalf(inner, nv, c + T2 / 2), mul(nv, -1), -(c - T2 / 2));
+      if (poly.length < 3) break;
+      var ts = poly.map(function (p) { return dot(g, p); });
+      var run = Math.max.apply(null, ts) - Math.min.apply(null, ts);
+      if (run < 6 * IN) break;
+      prism(G.rafters, poly, top, lift(top, RAFTER_V), M.rafter, true);
+      rafters.push(run * SLOPE);
+    }
+
+    // ---- fascia, a 2x4 frame round the overhang ----
+    walls.forEach(function (w, i) {
+      prism(G.fascia, strip(i, 'S', 'E', -OH, -OH + T2), top, lift(top, RAFTER_V), M.fascia, true);
+    });
+
+    // ---- roof sheathing ----
+    prism(G.deck, outline, lift(top, RAFTER_V), lift(top, RAFTER_V + DECK * SLOPE), M.deck, true);
+
+    // ---- dimensions: wall lengths on the ground, corner heights at the corners ----
+    var DIMOFF = -OH - 1.1;
+    walls.forEach(function (w, i) {
+      var a = pt(i, 0, DIMOFF), b = pt(i, w.len, DIMOFF);
+      lineStrip(G.dims, [v3(a, 0.03), v3(b, 0.03)], DIM);
+      [0, w.len].forEach(function (s) {
+        lineStrip(G.dims, [v3(pt(i, s, -0.25), 0.03), v3(pt(i, s, DIMOFF - 0.25), 0.03)], DIM);
+      });
+      label(G.dims, pt(i, w.len / 2, DIMOFF), 0.03,
+        '<b>' + w.name.toUpperCase() + ' ' + w.key[0] + '–' + w.key[1] + '</b>' + ftin(w.len));
+    });
+    'ABCD'.split('').forEach(function (k, i) {
+      var p = P[k], h = hAt(p);
+      var out = pt(i, 'S', -0.35);
+      lineStrip(G.dims, [v3(out, 0), v3(out, h)], DIM);
+      lineStrip(G.dims, [v3(p, h), v3(pt(i, 'S', -0.55), h)], DIM);
+      label(G.dims, pt(i, 'S', -0.6), h + RAFTER_V + 0.75, '<b>' + k + '</b>' + ftin(h), 'corner');
+    });
+
+    // slope arrow on the roof, pointing uphill
+    var mid = mul(add(add(P.A, P.B), add(P.C, P.D)), 0.25);
+    var up = RAFTER_V + DECK * SLOPE + 0.12;
+    var t0 = add(mid, mul(g, -1.8)), t1 = add(mid, mul(g, 1.8));
+    lineStrip(G.dims, [v3(t0, hAt(t0) + up), v3(t1, hAt(t1) + up)], DIM);
+    [1, -1].forEach(function (s) {
+      var w = add(add(mid, mul(g, 1.35)), mul(nv, s * 0.35));
+      lineStrip(G.dims, [v3(w, hAt(w) + up), v3(t1, hAt(t1) + up)], DIM);
+    });
+    label(G.dims, mid, hAt(mid) + up + 0.5, 'rises 3 in 12 &rarr; ' + (state.mode === 'back' ? 'square to back' : 'square to front'), 'slope');
+
+    // ---- plan annotation: overhang line and door swing on the ground ----
+    lineStrip(G.plan, outline.concat([outline[0]]).map(function (p) { return v3(p, 0.02); }), DASH, true);
+    doorLeaves.forEach(function (d) {
+      var hp = [d.pivot.position.x, d.pivot.position.z], pts = [];
+      for (var a = 0; a <= 18; a++) {
+        var th = (a / 18) * Math.PI / 2;
+        pts.push(v3(add(hp, add(mul(d.b, Math.cos(th) * leafW), mul(d.o, Math.sin(th) * leafW))), 0.02));
+      }
+      pts.push(v3(hp, 0.02));
+      lineStrip(G.plan, pts, DIM);
+    });
+
+    report = {
+      rafters: rafters, studs: studReport, outline: outline,
+      headerFits: headerFits, plateUnder: plateUnder, cripples: cripples
+    };
+    applyExplode();
+    fillPanel();
+    saveHash();
+  }
+
+  function setSwing() {
+    var th = state.swing * Math.PI / 180;
+    doorLeaves.forEach(function (d) {
+      var v = add(mul(d.b, Math.cos(th)), mul(d.o, Math.sin(th)));
+      d.pivot.rotation.y = Math.atan2(-v[1], v[0]);
+    });
+  }
+
+  // ---------------------------------------------------------------- panel
+
+  function rows(id, list) {
+    document.getElementById(id).innerHTML = list.map(function (r) {
+      return '<dt>' + r[0] + '</dt><dd' + (r[3] ? ' class="bad"' : '') + '>' + r[1] +
+        (r[2] ? ' <span class="' + r[2].split(':')[0] + '">' + r[2].split(':')[1] + '</span>' : '') + '</dd>';
+    }).join('');
+  }
+
+  function fillPanel() {
+    var given = { CD: 1, BC: 1 };
+    rows('wallDims', walls.map(function (w) {
+      return [w.name + ' <i>' + w.key[0] + '–' + w.key[1] + '</i>', ftin(w.len),
+              given[w.key] ? 'given:given' : (w.key === 'DA' ? 'asm:set' : 'calc:calc')];
+    }));
+    rows('cornerDims', ['A', 'B', 'C', 'D'].map(function (k) {
+      var names = { A: 'front right', B: 'front left', C: 'back left', D: 'back right' };
+      return [k + ' <i>' + names[k] + '</i>', ftin(hAt(P[k])), 'calc:calc'];
+    }));
+    document.getElementById('heightNote').textContent =
+      'Floor to top of wall framing at the outside corner. ' +
+      (state.mode === 'back'
+        ? 'Back plate level at 7′; front plate rises ' + ftin(Math.abs(hAt(P.B) - hAt(P.A))) + ' along its length.'
+        : 'Front plate level; back plate rises ' + ftin(Math.abs(hAt(P.C) - hAt(P.D))) + ' along its length, low corner at 7′.');
+
+    var bRel = [LEFT * Math.cos(P.psi), LEFT * Math.sin(P.psi)];
+    rows('layoutDims', [
+      ['Angle at A', deg(interiorAngle(0)), 'calc:calc'],
+      ['Angle at B', deg(interiorAngle(1)), 'given:given'],
+      ['Angle at C', deg(interiorAngle(2)), 'calc:calc'],
+      ['Angle at D', deg(interiorAngle(3)), 'given:given'],
+      ['Diagonal A–C', ftin(len(sub(P.A, P.C))), 'calc:calc'],
+      ['Diagonal B–D', ftin(len(sub(P.B, P.D))), 'calc:calc'],
+      ['B forward of back wall', ftin(bRel[1]), 'calc:calc'],
+      [bRel[0] < 0 ? 'B left of C' : 'B right of C', ftin(Math.abs(bRel[0])), 'calc:calc'],
+      ['Floor area', (area([P.A, P.B, P.C, P.D])).toFixed(1) + ' ft²', 'calc:calc']
+    ]);
+
+    var oh = report.outline.map(function (p) { return hAt(p); });
+    var eaves = report.outline.map(function (p, i) { return len(sub(report.outline[(i + 1) % 4], p)); });
+    rows('roofDims', [
+      ['Pitch', '3 in 12 · ' + deg(Math.atan(PITCH)), 'given:given'],
+      ['Overhang', ftin(OH) + ' level', 'given:given'],
+      ['Low / high wall top', ftin(Math.min(hAt(P.A), hAt(P.B), hAt(P.C), hAt(P.D))) + ' / ' +
+                              ftin(Math.max(hAt(P.A), hAt(P.B), hAt(P.C), hAt(P.D))), 'calc:calc'],
+      ['Low eave, under rafter', ftin(Math.min.apply(null, oh)), 'calc:calc'],
+      ['High eave, under rafter', ftin(Math.max.apply(null, oh)), 'calc:calc'],
+      ['Roof edges <i>A–B, B–C, C–D, D–A</i>', '', ''],
+      ['', eaves.map(ftin).join(' · '), ''],
+      ['Roof area, on slope', (area(report.outline) * SLOPE).toFixed(1) + ' ft²', 'calc:calc'],
+      ['Sheathing, 4×8 sheets', '≈ ' + Math.ceil(area(report.outline) * SLOPE / 32 * 1.1), 'calc:+10%']
+    ]);
+
+    var STOCK = [8, 10, 12, 14, 16, 18, 20];
+    var groups = {};
+    report.rafters.forEach(function (l) {
+      var k = ftin(l);
+      groups[k] = groups[k] || { n: 0, l: l };
+      groups[k].n++;
+    });
+    var list = Object.keys(groups).map(function (k) { return groups[k]; })
+      .sort(function (a, b) { return b.l - a.l; })
+      .map(function (gp) {
+        var stock = STOCK.filter(function (s) { return s >= gp.l - 1 / 192; })[0];
+        return [gp.n + ' ×', ftin(gp.l) + (stock ? ' <span class="calc">' + stock + '′</span>' : ' <span class="asm">long</span>'), ''];
+      });
+    rows('rafterDims', [['Count, square to ' + state.mode, report.rafters.length + ' @ ' + state.oc + '″ o.c.', 'calc:calc']]
+      .concat(list)
+      .concat([['Fascia, total', ftin(eaves.reduce(function (a, b) { return a + b; }, 0)), 'calc:calc']]));
+
+    var studs = report.studs.map(function (s) {
+      var range = Math.abs(s.max - s.min) < 1 / 96 ? ftin(s.min) : ftin(s.min) + '–' + ftin(s.max);
+      return [s.w.name + ' <i>' + s.n + ' studs, long point</i>', range, ''];
+    });
+    rows('studDims', studs.concat([
+      ['Door, combined', ftin(DOOR_W) + ' × ' + ftin(DOOR_H), 'asm:ht asm'],
+      ['Rough opening', ftin(RO_W) + ' × ' + ftin(RO_H), 'asm:asm'],
+      ['Header, 2-2×6', report.headerFits ? 'fits' : 'too tall', '', !report.headerFits],
+      ['Room above header', ftin(report.plateUnder - RO_H - HEADER), '', !report.headerFits]
+    ]));
+  }
+
+  // ---------------------------------------------------------------- camera rig
+
+  var HOME = new THREE.Vector3(0, 4.4, 0);
+  var target = HOME.clone();
+  var cam = { theta: Math.PI * 0.22, phi: 1.14, radius: 32 };
+
+  var _fwd = new THREE.Vector3(), _right = new THREE.Vector3(), _up = new THREE.Vector3();
+  function panBy(dx, dy) {
+    var scale = cam.radius * 0.0018;
+    _fwd.subVectors(target, camera.position).normalize();
+    _right.crossVectors(_fwd, camera.up).normalize();
+    _up.crossVectors(_right, _fwd).normalize();
+    target.addScaledVector(_right, -dx * scale);
+    target.addScaledVector(_up, dy * scale);
+    target.x = Math.max(HOME.x - 16, Math.min(HOME.x + 16, target.x));
+    target.y = Math.max(-2, Math.min(18, target.y));
+    target.z = Math.max(HOME.z - 16, Math.min(HOME.z + 16, target.z));
+  }
+
+  function applyCamera() {
+    cam.phi = Math.max(0.05, Math.min(Math.PI / 2 + 0.25, cam.phi));
+    cam.radius = Math.max(8, Math.min(70, cam.radius));
+    var sp = Math.sin(cam.phi), cp = Math.cos(cam.phi);
+    camera.position.set(
+      target.x + cam.radius * sp * Math.sin(cam.theta),
+      target.y + cam.radius * cp,
+      target.z + cam.radius * sp * Math.cos(cam.theta)
+    );
+    camera.lookAt(target);
+  }
+
+  var PRESETS = {
+    iso:   { theta: Math.PI * 0.22, phi: 1.14, radius: 32 },
+    front: { theta: 0,              phi: 1.45, radius: 30 },
+    right: { theta: Math.PI / 2,    phi: 1.45, radius: 30 },
+    back:  { theta: Math.PI,        phi: 1.45, radius: 30 },
+    plan:  { theta: 0.0001,         phi: 0.05, radius: 34 }
+  };
+
+  var anim = null;
+  function goTo(p) {
+    idle = false;
+    // take the short way round
+    var dt = p.theta - cam.theta;
+    dt -= Math.round(dt / (Math.PI * 2)) * Math.PI * 2;
+    anim = {
+      from: { theta: cam.theta, phi: cam.phi, radius: cam.radius },
+      to: { theta: cam.theta + dt, phi: p.phi, radius: p.radius }, t: 0,
+      fromTarget: target.clone()
+    };
+  }
+
+  // ---------------------------------------------------------------- interaction
+
+  var idle = true;
+  var hint = document.getElementById('hint');
+  var hintTimer = setTimeout(hideHint, 5200);
+
+  function hideHint() {
+    if (!hint.hidden) { hint.style.opacity = '0'; setTimeout(function () { hint.hidden = true; }, 420); }
+  }
+  function stopIdle() {
+    idle = false; anim = null;
+    clearTimeout(hintTimer); hideHint();
+  }
+
+  var dragging = false, panning = false, lastX = 0, lastY = 0;
+
+  canvas.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+  canvas.addEventListener('mousedown', function (e) {
+    dragging = true;
+    panning = (e.button !== 0) || e.shiftKey;
+    lastX = e.clientX; lastY = e.clientY;
+    stopIdle();
+  });
+  window.addEventListener('mousemove', function (e) {
+    if (!dragging) return;
+    if (panning) panBy(e.clientX - lastX, e.clientY - lastY);
+    else {
+      cam.theta -= (e.clientX - lastX) * 0.0075;
+      cam.phi   -= (e.clientY - lastY) * 0.0065;
+    }
+    lastX = e.clientX; lastY = e.clientY;
+    applyCamera();
+  });
+  window.addEventListener('mouseup', function () { dragging = false; panning = false; });
+
+  canvas.addEventListener('wheel', function (e) {
+    e.preventDefault(); stopIdle();
+    cam.radius *= (1 + Math.max(-0.35, Math.min(0.35, e.deltaY * 0.0016)));
+    applyCamera();
+  }, { passive: false });
+
+  var pinch = 0, panCx = null, panCy = null;
+  canvas.addEventListener('touchstart', function (e) {
+    stopIdle();
+    if (e.touches.length === 1) {
+      lastX = e.touches[0].clientX; lastY = e.touches[0].clientY;
+    } else if (e.touches.length === 2) {
+      pinch = Math.hypot(e.touches[0].clientX - e.touches[1].clientX,
+                         e.touches[0].clientY - e.touches[1].clientY);
+      panCx = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+      panCy = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+    }
+  }, { passive: true });
+
+  canvas.addEventListener('touchmove', function (e) {
+    e.preventDefault();
+    if (e.touches.length === 1) {
+      cam.theta -= (e.touches[0].clientX - lastX) * 0.0085;
+      cam.phi   -= (e.touches[0].clientY - lastY) * 0.0072;
+      lastX = e.touches[0].clientX; lastY = e.touches[0].clientY;
+    } else if (e.touches.length === 2) {
+      var d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX,
+                         e.touches[0].clientY - e.touches[1].clientY);
+      var cx = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+      var cy = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+      if (pinch > 0) cam.radius *= pinch / Math.max(d, 1);
+      if (panCx !== null) panBy(cx - panCx, cy - panCy);
+      pinch = d; panCx = cx; panCy = cy;
+    }
+    applyCamera();
+  }, { passive: false });
+
+  canvas.addEventListener('touchend', function (e) {
+    if (e.touches.length < 2) { pinch = 0; panCx = panCy = null; }
+    if (e.touches.length === 1) { lastX = e.touches[0].clientX; lastY = e.touches[0].clientY; }
+  }, { passive: true });
+
+  // ---------------------------------------------------------------- layer UI
+
+  var layersEl = document.getElementById('layers');
+  var lastGroup = null;
+  LAYERS.forEach(function (l) {
+    if (l.g !== lastGroup) {
+      var h = document.createElement('div');
+      h.className = 'grp';
+      h.textContent = l.g;
+      layersEl.appendChild(h);
+      lastGroup = l.g;
+    }
+    var row = document.createElement('label');
+    row.className = 'layer' + (l.on ? '' : ' off');
+    row.setAttribute('for', 'layer-' + l.id);
+
+    var cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.id = 'layer-' + l.id;
+    cb.checked = l.on;
+
+    var sw = document.createElement('span');
+    sw.className = 'swatch';
+    sw.style.background = '#' + l.color.toString(16).padStart(6, '0');
+
+    var nm = document.createElement('span');
+    nm.className = 'name';
+    nm.textContent = l.name;
+
+    var sp = document.createElement('span');
+    sp.className = 'spec';
+    sp.textContent = l.spec;
+
+    cb.addEventListener('change', function () {
+      G[l.id].visible = cb.checked;
+      row.classList.toggle('off', !cb.checked);
+    });
+
+    row.appendChild(cb); row.appendChild(sw); row.appendChild(nm); row.appendChild(sp);
+    layersEl.appendChild(row);
+    l._cb = cb; l._row = row; l._spec = sp;
+  });
+
+  function setLayers(fn) {
+    LAYERS.forEach(function (l) {
+      var v = fn(l);
+      l._cb.checked = v;
+      G[l.id].visible = v;
+      l._row.classList.toggle('off', !v);
+    });
+  }
+
+  document.getElementById('allOn').addEventListener('click', function () {
+    setLayers(function () { return true; });
+  });
+  var FRAMING = ['floor', 'walls', 'rafters', 'fascia', 'dims'];
+  document.getElementById('frameOnly').addEventListener('click', function () {
+    setLayers(function (l) { return FRAMING.indexOf(l.id) !== -1; });
+  });
+  var ROOF = ['rafters', 'fascia', 'deck'];
+  document.getElementById('noRoof').addEventListener('click', function () {
+    setLayers(function (l) { return ROOF.indexOf(l.id) === -1; });
+  });
+
+  // ---------------------------------------------------------------- design controls
+
+  var rightEl = document.getElementById('right');
+  var rightOut = document.getElementById('rightOut');
+  function setRight(v) {
+    state.right = Math.max(24, Math.min(192, Math.round(v)));
+    rightEl.value = state.right;
+    rightOut.textContent = ftin(state.right * IN);
+    build();
+  }
+  rightEl.addEventListener('input', function () { setRight(+rightEl.value); });
+  document.getElementById('rightDn').addEventListener('click', function () { setRight(state.right - 1); });
+  document.getElementById('rightUp').addEventListener('click', function () { setRight(state.right + 1); });
+
+  function syncSeg(id, attr, val) {
+    Array.prototype.forEach.call(document.querySelectorAll('#' + id + ' button'), function (b) {
+      b.setAttribute('aria-pressed', String(b.getAttribute(attr) === String(val)));
+    });
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('#modeSeg button'), function (b) {
+    b.addEventListener('click', function () {
+      state.mode = b.dataset.mode; syncSeg('modeSeg', 'data-mode', state.mode); build();
+    });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('#ocSeg button'), function (b) {
+    b.addEventListener('click', function () {
+      state.oc = +b.dataset.oc; syncSeg('ocSeg', 'data-oc', state.oc);
+      LAYERS[4]._spec.textContent = '2x4 @' + state.oc + '"';
+      build();
+    });
+  });
+
+  var swingEl = document.getElementById('swing');
+  swingEl.addEventListener('input', function () {
+    state.swing = +swingEl.value;
+    document.getElementById('swingOut').textContent = state.swing + '°';
+    setSwing();
+  });
+
+  // ---------------------------------------------------------------- explode
+
+  var slider = document.getElementById('explode');
+  var out = document.getElementById('explodeOut');
+  function applyExplode() {
+    var v = (+slider.value / 100) * 1.6;
+    LAYERS.forEach(function (l) { G[l.id].position.y = l.ex * v; });
+    out.textContent = v === 0 ? '0′' : (Math.round(v * 10) / 10).toFixed(1) + '′';
+  }
+  slider.addEventListener('input', applyExplode);
+
+  // ---------------------------------------------------------------- presets
+
+  Array.prototype.forEach.call(document.querySelectorAll('.views button'), function (b) {
+    b.addEventListener('click', function () { goTo(PRESETS[b.dataset.view]); });
+  });
+
+  // ---------------------------------------------------------------- theme
+
+  function readTheme() {
+    var cs = getComputedStyle(document.documentElement);
+    var top = cs.getPropertyValue('--scene-top').trim() || '#DCD2BE';
+    var bot = cs.getPropertyValue('--scene-bot').trim() || '#C3B7A0';
+    var dim = cs.getPropertyValue('--dimline').trim() || '#2F6B5A';
+    scene.background = new THREE.Color(bot);
+    hemi.groundColor = new THREE.Color(top).multiplyScalar(0.55);
+    DIM.color = new THREE.Color(dim);
+    DASH.color = new THREE.Color(dim);
+  }
+  readTheme();
+  if (window.matchMedia) {
+    var mq = window.matchMedia('(prefers-color-scheme: dark)');
+    if (mq.addEventListener) mq.addEventListener('change', readTheme);
+    else if (mq.addListener) mq.addListener(readTheme);
+  }
+
+  // ---------------------------------------------------------------- resize & loop
+
+  function resize() {
+    var w = canvas.clientWidth, h = canvas.clientHeight;
+    if (!w || !h) return;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+  window.addEventListener('resize', resize);
+
+  // Labels on the far side of the shed are dimmed, not hidden, so they stay
+  // readable without seeming to belong to the wall in front of them.
+  var _v = new THREE.Vector3(), _occ = new THREE.Raycaster(), _dir = new THREE.Vector3();
+  var SOLID = ['walls', 'siding', 'doors', 'rafters', 'fascia', 'deck'];
+  var occTick = 0;
+  function occlusion() {
+    var meshes = [];
+    SOLID.forEach(function (id) {
+      if (!G[id].visible) return;
+      G[id].traverse(function (o) { if (o.isMesh) meshes.push(o); });
+    });
+    labels.forEach(function (l) {
+      l.anchor.getWorldPosition(_v);
+      _dir.subVectors(_v, camera.position);
+      var dist = _dir.length();
+      _occ.set(camera.position, _dir.normalize());
+      _occ.far = dist - 0.2;
+      l.el.classList.toggle('behind', _occ.intersectObjects(meshes, false).length > 0);
+    });
+  }
+
+  function placeLabels() {
+    if (++occTick % 8 === 0) occlusion();
+    var w = canvas.clientWidth, h = canvas.clientHeight;
+    labels.forEach(function (l) {
+      if (!l.grp.visible) { l.el.style.display = 'none'; return; }
+      l.anchor.getWorldPosition(_v);
+      _v.project(camera);
+      if (_v.z > 1 || _v.z < -1) { l.el.style.display = 'none'; return; }
+      l.el.style.display = '';
+      l.el.style.transform = 'translate(' + ((_v.x + 1) / 2 * w).toFixed(1) + 'px,' +
+        ((1 - _v.y) / 2 * h).toFixed(1) + 'px) translate(-50%,-50%)';
+    });
+  }
+
+  var reduce = window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce) idle = false;
+
+  var last = performance.now();
+  function frame(now) {
+    var dt = Math.min((now - last) / 1000, 0.05);
+    last = now;
+
+    if (idle) cam.theta += dt * 0.07;
+
+    if (anim) {
+      anim.t = Math.min(1, anim.t + dt * (reduce ? 6 : 2.4));
+      var e = 1 - Math.pow(1 - anim.t, 3);
+      cam.theta  = anim.from.theta  + (anim.to.theta  - anim.from.theta)  * e;
+      cam.phi    = anim.from.phi    + (anim.to.phi    - anim.from.phi)    * e;
+      cam.radius = anim.from.radius + (anim.to.radius - anim.from.radius) * e;
+      target.lerpVectors(anim.fromTarget, HOME, e);
+      if (anim.t >= 1) anim = null;
+    }
+
+    resize();
+    applyCamera();
+    renderer.render(scene, camera);
+    placeLabels();
+    requestAnimationFrame(frame);
+  }
+
+  rightEl.value = state.right;
+  rightOut.textContent = ftin(state.right * IN);
+  syncSeg('modeSeg', 'data-mode', state.mode);
+  syncSeg('ocSeg', 'data-oc', state.oc);
+  LAYERS[4]._spec.textContent = '2x4 @' + state.oc + '"';
+  build();
+  applyCamera();
+  requestAnimationFrame(frame);
+})();
+</script>
+
+</body>
+</html>

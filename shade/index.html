@@ -1,0 +1,1975 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { color-scheme: light dark; }
+  body { margin: 0; font: 14px system-ui, -apple-system, "Segoe UI", sans-serif; background: #fafaf9; }
+  img { max-width: 100%; }
+  [hidden] { display: none !important; }
+</style>
+<meta name="robots" content="noindex, nofollow">
+</head>
+<body>
+<title>Yard Shade Planner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+
+<style>
+  :root {
+    --linen:      #EDE6D8;
+    --paper:      #F7F2E8;
+    --ink:        #2B211A;
+    --ink-soft:   #5C4C3E;
+    --ink-faint:  #8A7663;
+    --rule:       #CFC2AB;
+    --verdigris:  #3F7D6B;
+    --warn:       #9A5B2C;
+
+    --ground:  var(--linen);
+    --surface: var(--paper);
+    --raised:  #FFFDF7;
+    --fg:      var(--ink);
+    --fg-soft: var(--ink-soft);
+    --fg-faint:var(--ink-faint);
+    --line:    var(--rule);
+    --accent:  var(--verdigris);
+    --accent-fg: #FFFFFF;
+    --scene-bot: #C9D6DE;
+    --scene-night: #3A4350;
+    --dimline: #2F6B5A;
+    --strip-night: #3B3F4A;
+    --strip-sun:   #F2D27A;
+    --strip-shade: #6C8FA8;
+    --shadow: 0 1px 2px rgba(43,33,26,.07), 0 8px 24px -12px rgba(43,33,26,.18);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:  #17120E;
+      --surface: #1F1913;
+      --raised:  #29211A;
+      --fg:      #EFE7D8;
+      --fg-soft: #C0B09A;
+      --fg-faint:#8E7C67;
+      --line:    #3A2F26;
+      --accent:  #6FBBA2;
+      --accent-fg: #10201B;
+      --scene-bot: #1B2229;
+      --scene-night: #0D1014;
+      --dimline: #7FD3B8;
+      --strip-night: #0F1116;
+      --strip-sun:   #C9A443;
+      --strip-shade: #4F7089;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 30px -14px rgba(0,0,0,.7);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:  #17120E;
+    --surface: #1F1913;
+    --raised:  #29211A;
+    --fg:      #EFE7D8;
+    --fg-soft: #C0B09A;
+    --fg-faint:#8E7C67;
+    --line:    #3A2F26;
+    --accent:  #6FBBA2;
+    --accent-fg: #10201B;
+    --scene-bot: #1B2229;
+    --scene-night: #0D1014;
+    --dimline: #7FD3B8;
+    --strip-night: #0F1116;
+    --strip-sun:   #C9A443;
+    --strip-shade: #4F7089;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 30px -14px rgba(0,0,0,.7);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--fg);
+    font-family: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  .wrap { max-width: 1280px; margin: 0 auto; padding-inline: 16px; padding-block: 20px 32px; }
+
+  header { margin-bottom: 16px; }
+  .eyebrow {
+    font-family: "Archivo Narrow", "Arial Narrow", sans-serif;
+    font-weight: 600; font-size: 12px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--fg-faint); margin: 0 0 2px;
+  }
+  h1 {
+    font-family: "Archivo Narrow", "Arial Narrow", sans-serif;
+    font-weight: 700; font-size: clamp(28px, 6vw, 42px); line-height: 1.02;
+    letter-spacing: -0.01em; margin: 0; text-wrap: balance;
+  }
+  .lede { margin: 8px 0 0; max-width: 68ch; color: var(--fg-soft); }
+
+  .stage { display: grid; grid-template-columns: 1fr; gap: 14px; margin-top: 18px; }
+  @media (min-width: 940px) {
+    .stage { grid-template-columns: minmax(0,1fr) 320px; align-items: start; }
+    .viewport { position: sticky; top: 12px; }
+  }
+
+  .viewport {
+    position: relative; border: 1px solid var(--line); background: var(--scene-bot);
+    overflow: hidden; box-shadow: var(--shadow);
+  }
+  #view { display: block; width: 100%; height: 60vh; min-height: 340px; touch-action: none; cursor: grab; }
+  @media (min-width: 940px) { #view { height: 80vh; max-height: 860px; } }
+
+  .hint {
+    position: absolute; left: 10px; bottom: 10px;
+    font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 11px; letter-spacing: .02em;
+    color: var(--fg-faint); background: color-mix(in srgb, var(--surface) 82%, transparent);
+    border: 1px solid var(--line); padding: 3px 8px; pointer-events: none; transition: opacity .4s ease;
+    max-width: calc(100% - 20px);
+  }
+  .hint[hidden] { display: none !important; }
+
+  .views {
+    position: absolute; right: 10px; top: 10px; display: flex; flex-wrap: wrap;
+    justify-content: flex-end; gap: 4px; max-width: calc(100% - 20px); z-index: 2;
+  }
+  .views button, .rowbtns button, .step, .seg button, .btn {
+    font-family: "Archivo Narrow", "Arial Narrow", sans-serif; font-weight: 600; font-size: 11px;
+    letter-spacing: .1em; text-transform: uppercase; color: var(--fg-soft);
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    border: 1px solid var(--line); padding: 6px 9px; cursor: pointer; min-height: 32px;
+  }
+  .views button:hover, .rowbtns button:hover, .step:hover, .seg button:hover, .btn:hover { color: var(--fg); border-color: var(--accent); }
+  button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .readout {
+    position: absolute; left: 10px; top: 10px; z-index: 2;
+    font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 12px; line-height: 1.35;
+    color: var(--fg); background: color-mix(in srgb, var(--surface) 88%, transparent);
+    border: 1px solid var(--line); padding: 5px 9px; pointer-events: none;
+  }
+  .readout b { font-family: "Archivo Narrow", "Arial Narrow", sans-serif; letter-spacing: .06em; color: var(--accent); }
+
+  .labels { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 1; }
+  .lbl {
+    position: absolute; left: 0; top: 0;
+    font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 11px; line-height: 1.2;
+    white-space: nowrap; color: var(--fg);
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    border: 1px solid var(--line); padding: 1px 5px; font-variant-numeric: tabular-nums;
+  }
+  .lbl b { font-family: "Archivo Narrow", "Arial Narrow", sans-serif; font-weight: 700; letter-spacing: .06em; color: var(--accent); margin-right: 4px; }
+  .lbl.hour { font-size: 10px; padding: 0 4px; border-color: transparent; font-weight: 500; }
+  .lbl.north { font-weight: 700; color: var(--accent); border-color: var(--accent); }
+
+  .panel { border: 1px solid var(--line); background: var(--surface); box-shadow: var(--shadow); }
+  .panel section { padding: 14px; }
+  .panel section + section { border-top: 1px solid var(--line); }
+  .panel h2 {
+    font-family: "Archivo Narrow", "Arial Narrow", sans-serif; font-weight: 600; font-size: 11px;
+    letter-spacing: .14em; text-transform: uppercase; color: var(--fg-faint); margin: 0 0 10px;
+  }
+
+  .ctl { margin-bottom: 11px; }
+  .ctl:last-child { margin-bottom: 0; }
+  .ctl-label { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-size: 13px; color: var(--fg-soft); margin-bottom: 2px; }
+  .ctl-label output { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 12.5px; color: var(--fg); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  .slider-row { display: flex; align-items: center; gap: 8px; }
+  .slider-row input[type=range] { flex: 1; min-width: 0; accent-color: var(--accent); height: 28px; cursor: pointer; }
+  .step { flex: none; width: 36px; padding: 0; font-size: 15px; }
+
+  .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .field { display: flex; flex-direction: column; gap: 2px; font-size: 12px; color: var(--fg-faint); }
+  .field input, .field select, select.full, .num {
+    font: 13px "IBM Plex Mono", ui-monospace, monospace; color: var(--fg);
+    background: var(--raised); border: 1px solid var(--line); padding: 6px 7px; min-height: 34px; width: 100%; min-width: 0;
+  }
+  select.full { font-family: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif; }
+  .btnrow { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+  .btnrow .btn { flex: 1; }
+
+  .seg { display: flex; margin-top: 4px; }
+  .seg button { flex: 1; background: transparent; }
+  .seg button + button { border-left: 0; }
+  .seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+
+  .strip { position: relative; height: 22px; margin-top: 6px; background: var(--strip-night); border: 1px solid var(--line); cursor: pointer; overflow: hidden; }
+  .strip span { position: absolute; top: 0; bottom: 0; }
+  .strip .sun { background: var(--strip-sun); }
+  .strip .shade { background: var(--strip-shade); }
+  .strip .now { width: 2px; margin-left: -1px; background: var(--fg); top: -2px; bottom: -2px; }
+  .ticks { position: relative; height: 16px; font: 10px "IBM Plex Mono", ui-monospace, monospace; color: var(--fg-faint); }
+  .ticks span { position: absolute; transform: translateX(-50%); top: 2px; }
+  .key { display: flex; gap: 12px; flex-wrap: wrap; font-size: 11.5px; color: var(--fg-faint); margin-top: 4px; }
+  .key i { display: inline-block; width: 10px; height: 10px; margin-right: 4px; vertical-align: -1px; border: 1px solid var(--line); }
+
+  dl.dims { margin: 0; display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; }
+  dl.dims dt { color: var(--fg-soft); font-size: 13px; }
+  dl.dims dd { margin: 0; font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 12.5px; font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+  .small { font-size: 12px; color: var(--fg-faint); margin: 8px 0 0; line-height: 1.45; }
+
+  .things { display: flex; flex-direction: column; gap: 4px; margin: 8px 0; }
+  .thing-item {
+    text-align: left; font: 13.5px "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif; color: var(--fg);
+    background: transparent; border: 1px solid var(--line); padding: 7px 9px; min-height: 36px; cursor: pointer;
+  }
+  .thing-item:hover { border-color: var(--accent); }
+  .thing-item[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 3px 0 0 var(--accent); background: var(--raised); }
+  .edit { border-left: 2px solid var(--accent); padding: 6px 0 2px 10px; margin-top: 6px; }
+
+  .sailgrid { display: grid; grid-template-columns: 18px 1fr 1fr 1fr; gap: 5px; align-items: center; }
+  .sailgrid .hd { font-size: 11px; color: var(--fg-faint); text-align: center; }
+  .sailgrid b { font-family: "Archivo Narrow", "Arial Narrow", sans-serif; color: var(--accent); }
+  .num { padding: 5px 4px; text-align: right; }
+
+  .legend { height: 10px; margin-top: 8px; border: 1px solid var(--line);
+    background: linear-gradient(90deg, hsl(220 78% 55%), hsl(275 78% 55%), hsl(330 78% 55%), hsl(25 78% 55%)); }
+  .legend-lbl { display: flex; justify-content: space-between; font-size: 11px; color: var(--fg-faint); }
+
+  .layers { display: flex; flex-direction: column; gap: 1px; }
+  .layer { display: grid; grid-template-columns: 18px 12px 1fr auto; align-items: center; gap: 9px; padding: 6px 4px; cursor: pointer; min-height: 36px; }
+  .layer:hover { background: var(--raised); }
+  .layer input { margin: 0; width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; }
+  .swatch { width: 12px; height: 12px; border: 1px solid color-mix(in srgb, var(--fg) 22%, transparent); }
+  .layer .name { font-size: 13.5px; line-height: 1.25; }
+  .layer .spec { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 10.5px; color: var(--fg-faint); text-align: right; white-space: nowrap; }
+  .layer.off .name, .layer.off .spec { color: var(--fg-faint); }
+  .layer.off .swatch { opacity: .35; }
+  .grp { font-family: "Archivo Narrow", "Arial Narrow", sans-serif; font-weight: 600; font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--fg-faint); margin: 10px 0 3px; padding-top: 8px; border-top: 1px solid var(--line); }
+  .grp:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
+  .rowbtns { display: flex; gap: 6px; margin-top: 10px; }
+  .rowbtns button { flex: 1; background: transparent; }
+
+  .notes { margin-top: 22px; border-top: 1px solid var(--line); padding-top: 18px; }
+  .notes h2 { font-family: "Archivo Narrow", "Arial Narrow", sans-serif; font-weight: 700; font-size: 15px; letter-spacing: .06em; text-transform: uppercase; margin: 0 0 10px; }
+  .notegrid { display: grid; gap: 16px; grid-template-columns: 1fr; }
+  @media (min-width: 700px) { .notegrid { grid-template-columns: 1fr 1fr; } }
+  .notegrid p { margin: 0 0 9px; color: var(--fg-soft); font-size: 14px; max-width: 62ch; }
+  .notegrid strong { color: var(--fg); font-weight: 600; }
+  footer { margin-top: 24px; padding-top: 14px; border-top: 1px solid var(--line); color: var(--fg-faint); font-size: 12.5px; }
+  .fallback { padding: 28px 18px; text-align: center; color: var(--fg-soft); }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+  }
+</style>
+
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">Planning tool &middot; sun and shade</p>
+    <h1>Yard Shade Planner</h1>
+    <p class="lede">
+      Set where the yard is and which way it faces, then pick a month and a time and watch
+      the shadows move. Add a patio set, a tree or a fence, and hang a triangular shade
+      sail: drag its corners in the view and set each corner&rsquo;s height. The coloured
+      outlines on the ground show where the sail&rsquo;s shade falls each hour of the day.
+    </p>
+  </header>
+
+  <div class="stage">
+
+    <div class="viewport">
+      <canvas id="view" aria-label="Three-dimensional view of the yard with sun and shadows"></canvas>
+      <div class="labels" id="labels"></div>
+      <div class="readout" id="readout"></div>
+      <div class="views">
+        <button type="button" data-view="iso">Iso</button>
+        <button type="button" data-view="plan">Plan</button>
+        <button type="button" data-view="house">From house</button>
+        <button type="button" data-view="sun">From sun</button>
+      </div>
+      <div class="hint" id="hint">drag things or sail corners to move them &middot; drag empty space to rotate &middot; pinch or scroll to zoom</div>
+    </div>
+
+    <div class="panel">
+
+      <section>
+        <h2>Date &amp; time</h2>
+        <div class="ctl">
+          <div class="ctl-label"><span>Month <span style="color:var(--fg-faint)">(21st)</span></span><output id="monthOut" for="month"></output></div>
+          <div class="slider-row"><input type="range" id="month" min="1" max="12" step="1" value="6" aria-label="Month"></div>
+        </div>
+        <div class="ctl">
+          <div class="ctl-label"><span>Time of day</span><output id="timeOut" for="time"></output></div>
+          <div class="slider-row">
+            <input type="range" id="time" min="180" max="1380" step="5" value="900" aria-label="Time of day">
+            <button type="button" class="step" id="play" aria-label="Play through the day">&#9654;</button>
+          </div>
+          <div class="strip" id="dayStrip" title="Tap to set the time"></div>
+          <div class="ticks" id="ticks"></div>
+          <div class="key"><span><i style="background:var(--strip-sun)"></i>sun</span><span><i style="background:var(--strip-shade)"></i>shade</span><span><i style="background:var(--strip-night)"></i>night</span></div>
+          <p class="small" id="stripNote"></p>
+        </div>
+        <dl class="dims" id="sunDims"></dl>
+      </section>
+
+      <section>
+        <h2>Location</h2>
+        <select class="full" id="preset" aria-label="Choose a city"></select>
+        <div class="fields" style="margin-top:8px">
+          <label class="field">Latitude<input type="number" id="lat" step="0.0001" min="-60" max="60"></label>
+          <label class="field">Longitude<input type="number" id="lon" step="0.0001" min="-180" max="180"></label>
+          <label class="field">UTC offset, standard<input type="number" id="tz" step="0.5" min="-12" max="14"></label>
+          <label class="field">Daylight saving
+            <select id="dst">
+              <option value="us">N. America</option>
+              <option value="eu">Europe</option>
+              <option value="au">Southern (Oct&ndash;Mar)</option>
+              <option value="none">None</option>
+            </select>
+          </label>
+        </div>
+        <div class="btnrow"><button type="button" class="btn" id="locate">Use my location</button></div>
+        <p class="small" id="locNote">Latitudes are limited to 60&deg; north or south.</p>
+      </section>
+
+      <section>
+        <h2>Yard</h2>
+        <div class="ctl">
+          <div class="ctl-label"><span>Width, side to side</span><output id="yardWOut" for="yardW"></output></div>
+          <div class="slider-row"><input type="range" id="yardW" min="10" max="150" step="1" value="50" aria-label="Yard width in feet"></div>
+        </div>
+        <div class="ctl">
+          <div class="ctl-label"><span>Depth, house to back</span><output id="yardDOut" for="yardD"></output></div>
+          <div class="slider-row"><input type="range" id="yardD" min="10" max="150" step="1" value="36" aria-label="Yard depth in feet"></div>
+        </div>
+        <div class="ctl">
+          <div class="ctl-label"><span>Facing, house to back</span><output id="orientOut" for="orient"></output></div>
+          <div class="slider-row"><input type="range" id="orient" min="0" max="359" step="1" value="0" aria-label="Compass direction from the house toward the back of the yard"></div>
+        </div>
+        <p class="small">Stand at the house looking into the yard: which way are you facing? 0&deg; is north, 90&deg; east.</p>
+      </section>
+
+      <section>
+        <h2>Things in the yard</h2>
+        <div class="fields" style="grid-template-columns:1fr auto">
+          <select class="full" id="addType" aria-label="Structure to add"></select>
+          <button type="button" class="btn" id="addBtn">Add</button>
+        </div>
+        <div class="things" id="thingList"></div>
+        <div id="thingEdit"></div>
+      </section>
+
+      <section>
+        <h2>Shade sail</h2>
+        <div class="sailgrid" id="sailGrid"></div>
+        <p class="small">Feet from the back-left corner of the yard. Drag a corner handle, or the
+        cloth itself, to move it.</p>
+        <dl class="dims" id="sailDims" style="margin-top:10px"></dl>
+      </section>
+
+      <section>
+        <h2>Shade path</h2>
+        <div class="seg" id="pathSeg">
+          <button type="button" data-path="sail">Sail only</button>
+          <button type="button" data-path="all">Everything</button>
+        </div>
+        <div class="legend"></div>
+        <div class="legend-lbl"><span>sunrise</span><span>noon</span><span>sunset</span></div>
+        <p class="small">One outline per hour, labelled with the hour. Outlines for trees and
+        structures are their outer edge &mdash; a pergola&rsquo;s shade is patchier than its outline.</p>
+      </section>
+
+      <section>
+        <h2>Layers</h2>
+        <div class="layers" id="layers"></div>
+        <div class="rowbtns">
+          <button type="button" id="allOn">All</button>
+          <button type="button" id="minimal">Just shade</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>Save &amp; share</h2>
+        <div class="btnrow" style="margin-top:0">
+          <button type="button" class="btn" id="copyLink">Copy link</button>
+          <button type="button" class="btn" id="resetBtn">Reset</button>
+        </div>
+        <input class="num" id="linkOut" readonly hidden style="margin-top:8px;text-align:left" aria-label="Link to this setup">
+        <p class="small" id="shareNote">Your setup is kept in this browser. A copied link includes the
+        latitude and longitude &mdash; think before sharing one for your own yard.</p>
+      </section>
+
+    </div>
+  </div>
+
+  <div class="notes">
+    <h2>How it works</h2>
+    <div class="notegrid">
+      <div>
+        <p><strong>The sun is computed, not looked up.</strong> Position comes from the NOAA
+        solar equations for the 21st of the chosen month, which lands on or next to the
+        solstices and equinoxes. It&rsquo;s good to a few minutes and a fraction of a degree
+        &mdash; far finer than a shade sail needs.</p>
+        <p><strong>Time is clock time.</strong> The standard UTC offset and the daylight-saving
+        rule turn it into sun time, so noon on the slider is not when the sun is highest.
+        Solar noon is listed under the sun figures.</p>
+      </div>
+      <div>
+        <p><strong>Everything is treated as solid.</strong> Real tree canopies and umbrella
+        fabric let some light through, and sails block 80&ndash;95%. The ground is flat, and
+        nothing outside the yard casts shade unless you add it &mdash; a neighbour&rsquo;s house
+        or a big tree can matter more than anything in the yard.</p>
+        <p><strong>The day strip</strong> checks, every five minutes, whether a seated head over
+        the patio table can see the sun. With several patio sets, it follows the one selected.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    Sun position from the NOAA solar calculation; shadows drawn by the 3D renderer; hourly
+    outlines projected along the sun&rsquo;s rays. Nothing here leaves your browser.
+  </footer>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  var canvas = document.getElementById('view');
+  if (!window.THREE) {
+    canvas.parentNode.innerHTML =
+      '<div class="fallback">The 3D library could not load, so the view can&rsquo;t be shown. ' +
+      'Reload the page, or check the network connection.</div>';
+    return;
+  }
+
+  var D2R = Math.PI / 180;
+  var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  var T_MIN = 180, T_MAX = 1380;       // time slider and day strip, clock minutes
+
+  // Cities, not anyone's yard. tz is the STANDARD offset; dst is the rule.
+  var CITIES = [
+    { name: 'Seattle, WA',       lat: 47.6062, lon: -122.3321, tz: -8, dst: 'us' },
+    { name: 'San Francisco, CA', lat: 37.7749, lon: -122.4194, tz: -8, dst: 'us' },
+    { name: 'Los Angeles, CA',   lat: 34.0522, lon: -118.2437, tz: -8, dst: 'us' },
+    { name: 'Phoenix, AZ',       lat: 33.4484, lon: -112.0740, tz: -7, dst: 'none' },
+    { name: 'Denver, CO',        lat: 39.7392, lon: -104.9903, tz: -7, dst: 'us' },
+    { name: 'Dallas, TX',        lat: 32.7767, lon: -96.7970,  tz: -6, dst: 'us' },
+    { name: 'Chicago, IL',       lat: 41.8781, lon: -87.6298,  tz: -6, dst: 'us' },
+    { name: 'Atlanta, GA',       lat: 33.7490, lon: -84.3880,  tz: -5, dst: 'us' },
+    { name: 'Miami, FL',         lat: 25.7617, lon: -80.1918,  tz: -5, dst: 'us' },
+    { name: 'New York, NY',      lat: 40.7128, lon: -74.0060,  tz: -5, dst: 'us' },
+    { name: 'Boston, MA',        lat: 42.3601, lon: -71.0589,  tz: -5, dst: 'us' },
+    { name: 'Toronto, ON',       lat: 43.6532, lon: -79.3832,  tz: -5, dst: 'us' },
+    { name: 'London, UK',        lat: 51.5074, lon: -0.1278,   tz: 0,  dst: 'eu' },
+    { name: 'Sydney, Australia', lat: -33.8688, lon: 151.2093, tz: 10, dst: 'au' }
+  ];
+
+  // ---------------------------------------------------------------- state
+  //
+  // Positions are feet from the BACK-LEFT corner of the yard, as seen standing at the
+  // house: a = across from the left edge, b = in from the back edge. That is how
+  // people measure a yard, and things stay put when the yard is resized.
+
+  function defaults() {
+    return {
+      loc: { name: 'Denver, CO', lat: 39.7392, lon: -104.9903, tz: -7, dst: 'us' },
+      month: new Date().getMonth() + 1,
+      time: 15 * 60,
+      yard: { w: 50, d: 36, orient: 0 },
+      things: [
+        { type: 'patio', a: 20, b: 22, rot: 0, p: { dia: 9 } },
+        { type: 'tree',  a: 42, b: 7,  rot: 0, p: { h: 26 } },
+        { type: 'fence', a: 25, b: 0,  rot: 0, p: { len: 50, h: 6 } }
+      ],
+      sail: [ { a: 10, b: 14, h: 10 }, { a: 28, b: 12, h: 8.5 }, { a: 16, b: 30, h: 9 } ],
+      path: 'sail'
+    };
+  }
+
+  function valid(s) {
+    return s && s.loc && isFinite(s.loc.lat) && isFinite(s.loc.lon) && s.yard &&
+      Array.isArray(s.things) && Array.isArray(s.sail) && s.sail.length === 3;
+  }
+
+  var state = null;
+  try {
+    var m = location.hash.match(/[#&]s=([^&]+)/);
+    if (m) state = JSON.parse(decodeURIComponent(m[1]));
+  } catch (e) { state = null; }
+  if (!valid(state)) {
+    try { state = JSON.parse(localStorage.getItem('yard-shade-v1')); } catch (e) { state = null; }
+  }
+  if (!valid(state)) state = defaults();
+  state.loc.lat = Math.max(-60, Math.min(60, +state.loc.lat));
+  state.things = state.things.filter(function (t) { return t && TYPES_OK(t.type); });
+  function TYPES_OK(k) { return ['patio', 'tree', 'pergola', 'shed', 'fence', 'house'].indexOf(k) !== -1; }
+
+  // Build a plain copy. A replacer can't be used to drop the runtime fields:
+  // JSON.stringify calls three.js's own toJSON on a group before any replacer
+  // sees it, and that overflows the stack.
+  function serial() {
+    return JSON.stringify({
+      loc: state.loc, month: state.month, time: state.time, yard: state.yard, path: state.path,
+      sail: state.sail,
+      things: state.things.map(function (t) { return { type: t.type, a: t.a, b: t.b, rot: t.rot, p: t.p }; })
+    });
+  }
+  var saveTimer = null;
+  function saveSoon() {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(function () {
+      try { localStorage.setItem('yard-shade-v1', serial()); } catch (e) {}
+    }, 400);
+  }
+
+  // ---------------------------------------------------------------- formatting
+
+  function ftin(ft) {
+    var i = Math.round(Math.abs(ft) * 12);
+    return (ft < 0 && i ? '−' : '') + Math.floor(i / 12) + '′-' + (i % 12) + '″';
+  }
+  function feet(ft) { return (Math.round(ft * 10) / 10) + '′'; }
+  function clock(min) {
+    min = Math.round(min);
+    var h = Math.floor(min / 60) % 24, mm = min % 60;
+    var ap = h < 12 ? 'am' : 'pm', h12 = h % 12 === 0 ? 12 : h % 12;
+    return h12 + ':' + (mm < 10 ? '0' : '') + mm + ' ' + ap;
+  }
+  function hourTag(h) { h = h % 24; return (h % 12 === 0 ? 12 : h % 12) + (h < 12 ? 'a' : 'p'); }
+  function dur(min) { min = Math.round(min); return Math.floor(min / 60) + ' h ' + (min % 60) + ' m'; }
+  var POINTS = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
+  function compass(deg) { deg = ((deg % 360) + 360) % 360; return Math.round(deg) + '° ' + POINTS[Math.round(deg / 22.5) % 16]; }
+
+  // ---------------------------------------------------------------- sun
+  //
+  // NOAA general solar position equations. Azimuth is clockwise from north.
+
+  function dstOn(month, rule) {
+    if (rule === 'us') return month >= 3 && month <= 10;     // 2nd Sun Mar - 1st Sun Nov
+    if (rule === 'eu') return month >= 4 && month <= 10;     // last Sun Mar - last Sun Oct
+    if (rule === 'au') return month >= 10 || month <= 3;     // 1st Sun Oct - 1st Sun Apr
+    return false;
+  }
+  function clockOffset() { return +state.loc.tz + (dstOn(state.month, state.loc.dst) ? 1 : 0); }
+
+  var CUM = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
+
+  function solar(minutes) {
+    var tz = clockOffset();
+    var doy = CUM[state.month - 1] + 21;
+    var utcH = minutes / 60 - tz;
+    var gm = 2 * Math.PI / 365 * (doy - 1 + (utcH - 12) / 24);
+    var eqt = 229.18 * (0.000075 + 0.001868 * Math.cos(gm) - 0.032077 * Math.sin(gm) -
+                        0.014615 * Math.cos(2 * gm) - 0.040849 * Math.sin(2 * gm));
+    var decl = 0.006918 - 0.399912 * Math.cos(gm) + 0.070257 * Math.sin(gm) -
+               0.006758 * Math.cos(2 * gm) + 0.000907 * Math.sin(2 * gm) -
+               0.002697 * Math.cos(3 * gm) + 0.00148 * Math.sin(3 * gm);
+    var tst = minutes + eqt + 4 * state.loc.lon - 60 * tz;
+    var ha = (tst / 4 - 180) * D2R;
+    var lat = state.loc.lat * D2R;
+    var sa = Math.sin(lat) * Math.sin(decl) + Math.cos(lat) * Math.cos(decl) * Math.cos(ha);
+    var alt = Math.asin(Math.max(-1, Math.min(1, sa)));
+    var az = Math.atan2(Math.sin(ha), Math.cos(ha) * Math.sin(lat) - Math.tan(decl) * Math.cos(lat)) + Math.PI;
+    return { alt: alt, az: az, eqt: eqt };
+  }
+
+  // Unit vector toward the sun in scene coordinates. The yard's -z axis points from
+  // the house to the back of the yard, along compass bearing yard.orient.
+  function sunVec(s) {
+    var ca = Math.cos(s.alt);
+    var E = ca * Math.sin(s.az), N = ca * Math.cos(s.az);
+    var th = state.yard.orient * D2R;
+    return new THREE.Vector3(E * Math.cos(th) - N * Math.sin(th), Math.sin(s.alt),
+                             -(E * Math.sin(th) + N * Math.cos(th)));
+  }
+
+  function sunEvents() {
+    var H = -0.833 * D2R, rise = null, set = null;
+    function up(mn) { return solar(mn).alt - H >= 0; }
+    function bisect(a, b) {
+      var ua = up(a);
+      for (var k = 0; k < 24; k++) { var mid = (a + b) / 2; if (up(mid) === ua) a = mid; else b = mid; }
+      return (a + b) / 2;
+    }
+    var prev = up(0);
+    for (var mn = 10; mn <= 1440; mn += 10) {
+      var cur = up(mn);
+      if (!prev && cur && rise === null) rise = bisect(mn - 10, mn);
+      if (prev && !cur) set = bisect(mn - 10, mn);
+      prev = cur;
+    }
+    var noon = 720 - solar(720).eqt - 4 * state.loc.lon + 60 * clockOffset();
+    noon = 720 - solar(noon).eqt - 4 * state.loc.lon + 60 * clockOffset();
+    return { rise: rise, set: set, noon: noon, noonAlt: solar(noon).alt };
+  }
+
+  // ---------------------------------------------------------------- scene
+
+  var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+  var scene = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera(40, 1, 0.5, 4000);
+
+  var hemi = new THREE.HemisphereLight(0xdfeaf5, 0x6b6450, 0.55);
+  scene.add(hemi);
+
+  var sun = new THREE.DirectionalLight(0xfff4e0, 1.0);
+  sun.castShadow = true;
+  sun.shadow.mapSize.width = 2048;
+  sun.shadow.mapSize.height = 2048;
+  sun.shadow.camera.near = 1;
+  sun.shadow.camera.far = 900;
+  sun.shadow.bias = -0.0004;
+  sun.shadow.normalBias = 0.04;
+  scene.add(sun);
+  scene.add(sun.target);
+
+  var C = {
+    lawn:    0x7C9A5E,
+    earth:   0xB3A78A,
+    wood:    0xA5773F,
+    darkwood:0x6B4A2E,
+    metal:   0x3E4247,
+    umbrella:0xC25B3F,
+    leaf:    0x5B8A45,
+    trunk:   0x6A4E36,
+    siding:  0xDCD1BC,
+    roof:    0x5E5750,
+    wall:    0xE6DECF,
+    fence:   0xB08A5C,
+    sail:    0xD9C9A2,
+    post:    0x8C8378,
+    handle:  0x2F8F74,
+    sunball: 0xFFD35C
+  };
+
+  var M = {};
+  Object.keys(C).forEach(function (k) {
+    M[k] = new THREE.MeshStandardMaterial({ color: C[k], roughness: 0.85, metalness: 0 });
+  });
+  M.umbrella.side = THREE.DoubleSide;
+  M.sail.side = THREE.DoubleSide;
+  M.leaf.flatShading = true;
+  M.handle = new THREE.MeshStandardMaterial({ color: C.handle, emissive: 0x0e3a2e, roughness: 0.4 });
+  M.sunball = new THREE.MeshBasicMaterial({ color: C.sunball });
+  var LINE = new THREE.LineBasicMaterial({ color: 0x2F6B5A });
+  var FAINT = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.22 });
+  var SAILEDGE = new THREE.LineBasicMaterial({ color: 0x8A7552 });
+
+  // ---------------------------------------------------------------- layers
+
+  var LAYERS = [
+    { g:'Yard',  id:'ground', name:'Ground & lawn',   spec:'',             color:C.lawn,   on:true },
+    { g:'Yard',  id:'grid',   name:'5-foot grid',     spec:'',             color:0xB9CFA0, on:true },
+    { g:'Yard',  id:'things', name:'Things',          spec:'drag to move', color:C.wood,   on:true },
+    { g:'Shade', id:'sail',   name:'Shade sail',      spec:'drag corners', color:C.sail,   on:true },
+    { g:'Shade', id:'posts',  name:'Sail posts',      spec:'',             color:C.post,   on:true },
+    { g:'Shade', id:'path',   name:'Shade path',      spec:'hourly',       color:0xB45AC8, on:true },
+    { g:'Sun',   id:'sky',    name:'Sun & its path',  spec:'',             color:C.sunball,on:true },
+    { g:'Sun',   id:'labels', name:'Labels',          spec:'',             color:0x3F7D6B, on:true }
+  ];
+
+  var G = {};
+  LAYERS.forEach(function (l) {
+    var grp = new THREE.Group();
+    grp.visible = l.on;
+    G[l.id] = grp;
+    scene.add(grp);
+  });
+
+  // ---------------------------------------------------------------- helpers
+
+  function mesh(grp, geo, m, x, y, z) {
+    var o = new THREE.Mesh(geo, m);
+    o.position.set(x || 0, y || 0, z || 0);
+    o.castShadow = true;
+    o.receiveShadow = true;
+    grp.add(o);
+    return o;
+  }
+
+  function clear(grp) {
+    for (var i = grp.children.length - 1; i >= 0; i--) {
+      var c = grp.children[i];
+      grp.remove(c);
+      c.traverse(function (o) {
+        if (o.geometry) o.geometry.dispose();
+        if (o.userData.ownMat && o.material) o.material.dispose();
+      });
+    }
+  }
+
+  function loop(grp, pts, m, closed) {
+    var l = new (closed ? THREE.LineLoop : THREE.Line)(new THREE.BufferGeometry().setFromPoints(pts), m);
+    grp.add(l);
+    return l;
+  }
+
+  function shown(o) {
+    while (o) { if (!o.visible) return false; o = o.parent; }
+    return true;
+  }
+
+  var labels = [];
+  var labelsEl = document.getElementById('labels');
+  function label(owner, grp, pos, html, cls) {
+    var anchor = new THREE.Object3D();
+    anchor.position.copy(pos);
+    grp.add(anchor);
+    var el = document.createElement('div');
+    el.className = 'lbl' + (cls ? ' ' + cls : '');
+    el.innerHTML = html;
+    labelsEl.appendChild(el);
+    labels.push({ owner: owner, anchor: anchor, el: el });
+  }
+  function clearLabels(owner) {
+    labels = labels.filter(function (l) {
+      if (l.owner !== owner) return true;
+      if (l.anchor.parent) l.anchor.parent.remove(l.anchor);
+      l.el.remove();
+      return false;
+    });
+  }
+
+  // yard coordinates (from back-left corner) to scene coordinates
+  function wx(a) { return a - state.yard.w / 2; }
+  function wz(b) { return b - state.yard.d / 2; }
+
+  function hull(pts) {                      // [[x,z]...] -> convex hull, monotone chain
+    pts = pts.slice().sort(function (p, q) { return p[0] - q[0] || p[1] - q[1]; });
+    if (pts.length < 3) return pts;
+    function cross(o, a, b) { return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]); }
+    var lo = [], up = [], i;
+    for (i = 0; i < pts.length; i++) {
+      while (lo.length >= 2 && cross(lo[lo.length - 2], lo[lo.length - 1], pts[i]) <= 0) lo.pop();
+      lo.push(pts[i]);
+    }
+    for (i = pts.length - 1; i >= 0; i--) {
+      while (up.length >= 2 && cross(up[up.length - 2], up[up.length - 1], pts[i]) <= 0) up.pop();
+      up.push(pts[i]);
+    }
+    return lo.slice(0, -1).concat(up.slice(0, -1));
+  }
+
+  // where a point's shadow lands on the ground
+  function project(p, dir) {
+    var t = Math.max(p.y, 0) / dir.y;
+    return [p.x - dir.x * t, p.z - dir.z * t];
+  }
+
+  function hourColor(f) {
+    return new THREE.Color().setHSL(((220 + 165 * Math.max(0, Math.min(1, f))) % 360) / 360, 0.78, 0.55);
+  }
+
+  // ---------------------------------------------------------------- things
+  //
+  // Each build returns the group, the point sets whose shadows are outlined (each
+  // hulled separately), and an optional probe point for the day strip.
+
+  function boxPts(w, h, d, y0) {
+    var out = [];
+    [-1, 1].forEach(function (sx) { [0, 1].forEach(function (sy) { [-1, 1].forEach(function (sz) {
+      out.push(new THREE.Vector3(sx * w / 2, y0 + sy * h, sz * d / 2));
+    }); }); });
+    return out;
+  }
+
+  // A gable roof as a triangular prism, ridge along z.
+  function gable(grp, span, rise, len, m, y) {
+    var s = new THREE.Shape();
+    s.moveTo(-span / 2, 0); s.lineTo(span / 2, 0); s.lineTo(0, rise); s.lineTo(-span / 2, 0);
+    var geo = new THREE.ExtrudeGeometry(s, { depth: len, bevelEnabled: false });
+    geo.translate(0, 0, -len / 2);
+    return mesh(grp, geo, m, 0, y, 0);
+  }
+
+  var TYPES = {
+    patio: {
+      name: 'Patio table & umbrella',
+      params: [{ k: 'dia', label: 'Umbrella across', min: 6, max: 13, step: 0.5, def: 9 }],
+      build: function (p) {
+        var g = new THREE.Group();
+        mesh(g, new THREE.CylinderGeometry(2, 2, 0.1, 32), M.metal, 0, 2.4, 0);
+        mesh(g, new THREE.CylinderGeometry(0.15, 0.3, 2.35, 12), M.metal, 0, 1.18, 0);
+        for (var k = 0; k < 4; k++) {
+          var ang = Math.PI / 4 + k * Math.PI / 2;
+          var c = new THREE.Group();
+          c.position.set(3.1 * Math.sin(ang), 0, 3.1 * Math.cos(ang));
+          c.rotation.y = ang;
+          mesh(c, new THREE.BoxGeometry(1.6, 0.12, 1.6), M.metal, 0, 1.5, 0);
+          mesh(c, new THREE.BoxGeometry(1.6, 1.6, 0.12), M.metal, 0, 2.3, 0.75);
+          [-0.7, 0.7].forEach(function (lx) { [-0.7, 0.7].forEach(function (lz) {
+            mesh(c, new THREE.BoxGeometry(0.08, 1.5, 0.08), M.metal, lx, 0.75, lz);
+          }); });
+          g.add(c);
+        }
+        var pole = mesh(g, new THREE.CylinderGeometry(0.06, 0.06, 8.6, 8), M.metal, 0, 4.3, 0);
+        pole.userData.noRay = true;
+        var r = p.dia / 2, rim = 7.0, ch = r * 0.24;
+        mesh(g, new THREE.ConeGeometry(r, ch, 8, 1, true), M.umbrella, 0, rim + ch / 2, 0);
+        var ring = [new THREE.Vector3(0, rim + ch, 0)];
+        for (var i = 0; i < 8; i++) {
+          var a = i / 8 * Math.PI * 2;
+          ring.push(new THREE.Vector3(r * Math.sin(a), rim, r * Math.cos(a)));
+        }
+        return { group: g, parts: [ring], probe: new THREE.Vector3(0, 3.5, 0) };
+      }
+    },
+
+    tree: {
+      name: 'Shade tree',
+      params: [{ k: 'h', label: 'Height', min: 10, max: 50, step: 1, def: 25 }],
+      build: function (p) {
+        var g = new THREE.Group();
+        var R = 0.32 * p.h, cy = p.h - R;
+        mesh(g, new THREE.CylinderGeometry(0.25 + p.h / 90, 0.35 + p.h / 70, cy, 10), M.trunk, 0, cy / 2, 0);
+        var geo = new THREE.IcosahedronGeometry(R, 1);
+        geo.scale(1, 0.85, 1);
+        mesh(g, geo, M.leaf, 0, cy, 0);
+        var pts = [], pos = geo.attributes.position;
+        for (var i = 0; i < pos.count; i++) pts.push(new THREE.Vector3(pos.getX(i), pos.getY(i) + cy, pos.getZ(i)));
+        return { group: g, parts: [pts], probe: null };
+      }
+    },
+
+    pergola: {
+      name: 'Pergola 10×12',
+      params: [{ k: 'h', label: 'Height', min: 7, max: 11, step: 0.5, def: 8.5 }],
+      build: function (p) {
+        var g = new THREE.Group(), h = p.h;
+        [-4.5, 4.5].forEach(function (x) { [-5.5, 5.5].forEach(function (z) {
+          mesh(g, new THREE.BoxGeometry(0.45, h, 0.45), M.wood, x, h / 2, z);
+        }); });
+        [-4.5, 4.5].forEach(function (x) {
+          mesh(g, new THREE.BoxGeometry(0.25, 0.7, 14), M.wood, x, h - 0.35, 0);
+        });
+        for (var z = -6.5; z <= 6.51; z += 1) {
+          mesh(g, new THREE.BoxGeometry(12, 0.45, 0.15), M.wood, 0, h + 0.225, z);
+        }
+        var top = [];
+        [-6, 6].forEach(function (x) { [-6.5, 6.5].forEach(function (z) { top.push(new THREE.Vector3(x, h + 0.45, z)); }); });
+        return { group: g, parts: [top], probe: null };
+      }
+    },
+
+    shed: {
+      name: 'Garden shed 8×10',
+      params: [],
+      build: function () {
+        var g = new THREE.Group();
+        mesh(g, new THREE.BoxGeometry(8, 7, 10), M.siding, 0, 3.5, 0);
+        gable(g, 9, 2.5, 11, M.roof, 7);
+        mesh(g, new THREE.BoxGeometry(3, 6.3, 0.1), M.darkwood, 0, 3.15, 5.03);
+        var pts = boxPts(9, 7, 11, 0);
+        pts.push(new THREE.Vector3(0, 9.5, -5.5), new THREE.Vector3(0, 9.5, 5.5));
+        return { group: g, parts: [pts], probe: null };
+      }
+    },
+
+    fence: {
+      name: 'Privacy fence',
+      params: [
+        { k: 'len', label: 'Length', min: 4, max: 150, step: 1, def: 16 },
+        { k: 'h', label: 'Height', min: 3, max: 8, step: 0.5, def: 6 }
+      ],
+      build: function (p) {
+        var g = new THREE.Group();
+        mesh(g, new THREE.BoxGeometry(p.len, p.h, 0.12), M.fence, 0, p.h / 2, 0);
+        var n = Math.max(1, Math.round(p.len / 8));
+        for (var i = 0; i <= n; i++) {
+          mesh(g, new THREE.BoxGeometry(0.33, p.h + 0.25, 0.33), M.darkwood, -p.len / 2 + p.len * i / n, (p.h + 0.25) / 2, 0.2);
+        }
+        return { group: g, parts: [boxPts(p.len, p.h, 0.12, 0)], probe: null };
+      }
+    },
+
+    house: {
+      name: 'House',
+      params: [
+        { k: 'w', label: 'Width', min: 20, max: 90, step: 1, def: 40 },
+        { k: 'ridge', label: 'Ridge height', min: 12, max: 34, step: 0.5, def: 18 }
+      ],
+      build: function (p) {
+        var g = new THREE.Group(), D = 30, wall = 10;
+        mesh(g, new THREE.BoxGeometry(p.w, wall, D), M.wall, 0, wall / 2, 0);
+        var roof = gable(g, D + 3, p.ridge - wall, p.w + 3, M.roof, wall);
+        roof.rotation.y = Math.PI / 2;
+        var pts = boxPts(p.w + 3, wall, D + 3, 0);
+        pts.push(new THREE.Vector3(-(p.w + 3) / 2, p.ridge, 0), new THREE.Vector3((p.w + 3) / 2, p.ridge, 0));
+        return { group: g, parts: [pts], probe: null };
+      }
+    }
+  };
+
+  var selected = null;
+  var selRing = new THREE.LineLoop(new THREE.BufferGeometry(), new THREE.LineBasicMaterial({ color: 0x2F8F74 }));
+  scene.add(selRing);
+
+  function makeThing(t) {
+    var type = TYPES[t.type];
+    t.p = t.p || {};
+    type.params.forEach(function (pr) { if (!isFinite(t.p[pr.k])) t.p[pr.k] = pr.def; });
+    if (t._group) { G.things.remove(t._group); clear(t._group); }
+    var built = type.build(t.p);
+    t._group = built.group;
+    t._parts = built.parts;
+    t._probe = built.probe;
+    t._group.traverse(function (o) { o.userData.thing = t; });
+    G.things.add(t._group);
+    placeThing(t);
+  }
+
+  function placeThing(t) {
+    t._group.position.set(wx(t.a), 0, wz(t.b));
+    t._group.rotation.y = -t.rot * D2R;
+    if (t === selected) ringAround(t);
+  }
+
+  function ringAround(t) {
+    selRing.visible = !!t;
+    if (!t) return;
+    t._group.updateMatrixWorld(true);
+    var box = new THREE.Box3().setFromObject(t._group);
+    var r = Math.max(box.max.x - box.min.x, box.max.z - box.min.z) / 2 + 0.8;
+    var cx = (box.max.x + box.min.x) / 2, cz = (box.max.z + box.min.z) / 2, pts = [];
+    for (var i = 0; i < 48; i++) {
+      var a = i / 48 * Math.PI * 2;
+      pts.push(new THREE.Vector3(cx + r * Math.cos(a), 0.06, cz + r * Math.sin(a)));
+    }
+    selRing.geometry.dispose();
+    selRing.geometry = new THREE.BufferGeometry().setFromPoints(pts);
+  }
+
+  // ---------------------------------------------------------------- yard
+
+  var compassGrp = new THREE.Group();
+
+  function buildYard() {
+    clear(G.ground); clear(G.grid); clearLabels('yard');
+    var W = state.yard.w, D = state.yard.d;
+
+    var earth = new THREE.Mesh(new THREE.CircleGeometry(900, 64),
+      new THREE.MeshStandardMaterial({ color: C.earth, roughness: 1 }));
+    earth.rotation.x = -Math.PI / 2;
+    earth.position.y = -0.02;
+    earth.receiveShadow = true;
+    earth.userData.ownMat = true;
+    G.ground.add(earth);
+
+    var lawn = new THREE.Mesh(new THREE.PlaneGeometry(W, D), M.lawn);
+    lawn.rotation.x = -Math.PI / 2;
+    lawn.receiveShadow = true;
+    G.ground.add(lawn);
+
+    var c = [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(function (s) {
+      return new THREE.Vector3(s[0] * W / 2, 0.03, s[1] * D / 2);
+    });
+    loop(G.ground, c, LINE, true);
+
+    // compass beside the back-left corner, needle to true north
+    compassGrp = new THREE.Group();
+    var ring = [];
+    for (var i = 0; i < 40; i++) {
+      var a = i / 40 * Math.PI * 2;
+      ring.push(new THREE.Vector3(2.6 * Math.cos(a), 0, 2.6 * Math.sin(a)));
+    }
+    loop(compassGrp, ring, LINE, true);
+    var s = new THREE.Shape();
+    s.moveTo(0, 2.6); s.lineTo(0.7, -0.8); s.lineTo(0, -0.3); s.lineTo(-0.7, -0.8); s.lineTo(0, 2.6);
+    var needle = new THREE.Mesh(new THREE.ShapeGeometry(s), M.handle);
+    needle.rotation.x = -Math.PI / 2;
+    compassGrp.add(needle);
+    compassGrp.position.set(-W / 2 - 5, 0.04, -D / 2 - 5);
+    compassGrp.rotation.y = state.yard.orient * D2R;
+    G.ground.add(compassGrp);
+    var th = state.yard.orient * D2R;
+    label('yard', G.labels, new THREE.Vector3(-W / 2 - 5 - 4.2 * Math.sin(th), 0.1, -D / 2 - 5 - 4.2 * Math.cos(th)), 'N', 'north');
+
+    for (var x = -W / 2 + 5; x < W / 2 - 0.01; x += 5) {
+      loop(G.grid, [new THREE.Vector3(x, 0.015, -D / 2), new THREE.Vector3(x, 0.015, D / 2)], FAINT);
+    }
+    for (var z = -D / 2 + 5; z < D / 2 - 0.01; z += 5) {
+      loop(G.grid, [new THREE.Vector3(-W / 2, 0.015, z), new THREE.Vector3(W / 2, 0.015, z)], FAINT);
+    }
+
+    label('yard', G.labels, new THREE.Vector3(0, 0.1, -D / 2 - 2), '<b>BACK</b>' + ftin(W));
+    label('yard', G.labels, new THREE.Vector3(-W / 2 - 2.2, 0.1, 0), ftin(D));
+    label('yard', G.labels, new THREE.Vector3(0, 0.1, D / 2 + 2), '<b>HOUSE SIDE</b>');
+
+    var ext = Math.max(W, D) / 2 + 70;
+    sun.shadow.camera.left = -ext; sun.shadow.camera.right = ext;
+    sun.shadow.camera.top = ext;   sun.shadow.camera.bottom = -ext;
+    sun.shadow.camera.updateProjectionMatrix();
+  }
+
+  // ---------------------------------------------------------------- sail
+
+  var sailMesh = null;
+  var CORNERS = ['A', 'B', 'C'];
+
+  function cornerWorld(c) { return new THREE.Vector3(wx(c.a), c.h, wz(c.b)); }
+
+  function buildSail() {
+    clear(G.sail); clear(G.posts); clearLabels('sail');
+    var P = state.sail.map(cornerWorld);
+    var geo = new THREE.BufferGeometry().setFromPoints(P);
+    geo.setIndex([0, 1, 2]);
+    geo.computeVertexNormals();
+    sailMesh = new THREE.Mesh(geo, M.sail);
+    sailMesh.castShadow = true;
+    sailMesh.receiveShadow = true;
+    sailMesh.userData.sailBody = true;
+    G.sail.add(sailMesh);
+    loop(G.sail, P, SAILEDGE, true);
+
+    P.forEach(function (p, i) {
+      var hnd = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 12), M.handle);
+      hnd.position.copy(p);
+      hnd.userData.corner = i;
+      G.sail.add(hnd);
+      label('sail', G.sail, p.clone().add(new THREE.Vector3(0, 1.3, 0)), '<b>' + CORNERS[i] + '</b>' + ftin(state.sail[i].h));
+      if (p.y > 0.3) {
+        mesh(G.posts, new THREE.CylinderGeometry(0.2, 0.2, p.y, 10), M.post, p.x, p.y / 2, p.z);
+      }
+    });
+  }
+
+  function sailSides() {
+    var P = state.sail.map(cornerWorld);
+    return [P[0].distanceTo(P[1]), P[1].distanceTo(P[2]), P[2].distanceTo(P[0])];
+  }
+
+  // ---------------------------------------------------------------- shade path
+
+  var EV = null;
+
+  function buildPath() {
+    clear(G.path); clearLabels('path');
+    if (!EV || EV.rise === null || EV.set === null) return;
+    scene.updateMatrixWorld(true);
+    for (var hr = Math.ceil(EV.rise / 60); hr * 60 <= EV.set; hr++) {
+      var s = solar(hr * 60);
+      if (s.alt < 4 * D2R) continue;
+      var dir = sunVec(s);
+      var col = hourColor((hr * 60 - EV.rise) / (EV.set - EV.rise));
+      var mat = new THREE.LineBasicMaterial({ color: col });
+      var sets = [];
+      if (G.sail.visible) sets.push(state.sail.map(cornerWorld));
+      if (state.path === 'all' && G.things.visible) {
+        state.things.forEach(function (t) {
+          t._parts.forEach(function (pp) {
+            sets.push(pp.map(function (v) { return t._group.localToWorld(v.clone()); }));
+          });
+        });
+      }
+      sets.forEach(function (pts, k) {
+        var h = hull(pts.map(function (p) { return project(p, dir); }));
+        if (h.length < 3) return;
+        var y = 0.05 + hr * 0.002;
+        var l = loop(G.path, h.map(function (q) { return new THREE.Vector3(q[0], y, q[1]); }), mat, true);
+        if (k === 0) {
+          l.userData.ownMat = true;
+          var cx = 0, cz = 0;
+          h.forEach(function (q) { cx += q[0]; cz += q[1]; });
+          var lbl = label('path', G.path, new THREE.Vector3(cx / h.length, y, cz / h.length),
+            '<span style="color:#' + col.getHexString() + '">' + hourTag(hr) + '</span>', 'hour');
+        }
+      });
+      if (!sets.length) mat.dispose();
+    }
+  }
+
+  // ---------------------------------------------------------------- sky
+
+  var skyPath = new THREE.Group();
+  var sunBall = new THREE.Mesh(new THREE.SphereGeometry(2.2, 20, 14), M.sunball);
+  G.sky.add(skyPath);
+  G.sky.add(sunBall);
+
+  function skyR() { return Math.max(state.yard.w, state.yard.d) / 2 + 30; }
+
+  function buildSky() {
+    clear(skyPath); clearLabels('sky');
+    if (!EV || EV.rise === null || EV.set === null) return;
+    var R = skyR(), pts = [];
+    for (var mn = EV.rise; mn <= EV.set + 0.1; mn += 6) pts.push(sunVec(solar(Math.min(mn, EV.set))).multiplyScalar(R));
+    loop(skyPath, pts, new THREE.LineBasicMaterial({ color: 0xE8B83A }), false).userData.ownMat = true;
+    for (var hr = Math.ceil(EV.rise / 60); hr * 60 <= EV.set; hr++) {
+      var v = sunVec(solar(hr * 60));
+      if (v.y < 0.02) continue;
+      var p = v.multiplyScalar(R);
+      mesh(skyPath, new THREE.SphereGeometry(0.45, 10, 8), M.sunball, p.x, p.y, p.z).castShadow = false;
+      label('sky', skyPath, p.clone().add(new THREE.Vector3(0, 1.4, 0)), hourTag(hr), 'hour');
+    }
+  }
+
+  // ---------------------------------------------------------------- day strip probe
+
+  var stripEl = document.getElementById('dayStrip');
+  var stripNow = null;
+
+  function probeThing() {
+    if (selected && selected._probe) return selected;
+    for (var i = 0; i < state.things.length; i++) if (state.things[i]._probe) return state.things[i];
+    return null;
+  }
+
+  function computeProbe() {
+    var t = probeThing();
+    var casters = [];
+    [G.things, G.sail].forEach(function (g) {
+      if (!g.visible) return;
+      g.traverse(function (o) {
+        if (o.isMesh && !o.userData.noRay && o.userData.corner === undefined && shown(o)) casters.push(o);
+      });
+    });
+    scene.updateMatrixWorld(true);
+    var origin = t ? t._group.localToWorld(t._probe.clone()) : null;
+    var rc = new THREE.Raycaster(), runs = [], cur = null, day = 0, shade = 0;
+    for (var mn = T_MIN; mn <= T_MAX; mn += 5) {
+      var s = solar(mn), kind;
+      if (s.alt <= 0) kind = 'night';
+      else if (!origin) kind = 'sun';
+      else {
+        rc.set(origin, sunVec(s));
+        kind = rc.intersectObjects(casters, false).length ? 'shade' : 'sun';
+      }
+      if (kind !== 'night') { day += 5; if (kind === 'shade') shade += 5; }
+      if (!cur || cur.kind !== kind) { cur = { kind: kind, from: mn, to: mn + 5 }; runs.push(cur); }
+      else cur.to = mn + 5;
+    }
+
+    stripEl.innerHTML = '';
+    var span = T_MAX + 5 - T_MIN;
+    runs.forEach(function (r) {
+      if (r.kind === 'night') return;
+      var el = document.createElement('span');
+      el.className = r.kind;
+      el.style.left = ((r.from - T_MIN) / span * 100) + '%';
+      el.style.width = ((r.to - r.from) / span * 100) + '%';
+      stripEl.appendChild(el);
+    });
+    stripNow = document.createElement('span');
+    stripNow.className = 'now';
+    stripEl.appendChild(stripNow);
+
+    var note = document.getElementById('stripNote');
+    if (!t) {
+      note.textContent = 'Add a patio table and the strip will show when it is in shade.';
+    } else {
+      var n = state.things.filter(function (x) { return x._probe; }).length;
+      var which = n > 1 ? ' (' + (state.things.filter(function (x) { return x._probe; }).indexOf(t) + 1) + ' of ' + n + ')' : '';
+      var list = runs.filter(function (r) { return r.kind === 'shade' && r.to - r.from >= 10; })
+        .map(function (r) { return clock(r.from) + '–' + clock(r.to); });
+      note.textContent = 'Patio table' + which + ', seated head height: ' +
+        (list.length ? 'shade ' + list.join(', ') : 'no shade all day') +
+        '. ' + dur(shade) + ' of shade in ' + dur(day) + ' of daylight.';
+    }
+    placeStripNow();
+  }
+
+  function placeStripNow() {
+    if (stripNow) stripNow.style.left = ((state.time - T_MIN) / (T_MAX + 5 - T_MIN) * 100) + '%';
+  }
+
+  // ---------------------------------------------------------------- sun now
+
+  var bgDay = new THREE.Color(), bgNight = new THREE.Color();
+
+  function updateSun() {
+    var s = solar(state.time), dir = sunVec(s), up = s.alt > 0;
+    sun.position.copy(dir).multiplyScalar(400);
+    sun.intensity = up ? 0.3 + 0.85 * Math.min(1, Math.sin(s.alt) * 2.2) : 0;
+    sun.castShadow = up;
+    hemi.intensity = up ? 0.35 + 0.25 * Math.min(1, Math.sin(s.alt) * 3) : 0.14;
+    scene.background = up ? bgDay : bgNight;
+    sunBall.position.copy(dir).multiplyScalar(skyR());
+    sunBall.visible = up;
+
+    document.getElementById('timeOut').textContent = clock(state.time);
+    document.getElementById('monthOut').textContent = MONTHS[state.month - 1] + ' 21';
+    var tz = clockOffset();
+    document.getElementById('readout').innerHTML =
+      '<b>' + MONTHS[state.month - 1].toUpperCase() + ' 21 · ' + clock(state.time) + '</b><br>' +
+      (up ? 'sun ' + (s.alt / D2R).toFixed(0) + '° up, ' + compass(s.az / D2R) : 'sun below the horizon');
+
+    var shade = '';
+    if (up && G.sail.visible) {
+      var h = hull(state.sail.map(function (c) { return project(cornerWorld(c), dir); }));
+      var a = 0;
+      for (var i = 0; i < h.length; i++) {
+        var p = h[i], q = h[(i + 1) % h.length];
+        a += p[0] * q[1] - q[0] * p[1];
+      }
+      shade = Math.round(Math.abs(a) / 2) + ' ft²';
+    }
+    sailRows(shade);
+
+    var rows = [
+      ['Altitude', up ? (s.alt / D2R).toFixed(1) + '°' : 'below horizon'],
+      ['Direction', compass(s.az / D2R)]
+    ];
+    if (EV && EV.rise !== null && EV.set !== null) {
+      rows.push(['Sunrise', clock(EV.rise)], ['Solar noon', clock(EV.noon) + ' · ' + (EV.noonAlt / D2R).toFixed(0) + '°'],
+                ['Sunset', clock(EV.set)], ['Daylight', dur(EV.set - EV.rise)]);
+    }
+    rows.push(['Clock', 'UTC' + (tz >= 0 ? '+' : '−') + Math.abs(tz) + (dstOn(state.month, state.loc.dst) ? ', daylight saving' : '')]);
+    dims('sunDims', rows);
+    placeStripNow();
+  }
+
+  function dims(id, rows) {
+    document.getElementById(id).innerHTML = rows.map(function (r) {
+      return '<dt>' + r[0] + '</dt><dd>' + r[1] + '</dd>';
+    }).join('');
+  }
+
+  function sailRows(shadeNow) {
+    var sides = sailSides();
+    var P = state.sail.map(cornerWorld);
+    var n = new THREE.Vector3().subVectors(P[1], P[0]).cross(new THREE.Vector3().subVectors(P[2], P[0]));
+    var area = n.length() / 2;
+    var tilt = n.length() ? Math.acos(Math.abs(n.y) / n.length()) / D2R : 0;
+    dims('sailDims', [
+      ['Sides A–B · B–C · C–A', ''],
+      ['', sides.map(ftin).join(' · ')],
+      ['Cloth area', Math.round(area) + ' ft²'],
+      ['Tilt', tilt.toFixed(0) + '°'],
+      ['Shade on ground now', shadeNow || '—']
+    ]);
+  }
+
+  // ---------------------------------------------------------------- refresh
+
+  var needsRebuild = false, changedAt = 0;
+
+  // Anything that changes where shade can fall. The day-long work waits until
+  // the input settles; the sun and shadows update at once.
+  function changed() {
+    needsRebuild = true;
+    changedAt = performance.now();
+    updateSun();
+    saveSoon();
+  }
+
+  function dateChanged() {
+    EV = sunEvents();
+    buildSky();
+    changed();
+  }
+
+  // ---------------------------------------------------------------- panel: date, time
+
+  var monthEl = document.getElementById('month');
+  var timeEl = document.getElementById('time');
+  monthEl.addEventListener('input', function () { state.month = +monthEl.value; dateChanged(); });
+  timeEl.addEventListener('input', function () { state.time = +timeEl.value; playing = false; syncPlay(); updateSun(); saveSoon(); });
+
+  var playing = false;
+  var playBtn = document.getElementById('play');
+  function syncPlay() {
+    playBtn.innerHTML = playing ? '&#10074;&#10074;' : '&#9654;';
+    playBtn.setAttribute('aria-label', playing ? 'Pause' : 'Play through the day');
+  }
+  playBtn.addEventListener('click', function () {
+    playing = !playing;
+    if (playing && state.time >= T_MAX) state.time = EV && EV.rise ? Math.max(T_MIN, Math.floor(EV.rise / 5) * 5) : T_MIN;
+    syncPlay();
+  });
+
+  stripEl.addEventListener('click', function (e) {
+    var r = stripEl.getBoundingClientRect();
+    state.time = Math.round((T_MIN + (e.clientX - r.left) / r.width * (T_MAX - T_MIN)) / 5) * 5;
+    timeEl.value = state.time;
+    updateSun();
+    saveSoon();
+  });
+
+  document.getElementById('ticks').innerHTML = [6, 9, 12, 15, 18, 21].map(function (h) {
+    return '<span style="left:' + ((h * 60 - T_MIN) / (T_MAX + 5 - T_MIN) * 100) + '%">' + hourTag(h) + '</span>';
+  }).join('');
+
+  // ---------------------------------------------------------------- panel: location
+
+  var presetEl = document.getElementById('preset');
+  var latEl = document.getElementById('lat'), lonEl = document.getElementById('lon');
+  var tzEl = document.getElementById('tz'), dstEl = document.getElementById('dst');
+  var locNote = document.getElementById('locNote');
+
+  presetEl.innerHTML = '<option value="">Custom location</option>' + CITIES.map(function (c, i) {
+    return '<option value="' + i + '">' + c.name + '</option>';
+  }).join('');
+
+  function syncLoc() {
+    var i = -1;
+    CITIES.forEach(function (c, k) { if (c.name === state.loc.name) i = k; });
+    presetEl.value = i >= 0 ? String(i) : '';
+    latEl.value = state.loc.lat;
+    lonEl.value = state.loc.lon;
+    tzEl.value = state.loc.tz;
+    dstEl.value = state.loc.dst;
+  }
+
+  presetEl.addEventListener('change', function () {
+    if (presetEl.value === '') return;
+    var c = CITIES[+presetEl.value];
+    state.loc = { name: c.name, lat: c.lat, lon: c.lon, tz: c.tz, dst: c.dst };
+    syncLoc();
+    dateChanged();
+  });
+
+  function locEdited(guessTz) {
+    var lat = +latEl.value, lon = +lonEl.value;
+    if (!isFinite(lat) || !isFinite(lon) || latEl.value === '' || lonEl.value === '') return;
+    var clamped = Math.max(-60, Math.min(60, lat));
+    locNote.textContent = clamped !== lat
+      ? 'Latitude held at ' + clamped + '° — the planner stops at 60° north or south.'
+      : 'Latitudes are limited to 60° north or south.';
+    state.loc.lat = clamped;
+    state.loc.lon = Math.max(-180, Math.min(180, lon));
+    state.loc.name = '';
+    if (guessTz) {
+      state.loc.tz = Math.round(state.loc.lon / 15);
+      state.loc.dst = clamped < 0 ? 'au' : 'us';
+      tzEl.value = state.loc.tz;
+      dstEl.value = state.loc.dst;
+    }
+    presetEl.value = '';
+    dateChanged();
+  }
+  latEl.addEventListener('change', function () { locEdited(false); });
+  lonEl.addEventListener('change', function () { locEdited(true); });
+  tzEl.addEventListener('change', function () {
+    if (tzEl.value === '' || !isFinite(+tzEl.value)) return;
+    state.loc.tz = Math.max(-12, Math.min(14, +tzEl.value));
+    dateChanged();
+  });
+  dstEl.addEventListener('change', function () { state.loc.dst = dstEl.value; dateChanged(); });
+
+  document.getElementById('locate').addEventListener('click', function () {
+    if (!navigator.geolocation) { locNote.textContent = 'This browser can’t share a location.'; return; }
+    locNote.textContent = 'Asking the browser for your location…';
+    navigator.geolocation.getCurrentPosition(function (pos) {
+      latEl.value = pos.coords.latitude.toFixed(4);
+      lonEl.value = pos.coords.longitude.toFixed(4);
+      locEdited(false);
+      // time zone from this device, standard offset plus whether it observes DST
+      var y = new Date().getFullYear();
+      var jan = new Date(y, 0, 1).getTimezoneOffset(), jul = new Date(y, 6, 1).getTimezoneOffset();
+      state.loc.tz = -Math.max(jan, jul) / 60;
+      state.loc.dst = jan === jul ? 'none' : (jan > jul
+        ? (state.loc.lon > -30 && state.loc.lon < 45 ? 'eu' : 'us') : 'au');
+      syncLoc();
+      dateChanged();
+      locNote.textContent = 'Using this device’s location and time zone. It stays in this browser.';
+    }, function () {
+      locNote.textContent = 'Location wasn’t shared. Enter latitude and longitude instead.';
+    }, { timeout: 15000 });
+  });
+
+  // ---------------------------------------------------------------- panel: yard
+
+  var yardWEl = document.getElementById('yardW'), yardDEl = document.getElementById('yardD');
+  var orientEl = document.getElementById('orient');
+  function syncYardOut() {
+    document.getElementById('yardWOut').textContent = ftin(state.yard.w);
+    document.getElementById('yardDOut').textContent = ftin(state.yard.d);
+    document.getElementById('orientOut').textContent = compass(state.yard.orient);
+  }
+  function yardChanged() {
+    syncYardOut();
+    buildYard();
+    state.things.forEach(placeThing);
+    buildSail();
+    buildSky();
+    renderEdit();
+    changed();
+  }
+  yardWEl.addEventListener('input', function () { state.yard.w = +yardWEl.value; yardChanged(); });
+  yardDEl.addEventListener('input', function () { state.yard.d = +yardDEl.value; yardChanged(); });
+  orientEl.addEventListener('input', function () { state.yard.orient = +orientEl.value; yardChanged(); });
+
+  // ---------------------------------------------------------------- panel: things
+
+  var addTypeEl = document.getElementById('addType');
+  addTypeEl.innerHTML = Object.keys(TYPES).map(function (k) {
+    return '<option value="' + k + '">' + TYPES[k].name + '</option>';
+  }).join('');
+
+  document.getElementById('addBtn').addEventListener('click', function () {
+    var k = addTypeEl.value, p = {};
+    TYPES[k].params.forEach(function (pr) { p[pr.k] = pr.def; });
+    var t = { type: k, a: Math.round(state.yard.w / 2), b: Math.round(state.yard.d / 2), rot: 0, p: p };
+    if (k === 'house') t.b = state.yard.d + 17;
+    if (k === 'fence') { t.b = 0; t.p.len = state.yard.w; }
+    state.things.push(t);
+    makeThing(t);
+    select(t);
+    changed();
+  });
+
+  function select(t) {
+    selected = t;
+    ringAround(t);
+    renderThingList();
+    needsRebuild = true;            // the day strip follows the selected patio set
+    changedAt = performance.now();
+  }
+
+  function renderThingList() {
+    var el = document.getElementById('thingList');
+    el.innerHTML = '';
+    var counts = {};
+    state.things.forEach(function (t) {
+      counts[t.type] = (counts[t.type] || 0) + 1;
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'thing-item';
+      b.setAttribute('aria-pressed', String(t === selected));
+      var n = state.things.filter(function (x) { return x.type === t.type; }).length;
+      b.textContent = TYPES[t.type].name + (n > 1 ? ' ' + counts[t.type] : '');
+      b.addEventListener('click', function () { select(t === selected ? null : t); });
+      el.appendChild(b);
+    });
+    renderEdit();
+  }
+
+  var editRefs = [];
+  function renderEdit() {
+    var el = document.getElementById('thingEdit');
+    el.innerHTML = '';
+    editRefs = [];
+    var t = selected;
+    if (!t) {
+      el.innerHTML = '<p class="small">Pick one above to move, turn or resize it — or drag it in the view.</p>';
+      return;
+    }
+    var box = document.createElement('div');
+    box.className = 'edit';
+    var W = state.yard.w, D = state.yard.d;
+    var ctls = [
+      { label: 'From left edge', min: -40, max: W + 40, step: 0.5, get: function () { return t.a; }, set: function (v) { t.a = v; }, fmt: ftin },
+      { label: 'From back edge', min: -40, max: D + 40, step: 0.5, get: function () { return t.b; }, set: function (v) { t.b = v; }, fmt: ftin },
+      { label: 'Turn', min: -180, max: 180, step: 5, get: function () { return t.rot; }, set: function (v) { t.rot = v; }, fmt: function (v) { return v + '°'; } }
+    ];
+    TYPES[t.type].params.forEach(function (pr) {
+      ctls.push({ label: pr.label, min: pr.min, max: pr.max, step: pr.step, param: true,
+        get: function () { return t.p[pr.k]; }, set: function (v) { t.p[pr.k] = v; }, fmt: ftin });
+    });
+    ctls.forEach(function (c) {
+      var wrap = document.createElement('div');
+      wrap.className = 'ctl';
+      var lab = document.createElement('div');
+      lab.className = 'ctl-label';
+      var span = document.createElement('span');
+      span.textContent = c.label;
+      var out = document.createElement('output');
+      out.textContent = c.fmt(c.get());
+      lab.appendChild(span); lab.appendChild(out);
+      var row = document.createElement('div');
+      row.className = 'slider-row';
+      var inp = document.createElement('input');
+      inp.type = 'range';
+      inp.min = c.min; inp.max = c.max; inp.step = c.step; inp.value = c.get();
+      inp.setAttribute('aria-label', c.label);
+      inp.addEventListener('input', function () {
+        c.set(+inp.value);
+        out.textContent = c.fmt(c.get());
+        if (c.param) makeThing(t); else placeThing(t);
+        ringAround(t);
+        changed();
+      });
+      row.appendChild(inp);
+      wrap.appendChild(lab); wrap.appendChild(row);
+      box.appendChild(wrap);
+      editRefs.push({ inp: inp, out: out, c: c });
+    });
+    var rm = document.createElement('button');
+    rm.type = 'button';
+    rm.className = 'btn';
+    rm.textContent = 'Remove';
+    rm.addEventListener('click', function () {
+      G.things.remove(t._group);
+      clear(t._group);
+      state.things.splice(state.things.indexOf(t), 1);
+      select(null);
+      changed();
+    });
+    box.appendChild(rm);
+    el.appendChild(box);
+  }
+
+  function syncEdit() {
+    editRefs.forEach(function (r) { r.inp.value = r.c.get(); r.out.textContent = r.c.fmt(r.c.get()); });
+  }
+
+  // ---------------------------------------------------------------- panel: sail
+
+  var sailInputs = [];
+  (function () {
+    var el = document.getElementById('sailGrid');
+    el.innerHTML = '<span></span><span class="hd">From left</span><span class="hd">From back</span><span class="hd">Height</span>';
+    state.sail.forEach(function (c, i) {
+      var b = document.createElement('b');
+      b.textContent = CORNERS[i];
+      el.appendChild(b);
+      var row = {};
+      [['a', -40, 'from left edge'], ['b', -40, 'from back edge'], ['h', 0, 'height']].forEach(function (f) {
+        var inp = document.createElement('input');
+        inp.type = 'number';
+        inp.className = 'num';
+        inp.step = '0.5';
+        inp.min = f[1];
+        inp.setAttribute('aria-label', 'Corner ' + CORNERS[i] + ' ' + f[2] + ', feet');
+        inp.addEventListener('change', function () {
+          var v = +inp.value;
+          if (inp.value === '' || !isFinite(v)) { inp.value = state.sail[i][f[0]]; return; }
+          state.sail[i][f[0]] = f[0] === 'h' ? Math.max(0, Math.min(30, v)) : v;
+          inp.value = state.sail[i][f[0]];
+          buildSail();
+          changed();
+        });
+        row[f[0]] = inp;
+        el.appendChild(inp);
+      });
+      sailInputs.push(row);
+    });
+  })();
+
+  function syncSailGrid() {
+    sailInputs.forEach(function (row, i) {
+      ['a', 'b', 'h'].forEach(function (k) {
+        if (document.activeElement !== row[k]) row[k].value = Math.round(state.sail[i][k] * 4) / 4;
+      });
+    });
+  }
+
+  // ---------------------------------------------------------------- panel: path
+
+  function syncPathSeg() {
+    Array.prototype.forEach.call(document.querySelectorAll('#pathSeg button'), function (b) {
+      b.setAttribute('aria-pressed', String(b.dataset.path === state.path));
+    });
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('#pathSeg button'), function (b) {
+    b.addEventListener('click', function () { state.path = b.dataset.path; syncPathSeg(); changed(); });
+  });
+
+  // ---------------------------------------------------------------- panel: layers
+
+  var layersEl = document.getElementById('layers');
+  var lastGroup = null;
+  LAYERS.forEach(function (l) {
+    if (l.g !== lastGroup) {
+      var h = document.createElement('div');
+      h.className = 'grp';
+      h.textContent = l.g;
+      layersEl.appendChild(h);
+      lastGroup = l.g;
+    }
+    var row = document.createElement('label');
+    row.className = 'layer' + (l.on ? '' : ' off');
+    var cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.checked = l.on;
+    var sw = document.createElement('span');
+    sw.className = 'swatch';
+    sw.style.background = '#' + l.color.toString(16).padStart(6, '0');
+    var nm = document.createElement('span');
+    nm.className = 'name';
+    nm.textContent = l.name;
+    var sp = document.createElement('span');
+    sp.className = 'spec';
+    sp.textContent = l.spec;
+    cb.addEventListener('change', function () { setLayer(l, cb.checked); changed(); });
+    row.appendChild(cb); row.appendChild(sw); row.appendChild(nm); row.appendChild(sp);
+    layersEl.appendChild(row);
+    l._cb = cb; l._row = row;
+  });
+
+  function setLayer(l, v) {
+    l._cb.checked = v;
+    G[l.id].visible = v;
+    l._row.classList.toggle('off', !v);
+  }
+  document.getElementById('allOn').addEventListener('click', function () {
+    LAYERS.forEach(function (l) { setLayer(l, true); });
+    changed();
+  });
+  var JUST_SHADE = ['ground', 'things', 'sail', 'posts', 'path'];
+  document.getElementById('minimal').addEventListener('click', function () {
+    LAYERS.forEach(function (l) { setLayer(l, JUST_SHADE.indexOf(l.id) !== -1); });
+    changed();
+  });
+
+  // ---------------------------------------------------------------- panel: share
+
+  // Links always point at the published page. A link made from a local preview would
+  // only open on the machine that made it.
+  var PUBLIC_URL = 'https://harmonic-systems-home.github.io/lillian-shed-model/shade/';
+  var copyBtn = document.getElementById('copyLink');
+  var copyTimer = null;
+
+  copyBtn.addEventListener('click', function () {
+    var base = /github\.io$/.test(location.hostname) ? location.href.split('#')[0] : PUBLIC_URL;
+    var url = base + '#s=' + encodeURIComponent(serial());
+    var out = document.getElementById('linkOut');
+    var note = document.getElementById('shareNote');
+
+    // Show the link every time, so there is something to copy by hand even where
+    // the clipboard is blocked (embedded previews, some in-app browsers).
+    out.hidden = false;
+    out.value = url;
+    out.focus();
+    out.select();
+
+    function flash(text) {
+      copyBtn.textContent = text;
+      clearTimeout(copyTimer);
+      copyTimer = setTimeout(function () { copyBtn.textContent = 'Copy link'; }, 2200);
+    }
+    function done(ok) {
+      flash(ok ? 'Copied ✓' : 'Copy it below');
+      note.textContent = (ok ? 'Link copied. ' : 'This browser blocked copying — select the link above and copy it. ') +
+        'It includes the latitude and longitude.';
+    }
+
+    var copied = false;
+    try { copied = document.execCommand('copy'); } catch (e) { copied = false; }
+    if (!copied && navigator.clipboard && window.isSecureContext) {
+      // some embedded browsers never settle this promise
+      var settled = false;
+      var giveUp = setTimeout(function () { if (!settled) { settled = true; done(false); } }, 1500);
+      navigator.clipboard.writeText(url).then(function () {
+        if (!settled) { settled = true; clearTimeout(giveUp); done(true); }
+      }, function () {
+        if (!settled) { settled = true; clearTimeout(giveUp); done(false); }
+      });
+    } else {
+      done(copied);
+    }
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', function () {
+    state.things.forEach(function (t) { G.things.remove(t._group); clear(t._group); });
+    state = defaults();
+    try { localStorage.removeItem('yard-shade-v1'); history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+    init();
+  });
+
+  // ---------------------------------------------------------------- camera rig
+
+  var HOME = new THREE.Vector3(0, 2, 0);
+  var target = HOME.clone();
+  var cam = { theta: 0.55, phi: 0.95, radius: 90 };
+
+  function homeRadius() { return Math.max(state.yard.w, state.yard.d) * 1.35 + 30; }
+
+  var _fwd = new THREE.Vector3(), _right = new THREE.Vector3(), _up = new THREE.Vector3();
+  function panBy(dx, dy) {
+    var scale = cam.radius * 0.0018;
+    _fwd.subVectors(target, camera.position).normalize();
+    _right.crossVectors(_fwd, camera.up).normalize();
+    _up.crossVectors(_right, _fwd).normalize();
+    target.addScaledVector(_right, -dx * scale);
+    target.addScaledVector(_up, dy * scale);
+    var lim = Math.max(state.yard.w, state.yard.d) + 40;
+    target.x = Math.max(-lim, Math.min(lim, target.x));
+    target.y = Math.max(-2, Math.min(40, target.y));
+    target.z = Math.max(-lim, Math.min(lim, target.z));
+  }
+
+  function applyCamera() {
+    cam.phi = Math.max(0.02, Math.min(Math.PI / 2 - 0.02, cam.phi));
+    cam.radius = Math.max(10, Math.min(900, cam.radius));
+    var sp = Math.sin(cam.phi), cp = Math.cos(cam.phi);
+    camera.position.set(target.x + cam.radius * sp * Math.sin(cam.theta),
+                        target.y + cam.radius * cp,
+                        target.z + cam.radius * sp * Math.cos(cam.theta));
+    camera.lookAt(target);
+  }
+
+  function preset(name) {
+    var R = homeRadius();
+    if (name === 'plan')  return { theta: 0.0001, phi: 0.02, radius: R * 1.05 };
+    if (name === 'house') return { theta: 0, phi: 1.36, radius: R * 0.8 };
+    if (name === 'sun') {
+      var v = sunVec(solar(state.time));
+      if (v.y <= 0.02) return { theta: cam.theta, phi: cam.phi, radius: cam.radius };
+      return { theta: Math.atan2(v.x, v.z), phi: Math.acos(Math.min(1, v.y)), radius: R * 1.1 };
+    }
+    return { theta: 0.55, phi: 0.95, radius: R };
+  }
+
+  var anim = null, idle = true;
+  function goTo(p) {
+    idle = false;
+    var dt = p.theta - cam.theta;
+    dt -= Math.round(dt / (Math.PI * 2)) * Math.PI * 2;
+    anim = { from: { theta: cam.theta, phi: cam.phi, radius: cam.radius },
+             to: { theta: cam.theta + dt, phi: p.phi, radius: p.radius }, t: 0, fromTarget: target.clone() };
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('.views button'), function (b) {
+    b.addEventListener('click', function () { goTo(preset(b.dataset.view)); });
+  });
+
+  // ---------------------------------------------------------------- pointer: drag or orbit
+
+  var hint = document.getElementById('hint');
+  var hintTimer = setTimeout(hideHint, 7000);
+  function hideHint() {
+    if (!hint.hidden) { hint.style.opacity = '0'; setTimeout(function () { hint.hidden = true; }, 420); }
+  }
+  function stopIdle() { idle = false; anim = null; clearTimeout(hintTimer); hideHint(); }
+
+  var ray = new THREE.Raycaster(), ndc = new THREE.Vector2(), _plane = new THREE.Plane();
+  function setRay(cx, cy) {
+    var r = canvas.getBoundingClientRect();
+    ndc.set(((cx - r.left) / r.width) * 2 - 1, -((cy - r.top) / r.height) * 2 + 1);
+    ray.setFromCamera(ndc, camera);
+  }
+  function pick(cx, cy) {
+    setRay(cx, cy);
+    var roots = [];
+    if (G.sail.visible) roots.push(G.sail);
+    if (G.things.visible) roots.push(G.things);
+    var hits = ray.intersectObjects(roots, true);
+    for (var i = 0; i < hits.length; i++) {
+      var o = hits[i].object;
+      if (!o.isMesh) continue;
+      if (o.userData.corner !== undefined) return { kind: 'corner', i: o.userData.corner };
+      if (o.userData.sailBody) return { kind: 'sail' };
+      if (o.userData.thing) return { kind: 'thing', t: o.userData.thing };
+    }
+    return null;
+  }
+  function planeHit(cx, cy, y) {
+    setRay(cx, cy);
+    _plane.set(new THREE.Vector3(0, 1, 0), -y);
+    return ray.ray.intersectPlane(_plane, new THREE.Vector3());
+  }
+
+  var ptrs = {}, mode = null, drag = null, lastX = 0, lastY = 0, pinchD = 0, pinchC = null, hoverAt = 0;
+  function ptrList() { return Object.keys(ptrs).map(function (k) { return ptrs[k]; }); }
+
+  canvas.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+
+  canvas.addEventListener('pointerdown', function (e) {
+    try { canvas.setPointerCapture(e.pointerId); } catch (err) {}
+    ptrs[e.pointerId] = { x: e.clientX, y: e.clientY };
+    stopIdle();
+    playing = false; syncPlay();
+    var list = ptrList();
+    if (list.length === 1) {
+      lastX = e.clientX; lastY = e.clientY;
+      var hit = (e.button === 0 && !e.shiftKey) ? pick(e.clientX, e.clientY) : null;
+      if (hit) {
+        var y = 0;
+        if (hit.kind === 'corner') y = state.sail[hit.i].h;
+        if (hit.kind === 'sail') y = (state.sail[0].h + state.sail[1].h + state.sail[2].h) / 3;
+        var p0 = planeHit(e.clientX, e.clientY, y);
+        if (p0) {
+          drag = { hit: hit, y: y, p0: p0,
+            orig: hit.kind === 'thing' ? { a: hit.t.a, b: hit.t.b }
+                : state.sail.map(function (c) { return { a: c.a, b: c.b }; }) };
+          mode = 'drag';
+          if (hit.kind === 'thing' && hit.t !== selected) select(hit.t);
+          canvas.style.cursor = 'grabbing';
+          return;
+        }
+      }
+      mode = (e.button !== 0 || e.shiftKey) ? 'pan' : 'orbit';
+    } else if (list.length === 2) {
+      mode = 'pinch';
+      drag = null;
+      pinchD = Math.hypot(list[0].x - list[1].x, list[0].y - list[1].y);
+      pinchC = { x: (list[0].x + list[1].x) / 2, y: (list[0].y + list[1].y) / 2 };
+    }
+  });
+
+  canvas.addEventListener('pointermove', function (e) {
+    if (!ptrs[e.pointerId]) {
+      if (e.pointerType === 'mouse' && performance.now() - hoverAt > 60) {
+        hoverAt = performance.now();
+        canvas.style.cursor = pick(e.clientX, e.clientY) ? 'move' : 'grab';
+      }
+      return;
+    }
+    ptrs[e.pointerId] = { x: e.clientX, y: e.clientY };
+
+    if (mode === 'drag' && drag) {
+      var p = planeHit(e.clientX, e.clientY, drag.y);
+      if (!p) return;
+      var dx = p.x - drag.p0.x, dz = p.z - drag.p0.z;
+      function snap(v) { return Math.round(v * 4) / 4; }
+      if (drag.hit.kind === 'thing') {
+        var t = drag.hit.t;
+        t.a = snap(drag.orig.a + dx);
+        t.b = snap(drag.orig.b + dz);
+        placeThing(t);
+        syncEdit();
+      } else {
+        state.sail.forEach(function (c, i) {
+          if (drag.hit.kind === 'corner' && drag.hit.i !== i) return;
+          c.a = snap(drag.orig[i].a + dx);
+          c.b = snap(drag.orig[i].b + dz);
+        });
+        buildSail();
+        syncSailGrid();
+      }
+      changed();
+    } else if (mode === 'orbit') {
+      cam.theta -= (e.clientX - lastX) * 0.0075;
+      cam.phi -= (e.clientY - lastY) * 0.0065;
+      lastX = e.clientX; lastY = e.clientY;
+    } else if (mode === 'pan') {
+      panBy(e.clientX - lastX, e.clientY - lastY);
+      lastX = e.clientX; lastY = e.clientY;
+    } else if (mode === 'pinch') {
+      var list = ptrList();
+      if (list.length < 2) return;
+      var d = Math.hypot(list[0].x - list[1].x, list[0].y - list[1].y);
+      var c = { x: (list[0].x + list[1].x) / 2, y: (list[0].y + list[1].y) / 2 };
+      if (pinchD > 0) cam.radius *= pinchD / Math.max(d, 1);
+      panBy(c.x - pinchC.x, c.y - pinchC.y);
+      pinchD = d; pinchC = c;
+    }
+  });
+
+  function endPointer(e) {
+    delete ptrs[e.pointerId];
+    var list = ptrList();
+    if (!list.length) {
+      mode = null; drag = null;
+      canvas.style.cursor = 'grab';
+    } else if (list.length === 1) {
+      mode = 'orbit';
+      lastX = list[0].x; lastY = list[0].y;
+    }
+  }
+  canvas.addEventListener('pointerup', endPointer);
+  canvas.addEventListener('pointercancel', endPointer);
+
+  canvas.addEventListener('wheel', function (e) {
+    e.preventDefault(); stopIdle();
+    cam.radius *= (1 + Math.max(-0.35, Math.min(0.35, e.deltaY * 0.0016)));
+  }, { passive: false });
+
+  // ---------------------------------------------------------------- theme
+
+  function readTheme() {
+    var cs = getComputedStyle(document.documentElement);
+    bgDay.set(cs.getPropertyValue('--scene-bot').trim() || '#C9D6DE');
+    bgNight.set(cs.getPropertyValue('--scene-night').trim() || '#3A4350');
+    LINE.color.set(cs.getPropertyValue('--dimline').trim() || '#2F6B5A');
+  }
+  readTheme();
+  if (window.matchMedia) {
+    var mq = window.matchMedia('(prefers-color-scheme: dark)');
+    if (mq.addEventListener) mq.addEventListener('change', readTheme);
+    else if (mq.addListener) mq.addListener(readTheme);
+  }
+
+  // ---------------------------------------------------------------- loop
+
+  function resize() {
+    var w = canvas.clientWidth, h = canvas.clientHeight;
+    if (!w || !h) return;
+    if (canvas.width !== Math.round(w * renderer.getPixelRatio()) || canvas.height !== Math.round(h * renderer.getPixelRatio())) {
+      renderer.setSize(w, h, false);
+    }
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+
+  var _v = new THREE.Vector3();
+  function placeLabels() {
+    var w = canvas.clientWidth, h = canvas.clientHeight;
+    labels.forEach(function (l) {
+      if (!G.labels.visible || !shown(l.anchor)) { l.el.style.display = 'none'; return; }
+      l.anchor.getWorldPosition(_v);
+      _v.project(camera);
+      if (_v.z > 1 || _v.z < -1) { l.el.style.display = 'none'; return; }
+      l.el.style.display = '';
+      l.el.style.transform = 'translate(' + ((_v.x + 1) / 2 * w).toFixed(1) + 'px,' +
+        ((1 - _v.y) / 2 * h).toFixed(1) + 'px) translate(-50%,-50%)';
+    });
+  }
+
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce) idle = false;
+
+  var last = performance.now();
+  function frame(now) {
+    var dt = Math.min((now - last) / 1000, 0.05);
+    last = now;
+
+    if (idle) cam.theta += dt * 0.05;
+    if (anim) {
+      anim.t = Math.min(1, anim.t + dt * (reduce ? 6 : 2.2));
+      var e = 1 - Math.pow(1 - anim.t, 3);
+      cam.theta  = anim.from.theta  + (anim.to.theta  - anim.from.theta)  * e;
+      cam.phi    = anim.from.phi    + (anim.to.phi    - anim.from.phi)    * e;
+      cam.radius = anim.from.radius + (anim.to.radius - anim.from.radius) * e;
+      target.lerpVectors(anim.fromTarget, HOME, e);
+      if (anim.t >= 1) anim = null;
+    }
+
+    if (playing) {
+      state.time += dt * 60;                     // an hour a second
+      if (state.time >= T_MAX) { state.time = T_MAX; playing = false; syncPlay(); }
+      timeEl.value = Math.round(state.time / 5) * 5;
+      updateSun();
+    }
+
+    if (needsRebuild && now - changedAt > 140) {
+      needsRebuild = false;
+      buildPath();
+      computeProbe();
+    }
+
+    selRing.visible = !!selected && G.things.visible;
+    resize();
+    applyCamera();
+    renderer.render(scene, camera);
+    placeLabels();
+    requestAnimationFrame(frame);
+  }
+
+  // ---------------------------------------------------------------- start
+
+  function init() {
+    selected = null;
+    monthEl.value = state.month;
+    state.time = Math.max(T_MIN, Math.min(T_MAX, state.time));
+    timeEl.value = state.time;
+    yardWEl.value = state.yard.w;
+    yardDEl.value = state.yard.d;
+    orientEl.value = state.yard.orient;
+    syncLoc();
+    syncYardOut();
+    syncPathSeg();
+    buildYard();
+    state.things.forEach(makeThing);
+    buildSail();
+    syncSailGrid();
+    renderThingList();
+    ringAround(null);
+    cam.radius = homeRadius();
+    EV = sunEvents();
+    buildSky();
+    changed();
+  }
+
+  init();
+  requestAnimationFrame(frame);
+})();
+</script>
+
+</body>
+</html>
